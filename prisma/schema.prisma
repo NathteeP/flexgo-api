@@ -13,27 +13,258 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id              String   @id @default(uuid())
-  username        String   @unique
-  password        String
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-  firstName       String   @map("first_name")
-  lastName        String   @map("last_name")
-  phoneNumber     String?  @map("phone_number")
-  profileImageUrl String?  @map("profile_image_url")
-  birthDate       String?  @map("birth_date")
-  gender          Gender   @default(MALE)
-  role            Role
-}
-
 enum Role {
-  USER
+  CLIENT
   ADMIN
 }
 
 enum Gender {
   MALE
   FEMALE
+  OTHER
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  username    String?   @db.VarChar(90)
+  password    String?   @db.VarChar(90)
+  email       String    @unique @db.VarChar(100)
+  fullName    String?   @map("full_name")
+  phoneNumber String?   @unique @map("phone_number") @db.VarChar(10)
+  birthDate   DateTime? @map("birth_date") @db.Date
+  gender      Gender?
+  role        Role      @default(CLIENT)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  wishList     WishList[]
+  userPhoto    UserPhoto[]
+  accomodation Accommodation[]
+  reservation  Reservation[]
+}
+
+model UserPhoto {
+  id        Int    @id @default(autoincrement())
+  imagePath String @map("image_path") @db.VarChar(191)
+  User      User   @relation(fields: [userId], references: [id])
+  userId    Int
+
+  @@map("user_photo")
+}
+
+model WishList {
+  id Int @id @default(autoincrement())
+
+  User   User @relation(fields: [userId], references: [id])
+  userId Int
+  Room   Room @relation(fields: [roomId], references: [id])
+  roomId Int
+}
+
+enum Accom_type {
+  APARTMENT
+  HOTEL
+  HOUSE
+  GUESTHOUSE
+}
+
+enum Accom_status {
+  ACTIVE
+  INACTIVE
+  UNAPPROVED
+}
+
+model Accommodation {
+  id               Int          @id @default(autoincrement())
+  name             String       @db.VarChar(191)
+  lat              String       @unique @db.VarChar(100)
+  lng              String       @unique @db.VarChar(100)
+  address          String       @unique @db.VarChar(191)
+  province         String       @db.VarChar(191)
+  district         String       @db.VarChar(191)
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+  isApprovalNeeded Boolean      @default(false) @map("is_approval_needed")
+  type             Accom_type
+  status           Accom_status @default(UNAPPROVED)
+  description      String       @db.Text
+
+  User       User?       @relation(fields: [userId], references: [id])
+  userId     Int?
+  HouseRules HouseRules?
+
+  accomNearByPlace AccomNearbyPlaces[]
+  room             Room[]
+  accomPhoto       AccomPhoto[]
+}
+
+model AccomPhoto {
+  id              Int            @id @default(autoincrement())
+  imagePath       String         @db.VarChar(191)
+  Accommodation   Accommodation? @relation(fields: [accommodationId], references: [id])
+  accommodationId Int?
+}
+
+enum CancelPolicy {
+  FLEXIBLE
+  MODERATE
+  STRICT
+}
+
+model HouseRules {
+  id           Int           @id @default(autoincrement())
+  checkIn      String        @db.Text
+  checkOut     String        @db.Text
+  petsRule     String        @db.Text
+  ageRule      String        @db.Text
+  cancelPolicy CancelPolicy
+  accom        Accommodation @relation(fields: [accomId], references: [id])
+  accomId      Int           @unique
+}
+
+enum RoomStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Room {
+  id              Int            @id @default(autoincrement())
+  name            String         @db.VarChar(191)
+  roomType        String         @db.VarChar(90)
+  bedRoom         Int
+  bathRoom        Int
+  size            Int
+  capacity        Int
+  status          RoomStatus     @default(ACTIVE)
+  Accommodation   Accommodation? @relation(fields: [accommodationId], references: [id])
+  accommodationId Int?
+
+  reservation Reservation[]
+  wishList    WishList[]
+  amenities   Amenities[]
+  roomBed     RoomBed[]
+}
+
+model BedType {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(90)
+
+  roomBed RoomBed[]
+}
+
+model RoomBed {
+  Room      Room    @relation(fields: [roomId], references: [id])
+  roomId    Int
+  BedType   BedType @relation(fields: [bedTypeId], references: [id])
+  bedTypeId Int
+  amount    Int
+
+  @@id([roomId, bedTypeId])
+}
+
+model RoomPhoto {
+  id        Int    @id @default(autoincrement())
+  imagePath String @db.VarChar(191)
+}
+
+model Reviews {
+  id            Int      @id @default(autoincrement())
+  reservationId Int
+  comment       String?  @db.Text
+  ratingType1   Int
+  ratingType2   Int
+  ratingType3   Int
+  ratingType4   Int
+  reviewDate    DateTime @default(now()) @map("review_date")
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+  CHECKIN
+}
+
+model Reservation {
+  id              Int               @id @default(autoincrement())
+  checkInDate     DateTime          @map("check_in_date") @db.Timestamp(0)
+  checkOutDate    DateTime          @map("check_out_date") @db.Timestamp(0)
+  status          ReservationStatus @default(PENDING)
+  customerAmount  Int               @map("customer_amount")
+  bookingDate     DateTime          @default(now()) @map("booking_date")
+  optionalRequest String?           @db.Text
+  customerName    String?
+  customerEmail   String?
+  customerPhone   String?
+  customerCountry String?
+
+  Room   Room  @relation(fields: [roomId], references: [id])
+  roomId Int
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  CANCEL
+}
+
+model Transaction {
+  id     Int               @id @default(autoincrement())
+  Fee    Fee               @relation(fields: [feeId], references: [id])
+  status TransactionStatus @default(PENDING)
+  feeId  Int
+}
+
+model Fee {
+  id           Int           @id @default(autoincrement())
+  hostFee      Decimal       @db.Decimal(3, 2)
+  clientFee    Decimal       @db.Decimal(3, 2)
+  transactions Transaction[]
+}
+
+model OTPNumber {
+  id         Int      @id @default(autoincrement())
+  otpCode    String   @db.VarChar(20)
+  guestEmail String   @db.VarChar(191)
+  refCode    String   @db.VarChar(90)
+  expiredAt  DateTime
+  createdAt  DateTime @default(now()) @map("created_at")
+}
+
+model NearbyPlace {
+  id                Int                 @id @default(autoincrement())
+  name              String              @db.VarChar(90)
+  lat               String              @db.VarChar(90)
+  lng               String              @db.VarChar(90)
+  icon              String?
+  accomNearbyPlaces AccomNearbyPlaces[]
+}
+
+model AccomNearbyPlaces {
+  nearbyPlaceId Int
+  distance      Int
+
+  NearbyPlace     NearbyPlace   @relation(fields: [nearbyPlaceId], references: [id])
+  Accommodation   Accommodation @relation(fields: [accommodationId], references: [id])
+  accommodationId Int
+
+  @@id([nearbyPlaceId, accommodationId])
+}
+
+model Amenities {
+  AmenityType   AmenityType @relation(fields: [amenityTypeId], references: [id])
+  amenityTypeId Int
+  Room          Room        @relation(fields: [roomId], references: [id])
+  roomId        Int
+
+  @@id([amenityTypeId, roomId])
+}
+
+model AmenityType {
+  id        Int         @id @default(autoincrement())
+  name      String      @db.VarChar(191)
+  icon      String?
+  amenities Amenities[]
 }
