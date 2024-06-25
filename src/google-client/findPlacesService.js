@@ -19,6 +19,7 @@ const findPlacesService = async (address) => {
                     key: "AIzaSyBa3T_-jaozwy6c_7yKyDqjFRDuL-EJqQM",
                     location: address,
                     radius: 15000,
+                    rankby: "prominence",
                     type: type,
                 },
             }
@@ -33,11 +34,6 @@ const findPlacesService = async (address) => {
                     if (!curr.rating || curr.rating < 3.5 || curr.user_ratings_total < 50) {
                         return acc
                     }
-                    acc.push(curr)
-                    return acc
-                }, [])
-                const placeArr = filteredArr.length > 3 ? filteredArr.slice(0, 3) : filteredArr
-                const arr = placeArr.reduce((acc, curr) => {
                     const objToPush = {}
                     objToPush.lat = curr.geometry.location.lat
                     objToPush.lng = curr.geometry.location.lng
@@ -51,7 +47,8 @@ const findPlacesService = async (address) => {
                     acc.push(objToPush)
                     return acc
                 }, [])
-                place.push(...arr)
+                const placeArr = filteredArr.length > 3 ? filteredArr.slice(0, 3) : filteredArr
+                place.push(...placeArr)
             }
         }
         console.log(place)
