@@ -3,20 +3,12 @@ const client = new Client()
 
 const findPlacesService = async (address) => {
     try {
-        // const args = {
-        //     params: {
-        //         key: "AIzaSyBa3T_-jaozwy6c_7yKyDqjFRDuL-EJqQM",
-        //         location: address,
-        //         rankby: "prominence",
-        //         radius: 500,
-        //     },
-        // }
         const types = ["bar", "cafe", "bakery", "night_club", "park", "restaurant", "shopping_mall", "supermarket", "tourist_attraction"]
         const place = []
         for (let type of types) {
             const args = {
                 params: {
-                    key: "AIzaSyBa3T_-jaozwy6c_7yKyDqjFRDuL-EJqQM",
+                    key: process.env.GOOGLE_API_KEY,
                     location: address,
                     radius: 15000,
                     rankby: "prominence",
@@ -35,15 +27,12 @@ const findPlacesService = async (address) => {
                         return acc
                     }
                     const objToPush = {}
+                    objToPush.id = curr.place_id
                     objToPush.lat = curr.geometry.location.lat
                     objToPush.lng = curr.geometry.location.lng
                     objToPush.name = curr.name
                     objToPush.icon = curr.icon
-                    objToPush.icon_background_color = curr.icon_background_color
-                    objToPush.place_id = curr.place_id
-                    objToPush.type = type
-                    objToPush.rating = curr.rating
-                    objToPush.user_ratings_total = curr.user_ratings_total
+                    objToPush.iconBgClr = curr.icon_background_color
                     acc.push(objToPush)
                     return acc
                 }, [])
@@ -51,39 +40,10 @@ const findPlacesService = async (address) => {
                 place.push(...placeArr)
             }
         }
-        console.log(place)
-        console.log(place.length)
-        // const place = type.reduce((acc, curr) => {
-        //     const args = {
-        //         params: {
-        //             key: "AIzaSyBa3T_-jaozwy6c_7yKyDqjFRDuL-EJqQM",
-        //             location: address,
-        //             rankby: "prominence",
-        //             radius: 500,
-        //             type: curr,
-        //         },
-        //     }
-        //     const response = client.placesNearby(args).then((r) => r)
-        //     console.log(response)
-        //     acc.push(data.results[0].slice(0, 5))
-        //     return acc
-        // }, [])
-        // console.log(place)
-        // data.results.reduce((acc,curr) => {
-        //   const filteredObj = {}
-        //   filteredObj.name = curr.name
-        //   filteredObj.lat = curr.geometry.location.lat
-        //   filteredObj.lng = curr.geometry.location.lng
-        //   filteredObj.placeId = curr.place_id
-        //   filteredObj.
-        // }, [])
-        // console.log(response.data.results)
-        // console.log(response.data.results.length)
+        return place
     } catch (err) {
         console.log(err.data)
     }
 }
-
-findPlacesService({ lat: 12.936443424714826, lng: 100.89245815388377 })
 
 module.exports = findPlacesService

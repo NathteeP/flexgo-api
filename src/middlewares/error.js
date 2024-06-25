@@ -19,6 +19,7 @@ module.exports.errorMiddlewares = (err, req, res, _next) => {
     } else {
         res.status(httpCode["500_INTERNAL_SERVER_ERROR"])
     }
+    console.log(err)
     res.json({ message: err.message, ref: err.name })
     return
 }

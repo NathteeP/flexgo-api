@@ -234,23 +234,23 @@ model OTPNumber {
 }
 
 model NearbyPlace {
-  id                Int                 @id @default(autoincrement())
+  id                String              @id
   name              String              @db.VarChar(90)
   lat               String              @db.VarChar(90)
   lng               String              @db.VarChar(90)
   icon              String?
+  iconBgClr         String?             @db.VarChar(20)
   accomNearbyPlaces AccomNearbyPlaces[]
 }
 
 model AccomNearbyPlaces {
-  nearbyPlaceId Int
-  distance      Int
+  id            Int    @id @default(autoincrement())
+  nearbyPlaceId String
+  distance      String @db.VarChar(20)
 
   NearbyPlace     NearbyPlace   @relation(fields: [nearbyPlaceId], references: [id])
   Accommodation   Accommodation @relation(fields: [accommodationId], references: [id])
   accommodationId Int
-
-  @@id([nearbyPlaceId, accommodationId])
 }
 
 model Amenities {

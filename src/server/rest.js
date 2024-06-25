@@ -11,6 +11,7 @@ const { errorMiddlewares } = require("../middlewares/error")
 const CustomError = require("../config/error")
 const userRoute = require("../router/user")
 const accomRouter = require("../router/accom")
+const houseRulesRouter = require("../router/houseRules")
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -32,7 +33,7 @@ module.exports = function restApiServer(app) {
     })
     app.use("/user", userRoute)
     app.use("/accom", accomRouter)
-
+    app.use("/houseRules", houseRulesRouter)
     //=====================================================Throwing Zone
     app.use(notFound)
     app.use(errorMiddlewares)
