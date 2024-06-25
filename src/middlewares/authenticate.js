@@ -1,20 +1,21 @@
 const jwt = require("jsonwebtoken")
-const prisma = require("../config/prisma")
-const CustomError = require("../config/error")
+const { CustomError } = require("../config/error")
+const userService = require("../service/user")
 
 module.exports = async function authenticate(req, res, next) {
     try {
         if (!req?.headers?.authorization) throw new Error()
         const authorization = req?.headers?.authorization.startsWith("Bearer")
             ? req.headers.authorization
-            : next(new CustomError("Not found Bearer token", "InvalidToken", 400))
+            : next(new CustomError("Not found Bearer token", "InvalidToken", 401))
 
-        const token = authorization.split(" ")[1] ? authorization.split(" ")[1] : next(new CustomError("Not found Bearer token", "InvalidToken", 400))
-        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY ?? "key")
+        const accessToken = authorization.split(" ")[1] ? authorization.split(" ")[1] : next(new CustomError("Not found Bearer token", "InvalidToken", 401))
+        const payload = jwt.verify(accessToken, process.env.JWT_SECRET_KEY ?? "key")
 
-        const data = await prisma.user.findUnique({ where: { id: decoded.id }, include: { Employee: true } })
-        if (!data) next(new CustomError("Your accound has been delete", "NotFoundData", 500))
-        req.user = data
+        const user = await userService.findUserById(payload.id)
+        if (!user) next(new CustomError("User was not found", "NotFoundData", 400))
+        if (user.isActive === false) next(new CustomError("User is inactive", "UserInactive", 401))
+        req.user = user
         next()
     } catch (err) {
         next(err)

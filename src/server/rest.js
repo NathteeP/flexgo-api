@@ -8,8 +8,8 @@ const morgan = require("morgan")
 
 const { notFound } = require("../middlewares/notFound")
 const { errorMiddlewares } = require("../middlewares/error")
-const CustomError = require("../config/error")
 const userRoute = require("../router/user")
+const { CustomError } = require("../config/error")
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {

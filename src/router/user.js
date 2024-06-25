@@ -7,9 +7,11 @@ const { registerSchema, loginSchema } = require("../validators/user-schema")
 
 const userRoute = express.Router()
 
-// userRoute.get("/:user_id", userController.getUser)
+userRoute.get("/:user_id", userController.getUser)
 userRoute.post("/register", userValidator(registerSchema),userController.register)
 userRoute.post("/login", userValidator(loginSchema), userController.login)
+userRoute.patch("/:user_id", authenticate,userController.editUser)
+userRoute.delete("/:user_id", authenticate,userController.deleteUser)
 
 
 module.exports = userRoute

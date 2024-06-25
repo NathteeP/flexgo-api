@@ -21,16 +21,21 @@ enum Gender {
 
 model User {
   id          Int       @id @default(autoincrement())
-  username    String?   @db.VarChar(90)
+  username    String?   @unique @db.VarChar(90)
   password    String?   @db.VarChar(90)
   email       String    @unique @db.VarChar(100)
   fullName    String?   @map("full_name")
   phoneNumber String?   @unique @map("phone_number") @db.VarChar(10)
-  birthDate   DateTime? @map("birth_date") @db.Date
+  birthDate   String?   @map("birth_date") @db.VarChar(10)
   gender      Gender?
+  nationality String?   @db.VarChar(50)
   role        Role      @default(CLIENT)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
+  isActive    Boolean   @map("is_active") @default(true)
+  address     String?   
+  description String?   @db.Text
+
 
   wishList     WishList[]
   userPhoto    UserPhoto[]

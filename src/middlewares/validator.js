@@ -1,8 +1,10 @@
+const { CustomError } = require("../config/error")
+
 exports.userValidator = (schema) => {
     return (req,res,next) =>  {
         const {value, error} = schema.validate(req.body)
-        if (error) new CustomError("User already has an account", "UserAlreadyExisted", 400)
-            req.input = value
+        if (error) throw new CustomError(error.details[0].message, "ValidationError", 400)
+            req.body = value
             next()
     }
     }
