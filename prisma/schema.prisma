@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -25,28 +19,32 @@ enum Gender {
 }
 
 model User {
-  id          Int       @id @default(autoincrement())
-  username    String?   @db.VarChar(90)
-  password    String?   @db.VarChar(90)
-  email       String    @unique @db.VarChar(100)
-  fullName    String?   @map("full_name")
-  phoneNumber String?   @unique @map("phone_number") @db.VarChar(10)
-  birthDate   DateTime? @map("birth_date") @db.Date
+  id          Int      @id @default(autoincrement())
+  username    String?  @unique @db.VarChar(90)
+  password    String?  @db.VarChar(90)
+  email       String   @unique @db.VarChar(100)
+  fullName    String?  @map("full_name")
+  phoneNumber String?  @unique @map("phone_number") @db.VarChar(10)
+  birthDate   String?  @map("birth_date") @db.VarChar(10)
   gender      Gender?
-  role        Role      @default(CLIENT)
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  nationality String?  @db.VarChar(50)
+  role        Role     @default(CLIENT)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  isActive    Boolean  @default(true) @map("is_active")
+  address     String?
+  description String?  @db.Text
 
-  wishList     WishList[]
-  userPhoto    UserPhoto[]
-  accomodation Accommodation[]
-  reservation  Reservation[]
+  wishList    WishList[]
+  userPhoto   UserPhoto[]
+  accom       Accom[]
+  reservation Reservation[]
 }
 
 model UserPhoto {
   id        Int    @id @default(autoincrement())
   imagePath String @map("image_path") @db.VarChar(191)
-  User      User   @relation(fields: [userId], references: [id])
+  user      User   @relation(fields: [userId], references: [id])
   userId    Int
 
   @@map("user_photo")
@@ -55,7 +53,7 @@ model UserPhoto {
 model WishList {
   id Int @id @default(autoincrement())
 
-  User   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
   userId Int
   Room   Room @relation(fields: [roomId], references: [id])
   roomId Int
@@ -74,7 +72,7 @@ enum Accom_status {
   UNAPPROVED
 }
 
-model Accommodation {
+model Accom {
   id               Int          @id @default(autoincrement())
   name             String       @db.VarChar(191)
   lat              String       @unique @db.VarChar(100)
@@ -89,7 +87,7 @@ model Accommodation {
   status           Accom_status @default(UNAPPROVED)
   description      String       @db.Text
 
-  User       User?       @relation(fields: [userId], references: [id])
+  user       User?       @relation(fields: [userId], references: [id])
   userId     Int?
   HouseRules HouseRules?
 
@@ -99,10 +97,10 @@ model Accommodation {
 }
 
 model AccomPhoto {
-  id              Int            @id @default(autoincrement())
-  imagePath       String         @db.VarChar(191)
-  Accommodation   Accommodation? @relation(fields: [accommodationId], references: [id])
-  accommodationId Int?
+  id        Int    @id @default(autoincrement())
+  imagePath String @db.VarChar(191)
+  accom     Accom? @relation(fields: [accomId], references: [id])
+  accomId   Int?
 }
 
 enum CancelPolicy {
@@ -112,14 +110,14 @@ enum CancelPolicy {
 }
 
 model HouseRules {
-  id           Int           @id @default(autoincrement())
-  checkIn      String        @db.Text
-  checkOut     String        @db.Text
-  petsRule     String        @db.Text
-  ageRule      String        @db.Text
+  id           Int          @id @default(autoincrement())
+  checkIn      String       @db.Text
+  checkOut     String       @db.Text
+  petsRule     String       @db.Text
+  ageRule      String       @db.Text
   cancelPolicy CancelPolicy
-  accom        Accommodation @relation(fields: [accomId], references: [id])
-  accomId      Int           @unique
+  accom        Accom        @relation(fields: [accomId], references: [id])
+  accomId      Int          @unique
 }
 
 enum RoomStatus {
@@ -128,16 +126,16 @@ enum RoomStatus {
 }
 
 model Room {
-  id              Int            @id @default(autoincrement())
-  name            String         @db.VarChar(191)
-  roomType        String         @db.VarChar(90)
-  bedRoom         Int
-  bathRoom        Int
-  size            Int
-  capacity        Int
-  status          RoomStatus     @default(ACTIVE)
-  Accommodation   Accommodation? @relation(fields: [accommodationId], references: [id])
-  accommodationId Int?
+  id       Int        @id @default(autoincrement())
+  name     String     @db.VarChar(191)
+  roomType String     @db.VarChar(90)
+  bedRoom  Int
+  bathRoom Int
+  size     Int
+  capacity Int
+  status   RoomStatus @default(ACTIVE)
+  accom    Accom?     @relation(fields: [accomId], references: [id])
+  accomId  Int?
 
   reservation Reservation[]
   wishList    WishList[]
@@ -153,9 +151,9 @@ model BedType {
 }
 
 model RoomBed {
-  Room      Room    @relation(fields: [roomId], references: [id])
+  room      Room    @relation(fields: [roomId], references: [id])
   roomId    Int
-  BedType   BedType @relation(fields: [bedTypeId], references: [id])
+  bedType   BedType @relation(fields: [bedTypeId], references: [id])
   bedTypeId Int
   amount    Int
 
@@ -198,9 +196,9 @@ model Reservation {
   customerPhone   String?
   customerCountry String?
 
-  Room   Room  @relation(fields: [roomId], references: [id])
+  room   Room  @relation(fields: [roomId], references: [id])
   roomId Int
-  User   User? @relation(fields: [userId], references: [id])
+  user   User? @relation(fields: [userId], references: [id])
   userId Int?
 }
 
@@ -212,7 +210,7 @@ enum TransactionStatus {
 
 model Transaction {
   id     Int               @id @default(autoincrement())
-  Fee    Fee               @relation(fields: [feeId], references: [id])
+  fee    Fee               @relation(fields: [feeId], references: [id])
   status TransactionStatus @default(PENDING)
   feeId  Int
 }
@@ -248,15 +246,15 @@ model AccomNearbyPlaces {
   nearbyPlaceId String
   distance      String @db.VarChar(20)
 
-  NearbyPlace     NearbyPlace   @relation(fields: [nearbyPlaceId], references: [id])
-  Accommodation   Accommodation @relation(fields: [accommodationId], references: [id])
-  accommodationId Int
+  nearbyPlace NearbyPlace @relation(fields: [nearbyPlaceId], references: [id])
+  accom       Accom       @relation(fields: [accomId], references: [id])
+  accomId     Int
 }
 
 model Amenities {
-  AmenityType   AmenityType @relation(fields: [amenityTypeId], references: [id])
+  amenityType   AmenityType @relation(fields: [amenityTypeId], references: [id])
   amenityTypeId Int
-  Room          Room        @relation(fields: [roomId], references: [id])
+  room          Room        @relation(fields: [roomId], references: [id])
   roomId        Int
 
   @@id([amenityTypeId, roomId])

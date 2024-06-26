@@ -1,87 +1,94 @@
-const repo = require("../repository")
-const utils = require("../utils")
 const { CustomError } = require("../config/error")
-const { Role } = require("@prisma/client")
+const { role } = require("../constant/enum")
+const userService = require("../service/user")
+const { hashed, compare } = require("../utils/bcrypt")
+const { sign } = require("../utils/jwt")
 
-module.exports.getAll = async (req, res, next) => {
-    try {
-        const users = await repo.user.getAll()
-        res.status(200).json({ users })
-    } catch (err) {
-        next(err)
-    }
-    return
-}
-module.exports.get = async (req, res, next) => {
-    try {
-        const { id } = req.params
-        const user = await repo.user.get({ id })
-        res.status(200).json({ user })
-    } catch (err) {
-        next(err)
-    }
-    return
-}
-module.exports.login = async (req, res, next) => {
-    try {
-        const { username, password } = req.body
-        // GET username from database
-        const user = await repo.user.get({ username })
-        if (!user) throw new CustomError("username or password is wrong", "WRONG_INPUT", 400)
+const userController = {}
 
-        // COMPARE password with database
-        const result = await utils.bcrypt.compare(password, user.password)
-        if (!result) throw new CustomError("username or password is wrong", "WRONG_INPUT", 400)
+userController.getUser = async (req,res,next) => {
+    try{
+        const response = await userService.findUserById(+req.params.user_id)
+        if (!response) throw new CustomError('userId does not exist','UserNotFound',404)
+        res.status(200).json(response)
+    } catch (err) {
+        next(err)
+    }
+}
 
-        // DELETE KEY of password from user data
-        delete user.password
-        // SIGN token from user data
-        const token = utils.jwt.sign(user)
-        res.status(200).json({ token })
-    } catch (err) {
-        next(err)
-    }
-    return
-}
-module.exports.register = async (req, res, next) => {
-    try {
-        const { username, password, firstName, lastName } = req.body
-        let role = Role.USER
-        if (req.body.role != Role.ADMIN) role = Role.ADMIN
-        // HASHED PASSWORD
-        const hashed = await utils.bcrypt.hashed(password)
-        // CREATE user to database
-        const user = await repo.user.create({ username, password: hashed, firstName, lastName, role })
-        // DELETE KEY of password from user data
-        delete user.password
-        // SIGN token from user data
-        const token = utils.jwt.sign(user)
 
-        res.status(200).json({ token })
-    } catch (err) {
-        next(err)
-    }
-    return
-}
-module.exports.update = async (req, res, next) => {
+userController.register = async (req,res,next) => {
     try {
-        const { id } = req.params
-        const { firstName, lastName } = req.body
-        const user = await repo.user.update({ id }, { firstName, lastName })
+        const data = req.body
+        const { usernameExists, emailExists, phoneNumberExists }
+         = await userService.findAlreadyExistedUser(data.username, data.email, data.phoneNumber)
+        if (usernameExists || emailExists || phoneNumberExists) {
+            const existFields = []
+            if (usernameExists) existFields.push('username')
+            if (emailExists) existFields.push('email')
+            if (phoneNumberExists) existFields.push('phoneNumber')
+        
 
-        res.status(200).json({ user })
+            const errorMessage = `The following fields are already in use: ${existFields.join(', ')} `
+            res.status(400).json({message:errorMessage, field:existFields})
+            }
+
+        data.password = await hashed(data.password)
+
+        const response = await userService.createUser(data)
+        delete response.password
+        res.status(201).json(response)
     } catch (err) {
         next(err)
     }
-    return
+
 }
-module.exports.delete = async (req, res, next) => {
+
+userController.login = async (req,res,next) => {
     try {
-        const { id } = req.params
-        await repo.user.delete({ id })
-        res.status(200)
+        const data = req.body
+        const existUser = await userService.findUserByUsername(data.username)
+
+        if(!existUser) throw new CustomError('User did not exist', "ValidationError",400)
+
+        const isMatch = await compare(data.password, existUser.password)
+
+        if (!isMatch) throw new CustomError ('Wrong username or password', "ValidationError", 400)
+        if (existUser.isActive === false) throw new CustomError("User is inactive", "UserInactive", 401)
+
+        const accessToken = sign({id: existUser.id})
+        const {id, email, fullName, phoneNumber} = existUser
+        const responseBody = {id, email, fullName, phoneNumber, accessToken}
+
+        res.status(200).json(responseBody)
+        
+
     } catch (err) {
         next(err)
     }
-    return
 }
+
+userController.editUser = async (req,res,next) => {
+    try {
+        const data = req.body
+        //already validated -- req.user is exist in db
+        //only need to check if data.id === req.user.id
+        if (req.user.id !== data.id) throw new CustomError('UserId does not match', "ValidationError", 400)
+        const response = await userService.updateUser(data.id,data)
+        delete response.password
+        res.status(200).json(response)
+    } catch (err) {
+        next(err)
+    }
+}
+
+userController.deleteUser = async (req,res,next) => {
+    try {
+        
+        await userService.deleteUser(+req.params.user_id)
+        res.status(200).json({message: 'Delete successfully'})
+    } catch (err) {
+        next(err)
+    }
+}
+module.exports = userController

@@ -1,15 +1,18 @@
 const express = require("express")
 
-const c = require("../controller")
 const authenticate = require("../middlewares/authenticate")
+const userController = require("../controller/user")
+const { userValidator } = require("../middlewares/validator")
+const { registerSchema, loginSchema } = require("../validators/user-schema")
+const adminAuthenticate = require("../middlewares/admin-authenticate")
 
 const userRoute = express.Router()
 
-userRoute.get("/", c.user.getAll)
-userRoute.get("/:id", c.user.get)
-userRoute.post("/register", c.user.register)
-userRoute.post("/login", c.user.login)
-userRoute.put("/:id", c.user.update)
-userRoute.delete("/:id", authenticate, c.user.delete)
+userRoute.get("/:user_id", userController.getUser)
+userRoute.post("/register", userValidator(registerSchema),userController.register)
+userRoute.post("/login", userValidator(loginSchema), userController.login)
+userRoute.patch("/:user_id", authenticate,userController.editUser)
+userRoute.delete("/:user_id", authenticate, adminAuthenticate, userController.deleteUser)
+
 
 module.exports = userRoute
