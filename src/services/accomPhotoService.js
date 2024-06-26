@@ -5,3 +5,5 @@ accomPhotoService.uploadPhoto = (data) =>
     prisma.accomPhoto.createMany({
         data,
     })
+
+module.exports = accomPhotoService
