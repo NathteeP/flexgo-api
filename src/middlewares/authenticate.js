@@ -5,12 +5,14 @@ const { role } = require("../constant/enum")
 
 module.exports = async function authenticate(req, res, next) {
     try {
-        if (!req?.headers?.authorization) throw new Error('Token not found')
+        if (!req?.headers?.authorization) throw new Error("Token not found")
         const authorization = req?.headers?.authorization.startsWith("Bearer")
             ? req.headers.authorization
             : next(new CustomError("Not found Bearer token", "InvalidToken", 401))
 
-        const accessToken = authorization.split(" ")[1] ? authorization.split(" ")[1] : next(new CustomError("Not found Bearer token", "InvalidToken", 401))
+        const accessToken = authorization.split(" ")[1]
+            ? authorization.split(" ")[1]
+            : next(new CustomError("Not found Bearer token", "InvalidToken", 401))
         const payload = jwt.verify(accessToken, process.env.JWT_SECRET_KEY ?? "key")
 
         const user = await userService.findUserById(payload.id)
@@ -22,4 +24,3 @@ module.exports = async function authenticate(req, res, next) {
         next(err)
     }
 }
-

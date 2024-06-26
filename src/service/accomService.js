@@ -4,7 +4,7 @@ const accomNearbyService = require("./accomNearbyService")
 const accomService = {}
 
 accomService.findUserIdByAccomId = (id) =>
-    prisma.accommodation.findUnique({
+    prisma.accom.findUnique({
         where: {
             id,
         },
@@ -14,7 +14,7 @@ accomService.findUserIdByAccomId = (id) =>
     })
 
 accomService.findAccomByAccomId = (id) =>
-    prisma.accommodation.findUnique({
+    prisma.accom.findUnique({
         where: { id },
     })
 
@@ -24,17 +24,20 @@ accomService.createAccomTx = (accom, nearByPlaceId) =>
             ...accom,
         })
         const accomNearby = nearByPlaceId.map((item) => {
-            item.accommodationId = response.id
+            item.accomId = response.id
             return item
         })
         const result = await accomNearbyService.createMany(accomNearby)
         return { result, response }
     })
 
-accomService.createAccom = (data) => prisma.accommodation.create({ data })
+accomService.createAccom = (data) =>
+    prisma.accom.create({
+        data,
+    })
 
 accomService.findAccomByLatLng = (lat, lng) =>
-    prisma.accommodation.findFirst({
+    prisma.accom.findFirst({
         where: {
             lat: lat,
             lng: lng,
@@ -42,7 +45,7 @@ accomService.findAccomByLatLng = (lat, lng) =>
     })
 
 accomService.findAccomByAddress = (address) =>
-    prisma.accommodation.findFirst({
+    prisma.accom.findFirst({
         where: { address },
     })
 

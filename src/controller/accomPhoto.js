@@ -2,12 +2,14 @@ const { CustomError } = require("../config/error")
 const asyncWrapper = require("../utils/asyncWrapper")
 const { cloudinaryUpload } = require("../utils/cloudinaryUpload")
 const cloudinary = require("../config/cloudinary")
-const accomPhotoService = require("../services/accomPhotoService")
+const accomPhotoService = require("../service/accomPhotoService")
 const fs = require("fs/promises")
+const accomService = require("../service/accomService")
 const accomPhotoController = {}
 
 accomPhotoController.validateUser = asyncWrapper(async (req, res, next) => {
-    // if (!req.body.accomId || isNaN(+req.body.accomId)) return next(new CustomError("Invalid information", "InvalidInfo", 400))
+    const user = await accomService.findUserIdByAccomId(+req.body.accomId)
+    if (!user || user.userId !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
     next()
 })
 
@@ -22,7 +24,7 @@ accomPhotoController.uploadPhoto = async (req, res, next) => {
         const uploadedPhotoArr = await Promise.allSettled(result)
         const data = uploadedPhotoArr.reduce((acc, curr) => {
             const objToPush = {}
-            objToPush.accommodationId = +req.body.accomId
+            objToPush.accomId = +req.body.accomId
             objToPush.imagePath = curr.value.secure_url
             acc.push(objToPush)
             return acc
@@ -33,9 +35,7 @@ accomPhotoController.uploadPhoto = async (req, res, next) => {
         next(err)
     } finally {
         for (let image of req.files) {
-            fs.unlink(image.filename, (err) => {
-                next(err)
-            })
+            fs.unlink(image.path)
         }
     }
 }

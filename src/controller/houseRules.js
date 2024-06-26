@@ -1,6 +1,6 @@
 const { CustomError } = require("../config/error")
-const accomService = require("../services/accomService")
-const houseRulesService = require("../services/houseRulesService")
+const accomService = require("../service/accomService")
+const houseRulesService = require("../service/houseRulesService")
 const asyncWrapper = require("../utils/asyncWrapper")
 
 const houseRulesController = {}
@@ -13,7 +13,7 @@ houseRulesController.createRules = asyncWrapper(async (req, res, next) => {
 
     const isAccomExists = await accomService.findAccomByAccomId(req.body.accomId)
     if (!isAccomExists) return next(new CustomError("Accommodation doesn't exists", "InvalidAccom", 400))
-    // if (isAccomExists.userId !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
+    if (isAccomExists.userId !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
 
     const response = await houseRulesService.createRule(req.body)
     res.status(201).json(response)
@@ -22,7 +22,6 @@ houseRulesController.createRules = asyncWrapper(async (req, res, next) => {
 houseRulesController.findHouseRules = asyncWrapper(async (req, res, next) => {
     const isAccomExists = await accomService.findAccomByAccomId(+req.params.accom_id)
     if (!isAccomExists) return next(new CustomError("Accommodation doesn't exists", "InvalidAccom", 400))
-    // if (isAccomExists.userId !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
     const response = await houseRulesService.getHouseRulesByAccomId(+req.params.accom_id)
     res.status(200).json(response)
 })
@@ -30,13 +29,10 @@ houseRulesController.findHouseRules = asyncWrapper(async (req, res, next) => {
 houseRulesController.editHouseRules = asyncWrapper(async (req, res, next) => {
     if (!req.params.houserules_id || !req.body.accomId) return next(new CustomError("Please provide ID for editing", "MissingInfo", 400))
     if (!req.body) return next(new CustomError("Please provide information for editing.", "EmpytyInfo", 400))
-    // for (let key in req.body) {
-    //     if (!req.body[key] && key !== "accomId") return next(new CustomError("Invalid information", "InvalidInfo", 400))
-    // }
     const houseRule = await houseRulesService.findHouseRulesById(+req.params.houserules_id)
     if (!houseRule || houseRule.accomId !== req.body.accomId) return next(new CustomError("This house_rules doesn't exists", "NonExistsData", 400))
-    // const user = await accomService.findUserIdByAccomId(houseRule.accomId)
-    // if (user.id !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
+    const user = await accomService.findUserIdByAccomId(houseRule.accomId)
+    if (user.userId !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
     const response = await houseRulesService.editHouseRules(req.body, houseRule.id)
     res.status(200).json(response)
 })

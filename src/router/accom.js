@@ -1,11 +1,9 @@
 const express = require("express")
 const accomController = require("../controller/accom")
 const authenticate = require("../middlewares/authenticate")
-const { amenities, accomNearbyPlaces } = require("../models/prisma")
-const upload = require("../middlewares/upload")
 const accomRouter = express.Router()
 
-accomRouter.post("/create", accomController.verifyInfo, accomController.createAccom)
+accomRouter.post("/create", authenticate, accomController.verifyInfo, accomController.createAccom)
 // accomRouter.post("/create/photos", upload.fields([{ name: "accommodation", maxCount: 5 }]))
 // GET All accom based on user locationrr
 // post user lat lng ====> [{accom}] -->

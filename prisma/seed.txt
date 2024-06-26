@@ -1,0 +1,400 @@
+const user = {
+    data: [
+        {
+            "username": "john123",
+            "email": "John@mail.com",
+            "password": "abcd1234",
+            "fullName": "John Doe",
+            "phoneNumber": "0112345671",
+        },
+        {
+            "username": "john124",
+            "email": "john12@mail.com",
+            "password": "abcd1234",
+            "fullName": "John Dim",
+            "phoneNumber": "0123456712",
+        },
+        {
+            "username": "jack123",
+            "email": "Jack@mail.com",
+            "password": "abcd1234",
+            "fullName": "Jack Die",
+            "phoneNumber": "0112345673",
+        },
+        {
+            "username": "abby1243",
+            "email": "abbie@mail.com",
+            "password": "abcd1234",
+            "fullName": "Abby Brown",
+            "phoneNumber": "0112345121",
+        },
+        {
+            "username": "bob12321",
+            "email": "Bob@mail.com",
+            "password": "abcd1234",
+            "fullName": "Bobby Carter",
+            "phoneNumber": "0112341271",
+        },
+        {
+            "username": "cathy12321",
+            "email": "cathy@mail.com",
+            "password": "abcd1234",
+            "fullName": "Catherine Carline",
+            "phoneNumber": "0112121271",
+        },
+        {
+            "username": "dim12321",
+            "email": "Dim@mail.com",
+            "password": "abcd1234",
+            "fullName": "Dimon Long",
+            "phoneNumber": "0258341271",
+        },
+    ],
+}
+
+## Seed for accomnearbyplaces 
+nearbyPlace = [
+  {
+    nearbyPlaceId: 'ChIJF4p8eRSWAjERr9Ix4ELDf3U',
+    distance: '2.376',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJyajlDOO9AjERQbsuRkMHXCs',
+    distance: '2.560',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJ38OdPWuWAjERa1lfgLvO2S8',
+    distance: '2.957',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJ0ZBzXf69AjERbICrtybzanU',
+    distance: '1.248',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJgRxDnf6VAjER7P53hSMBVhk',
+    distance: '0.337',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJ38OdPWuWAjERa1lfgLvO2S8',
+    distance: '2.957',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJ_aQJ5vqVAjERMXY6jcMMXpk',
+    distance: '0.770',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJZ0VaiwyWAjERVM1KIDaCnNA',
+    distance: '1.628',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJFS4Q6hGWAjERr3Y47sU58EU',
+    distance: '1.754',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJzaqrmxOWAjEREN8s-7nF72I',
+    distance: '2.264',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJEQG78BSWAjERebO4_lKJrr0',
+    distance: '2.637',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJM9ybqwaWAjER8E9V4FmV8mk',
+    distance: '0.947',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJpXKj9wG-AjERM2ozMfKhylI',
+    distance: '1.043',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJhw7QJMy_AjERnXkuiEXk_64',
+    distance: '5.793',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJF4p8eRSWAjERr9Ix4ELDf3U',
+    distance: '2.376',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJXXqUfQGWAjER2nCUzFINqBo',
+    distance: '0.669',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJyajlDOO9AjERQbsuRkMHXCs',
+    distance: '2.560',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJdUmnphKWAjERhsMkkFrBk30',
+    distance: '2.030',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJaXf06hGWAjERbFIOajaQZV4',
+    distance: '1.746',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJCYMQjg-WAjEROQ-Y60w7dDc',
+    distance: '1.220',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJT3LoxGCWAjERqauSMdCGvBY',
+    distance: '4.283',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJeZjFRA2WAjERIcp3PUv4kbU',
+    distance: '1.977',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJT1aPldaVAjER_Q_rjdC1LS8',
+    distance: '3.348',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJ6cHTAxOWAjERuNNrPj0S_To',
+    distance: '2.078',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJdUmnphKWAjERhsMkkFrBk30',
+    distance: '2.030',
+    accomId: 1
+  },
+  {
+    nearbyPlaceId: 'ChIJGyhn0uCe4jARKsHCvBXG7Dw',
+    distance: '2.743',
+    accomId: 1
+  }
+]
+
+## Seed for nearbyplaces 
+[
+        {
+          id: "ChIJF4p8eRSWAjERr9Ix4ELDf3U",
+          lat: 12.9261459,
+          lng: 100.8732129,
+          name: "P72 Hotel Walking Street Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",   
+          iconBgClr: "#909CE1"
+        },
+        {
+          id: "ChIJyajlDOO9AjERQbsuRkMHXCs",
+          lat: 12.9585512,
+          lng: 100.8860123,
+          name: "Centara Grand Mirage Beach Resort Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",   
+          iconBgClr: "#909CE1"
+        },
+        {
+          id: "ChIJ38OdPWuWAjERa1lfgLvO2S8",
+          lat: 12.9212656,
+          lng: 100.8700068,
+          name: "Signature Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",   
+          iconBgClr: "#909CE1"
+        },
+        {
+          id: "ChIJ0ZBzXf69AjERbICrtybzanU",
+          lat: 12.928384,
+          lng: 100.884384,
+          name: "18 Coins Cafe & Hostel",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",   
+          iconBgClr: "#909CE1"
+        },
+        {
+          id: "ChIJgRxDnf6VAjER7P53hSMBVhk",
+          lat: 12.939067,
+          lng: 100.893915,
+          name: "The Mooks Residence",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",   
+          iconBgClr: "#909CE1"
+        },
+        {
+          id: "ChIJ38OdPWuWAjERa1lfgLvO2S8",
+          lat: 12.9212656,
+          lng: 100.8700068,
+          name: "Signature Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",   
+          iconBgClr: "#909CE1"
+        },
+        {
+          id: "ChIJ_aQJ5vqVAjERMXY6jcMMXpk",
+          lat: 12.9334473,
+          lng: 100.8988807,
+          name: "LOAF BAKERS & BREWERS",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+          iconBgClr: "#FF9E67"
+        },
+        {
+          id: "ChIJZ0VaiwyWAjERVM1KIDaCnNA",
+          lat: 12.924797,
+          lng: 100.8832882,
+          name: "Tamar Bakery and Restaurant",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+          iconBgClr: "#FF9E67"
+        },
+        {
+          id: "ChIJFS4Q6hGWAjERr3Y47sU58EU",
+          lat: 12.9297222,
+          lng: 100.8777778,
+          name: "Starbucks",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/cafe-71.png",      
+          iconBgClr: "#FF9E67"
+        },
+        {
+          id: "ChIJzaqrmxOWAjEREN8s-7nF72I",
+          lat: 12.9262017,
+          lng: 100.8743623,
+          name: "The Dollhouse",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/bar-71.png",       
+          iconBgClr: "#FF9E67"
+        },
+        {
+          id: "ChIJEQG78BSWAjERebO4_lKJrr0",
+          lat: 12.9252868,
+          lng: 100.8709524,
+          name: "Tony’s by Nashaa Club",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/bar-71.png",       
+          iconBgClr: "#FF9E67"
+        },
+        {
+          id: "ChIJM9ybqwaWAjER8E9V4FmV8mk",
+          lat: 12.9393628,
+          lng: 100.8842562,
+          name: "Hard Rock Cafe Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/bar-71.png",       
+          iconBgClr: "#FF9E67"
+        },
+        {
+          id: "ChIJpXKj9wG-AjERM2ozMfKhylI",
+          lat: 12.945218,
+          lng: 100.8957089,
+          name: "[Office] Elephant Jungle Sanctuary Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png",
+          iconBgClr: "#7B9EB0"
+        },
+        {
+          id: "ChIJhw7QJMy_AjERnXkuiEXk_64",
+          lat: 12.9573965,
+          lng: 100.9413683,
+          name: "The Million Years Stone Park & Pattaya Crocodile Farm",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/park-71.png",      
+          iconBgClr: "#4DB546"
+        },
+        {
+          id: "ChIJF4p8eRSWAjERr9Ix4ELDf3U",
+          lat: 12.9261459,
+          lng: 100.8732129,
+          name: "P72 Hotel Walking Street Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",   
+          iconBgClr: "#909CE1"
+        },
+        {
+          id: "ChIJXXqUfQGWAjER2nCUzFINqBo",
+          lat: 12.9412129,
+          lng: 100.888749,
+          name: "Centara Pattaya Hotel",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",   
+          iconBgClr: "#909CE1"
+        },
+        {
+          id: "ChIJyajlDOO9AjERQbsuRkMHXCs",
+          lat: 12.9585512,
+          lng: 100.8860123,
+          name: "Centara Grand Mirage Beach Resort Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",   
+          iconBgClr: "#909CE1"
+        },
+        {
+          id: "ChIJdUmnphKWAjERhsMkkFrBk30",
+          lat: 12.9239254,
+          lng: 100.8787692,
+          name: "Tukcom South Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",  
+          iconBgClr: "#4B96F3"
+        },
+        {
+          id: "ChIJaXf06hGWAjERbFIOajaQZV4",
+          lat: 12.9293064,
+          lng: 100.8780717,
+          name: "Royal Garden Plaza",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",  
+          iconBgClr: "#4B96F3"
+        },
+        {
+          id: "ChIJCYMQjg-WAjEROQ-Y60w7dDc",
+          lat: 12.9323258,
+          lng: 100.8819892,
+          name: "Tipp Plaza",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",  
+          iconBgClr: "#4B96F3"
+        },
+        {
+          id: "ChIJT3LoxGCWAjERqauSMdCGvBY",
+          lat: 12.90492,
+          lng: 100.8696753,
+          name: "Food Mart",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",  
+          iconBgClr: "#4B96F3"
+        },
+        {
+          id: "ChIJeZjFRA2WAjERIcp3PUv4kbU",
+          lat: 12.9235754,
+          lng: 100.8798099,
+          name: "Friendship Supermarket",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",  
+          iconBgClr: "#4B96F3"
+        },
+        {
+          id: "ChIJT1aPldaVAjER_Q_rjdC1LS8",
+          lat: 12.9063834,
+          lng: 100.8949506,
+          name: "Lotus's South Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",  
+          iconBgClr: "#4B96F3"
+        },
+        {
+          id: "ChIJ6cHTAxOWAjERuNNrPj0S_To",
+          lat: 12.9259664,
+          lng: 100.8765398,
+          name: "Wat Chai Mongkhon",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/worship_dharma-71.png",
+          iconBgClr: "#7B9EB0"
+        },
+        {
+          id: "ChIJdUmnphKWAjERhsMkkFrBk30",
+          lat: 12.9239254,
+          lng: 100.8787692,
+          name: "Tukcom South Pattaya",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",  
+          iconBgClr: "#4B96F3"
+        },
+        {
+          id: "ChIJGyhn0uCe4jARKsHCvBXG7Dw",
+          lat: 12.9551857,
+          lng: 100.9088535,
+          name: "Mini Siam",
+          icon: "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png",
+          iconBgClr: "#13B5C7"
+        }
+],
+
