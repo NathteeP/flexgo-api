@@ -1,10 +1,11 @@
 const jwt = require("jsonwebtoken")
 const { CustomError } = require("../config/error")
 const userService = require("../service/user")
+const { role } = require("../constant/enum")
 
 module.exports = async function authenticate(req, res, next) {
     try {
-        if (!req?.headers?.authorization) throw new Error()
+        if (!req?.headers?.authorization) throw new Error('Token not found')
         const authorization = req?.headers?.authorization.startsWith("Bearer")
             ? req.headers.authorization
             : next(new CustomError("Not found Bearer token", "InvalidToken", 401))
@@ -21,3 +22,4 @@ module.exports = async function authenticate(req, res, next) {
         next(err)
     }
 }
+

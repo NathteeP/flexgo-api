@@ -30,7 +30,7 @@ userController.register = async (req,res,next) => {
         
 
             const errorMessage = `The following fields are already in use: ${existFields.join(', ')} `
-            throw new CustomError(errorMessage, "ValidationError", 400)
+            res.status(400).json({message:errorMessage, field:existFields})
             }
 
         data.password = await hashed(data.password)
@@ -84,7 +84,6 @@ userController.editUser = async (req,res,next) => {
 
 userController.deleteUser = async (req,res,next) => {
     try {
-        if (req.user.role !== role.ADMIN) throw new CustomError ('Cannot delete user', "Unauthenticated",401)
         
         await userService.deleteUser(+req.params.user_id)
         res.status(200).json({message: 'Delete successfully'})
