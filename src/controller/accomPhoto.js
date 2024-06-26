@@ -3,7 +3,7 @@ const asyncWrapper = require("../utils/asyncWrapper")
 const { cloudinaryUpload } = require("../utils/cloudinaryUpload")
 const cloudinary = require("../config/cloudinary")
 const accomPhotoService = require("../services/accomPhotoService")
-
+const fs = require("fs/promises")
 const accomPhotoController = {}
 
 accomPhotoController.validateUser = asyncWrapper(async (req, res, next) => {
@@ -11,23 +11,33 @@ accomPhotoController.validateUser = asyncWrapper(async (req, res, next) => {
     next()
 })
 
-accomPhotoController.uploadPhoto = asyncWrapper(async (req, res, next) => {
-    if (!req.files) return next(new CustomError("No data sent", "NoData", 400))
-    const result = req.files.reduce((acc, curr) => {
-        const response = cloudinary.uploader.upload(curr.path)
-        acc.push(response)
-        return acc
-    }, [])
-    const uploadedPhotoArr = await Promise.allSettled(result)
-    const data = uploadedPhotoArr.reduce((acc, curr) => {
-        const objToPush = {}
-        objToPush.accommodationId = +req.body.accomId
-        objToPush.imagePath = curr.value.secure_url
-        acc.push(objToPush)
-        return acc
-    }, [])
-    const response = await accomPhotoService.uploadPhoto(data)
-    res.status(201).json(response)
-})
+accomPhotoController.uploadPhoto = async (req, res, next) => {
+    try {
+        if (!req.files) return next(new CustomError("No data sent", "NoData", 400))
+        const result = req.files.reduce((acc, curr) => {
+            const response = cloudinary.uploader.upload(curr.path)
+            acc.push(response)
+            return acc
+        }, [])
+        const uploadedPhotoArr = await Promise.allSettled(result)
+        const data = uploadedPhotoArr.reduce((acc, curr) => {
+            const objToPush = {}
+            objToPush.accommodationId = +req.body.accomId
+            objToPush.imagePath = curr.value.secure_url
+            acc.push(objToPush)
+            return acc
+        }, [])
+        const response = await accomPhotoService.uploadPhoto(data)
+        res.status(201).json(response)
+    } catch (err) {
+        next(err)
+    } finally {
+        for (let image of req.files) {
+            fs.unlink(image.filename, (err) => {
+                next(err)
+            })
+        }
+    }
+}
 
 module.exports = accomPhotoController
