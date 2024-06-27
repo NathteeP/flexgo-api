@@ -1,5 +1,5 @@
 const express = require("express")
-const accomPhotoController = require("../controller/accomPhoto")
+const accomPhotoController = require("../controller/photo/accomPhoto")
 const upload = require("../middlewares/upload")
 const authenticate = require("../middlewares/authenticate")
 const accomPhotoRouter = express.Router()

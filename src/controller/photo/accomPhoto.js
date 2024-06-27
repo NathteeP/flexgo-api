@@ -1,10 +1,10 @@
-const { CustomError } = require("../config/error")
-const asyncWrapper = require("../utils/asyncWrapper")
-const { cloudinaryUpload } = require("../utils/cloudinaryUpload")
-const cloudinary = require("../config/cloudinary")
-const accomPhotoService = require("../service/accomPhotoService")
+const { CustomError } = require("../../config/error")
+const asyncWrapper = require("../../utils/asyncWrapper")
+const { cloudinaryUpload } = require("../../utils/cloudinaryUpload")
+const cloudinary = require("../../config/cloudinary")
+const accomPhotoService = require("../../service/photo-service/accomPhotoService")
 const fs = require("fs/promises")
-const accomService = require("../service/accomService")
+const accomService = require("../../service/accomService")
 const accomPhotoController = {}
 
 accomPhotoController.validateUser = asyncWrapper(async (req, res, next) => {

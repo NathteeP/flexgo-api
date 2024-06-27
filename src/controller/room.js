@@ -46,10 +46,24 @@ roomController.verifyBeforeCreate = asyncWrapper(async (req, res, next) => {
     // req.body.bedTypeId = bedTypeId
 })
 
-roomController.create = asyncWrapper(async (req, res, next) => {
+roomController.createRoom = asyncWrapper(async (req, res, next) => {
     const { room, bedOfRoom } = await roomService.transactionForCreateRoomAndBed(req.body.room, req.body.bedType)
     if (!room || !bedOfRoom) return next(new CustomError("Create room unsuccess", "UnsuccessTx", 400))
     res.status(201).json({ message: `Room ID: ${room.id} has been created`, room, bedOfRoom })
+})
+
+roomController.getActiveRoom = asyncWrapper(async (req, res, next) => {
+    const response = await roomService.getRoomAndBedByRooomId(+req.params.room_id)
+    if (!response) return next(new CustomError("Can not find this room in the database", "NotExist", 400))
+    const newRoomBed = response.roomBed.reduce((acc, curr) => {
+        const objToPush = {}
+        objToPush.amount = curr.amount
+        objToPush.name = curr.bedType.name
+        acc.push(objToPush)
+        return acc
+    }, [])
+    response.roomBed = newRoomBed
+    res.status(200).json(response)
 })
 
 module.exports = roomController
