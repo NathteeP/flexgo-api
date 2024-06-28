@@ -1,6 +1,6 @@
 const { CustomError } = require("../config/error")
 
-exports.userValidator = (schema) => {
+const validatorFn = (schema) => {
     return (req,res,next) =>  {
         const {value, error} = schema.validate(req.body)
         if (error) throw new CustomError(error.details[0].message, "ValidationError", 400)
@@ -8,4 +8,5 @@ exports.userValidator = (schema) => {
             next()
     }
     }
-    
+
+module.exports = validatorFn
