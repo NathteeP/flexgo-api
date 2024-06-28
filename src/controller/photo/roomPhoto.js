@@ -42,4 +42,13 @@ roomPhotoController.uploadRoomPhoto = async (req, res, next) => {
     }
 }
 
+roomPhotoController.editRoomPhoto = async (req, res, next) => {
+    try {
+    } catch (err) {
+        next(err)
+    } finally {
+        fs.unlink
+    }
+}
+
 module.exports = roomPhotoController

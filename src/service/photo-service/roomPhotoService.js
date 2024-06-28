@@ -6,4 +6,11 @@ roomPhotoService.createManyPhoto = (data) =>
         data,
     })
 
+roomPhotoService.updateMany = (data, id) =>
+    prisma.roomPhoto.updateMany({
+        data,
+        where: {
+            id,
+        },
+    })
 module.exports = roomPhotoService
