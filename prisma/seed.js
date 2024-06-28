@@ -48,7 +48,8 @@ async function bedSeeding() {
     console.log(response)
 }
 
-// ----- Uncomment This to seed bed type -----
+// ----- Uncomment This line to seed bed type -----
 // bedSeeding()
+// ---------------------------------------------
 
 // seeding()

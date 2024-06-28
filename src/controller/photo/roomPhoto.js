@@ -19,7 +19,7 @@ roomPhotoController.uploadRoomPhoto = async (req, res, next) => {
     try {
         if (!req.files || req.files.length < 1) return next(new CustomError("Missing information", "MissInfo", 400))
         const uploadPromise = req.files.reduce((acc, curr) => {
-            const response = cloudinary.uploader.upload(curr.path)
+            const response = cloudinary.uploader.upload(curr.path, { resource_type: "image", folder: "Room" })
             acc.push(response)
             return acc
         }, [])

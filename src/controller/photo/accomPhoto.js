@@ -17,7 +17,7 @@ accomPhotoController.uploadPhoto = async (req, res, next) => {
     try {
         if (!req.files) return next(new CustomError("No data sent", "NoData", 400))
         const result = req.files.reduce((acc, curr) => {
-            const response = cloudinary.uploader.upload(curr.path)
+            const response = cloudinary.uploader.upload(curr.path, { resource_type: "raw", folder: "Accom" })
             acc.push(response)
             return acc
         }, [])
