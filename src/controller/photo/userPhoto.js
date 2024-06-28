@@ -4,6 +4,7 @@ const { cloudinaryUpload } = require("../../utils/cloudinaryUpload")
 const fs = require("fs/promises")
 const cloudinary = require("../../config/cloudinary")
 const asyncWrapper = require("../../utils/asyncWrapper")
+const { cloudinaryFolder } = require("../../constant/cloundinaryFolder")
 
 const userPhotoController = {}
 
@@ -30,7 +31,7 @@ userPhotoController.uploadPhoto = async (req, res, next) => {
 
         if (hasUploadedBefore) {
             const imagePath = hasUploadedBefore.imagePath.split("/").pop().split(".")[0]
-            const deletedResponse = await cloudinary.uploader.destroy(`Users/${imagePath}`)
+            const deletedResponse = await cloudinary.uploader.destroy(`${cloudinaryFolder.Users}/${imagePath}`)
             if (deletedResponse.result === "not found") {
                 return next(new CustomError("There is an error edit the old file", "UploadError", 400))
             }
@@ -62,7 +63,7 @@ userPhotoController.uploadPhoto = async (req, res, next) => {
 userPhotoController.editUserPhoto = async (req, res, next) => {
     try {
         if (!req.file || req.file.length < 1) return next(new CustomError("No information sent", "MissingInfo", 400))
-        const deletedResponse = await cloudinary.uploader.destroy(`Users/${req.image.imagePath}`)
+        const deletedResponse = await cloudinary.uploader.destroy(`${cloudinaryFolder.Users}}/${req.image.imagePath}`)
         if (deletedResponse.result === "not found") {
             return next(new CustomError("There is an error edit the old file", "UploadError", 400))
         }
@@ -78,7 +79,7 @@ userPhotoController.editUserPhoto = async (req, res, next) => {
 
 userPhotoController.deleteUserPhoto = async (req, res, next) => {
     try {
-        const deletedResponse = await cloudinary.uploader.destroy(`Users/${req.image.imagePath}`)
+        const deletedResponse = await cloudinary.uploader.destroy(`${cloudinaryFolder.Users}/${req.image.imagePath}`)
         if (deletedResponse.result === "not found")
             return next(
                 new CustomError("There is an error deleting photo on the cloudinary. Maybe wrong image path. Please check again", "UploadError", 400),
