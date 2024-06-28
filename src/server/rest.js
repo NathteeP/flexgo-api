@@ -9,10 +9,13 @@ const morgan = require("morgan")
 const { notFound } = require("../middlewares/notFound")
 const { errorMiddlewares } = require("../middlewares/error")
 const userRoute = require("../router/user")
+const userPhotoRouter = require("../router/userPhoto")
 const { CustomError } = require("../config/error")
 const accomRouter = require("../router/accom")
 const accomPhotoRouter = require("../router/accomPhoto")
 const houseRulesRouter = require("../router/houseRules")
+const roomRouter = require("../router/room")
+const roomPhotoRouter = require("../router/roomPhoto")
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -36,6 +39,9 @@ module.exports = function restApiServer(app) {
     app.use("/accom", accomRouter)
     app.use("/houseRules", houseRulesRouter)
     app.use("/accomPhoto", accomPhotoRouter)
+    app.use("/room", roomRouter)
+    app.use("/roomPhoto", roomPhotoRouter)
+    app.use("/userPhoto", userPhotoRouter)
     //=====================================================Throwing Zone
     app.use(notFound)
     app.use(errorMiddlewares)

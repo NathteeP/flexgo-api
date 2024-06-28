@@ -1,4 +1,4 @@
-const prisma = require("../models/prisma")
+const prisma = require("../../models/prisma")
 const accomPhotoService = {}
 
 accomPhotoService.uploadPhoto = (data) =>

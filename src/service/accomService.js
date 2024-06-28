@@ -20,15 +20,19 @@ accomService.findAccomByAccomId = (id) =>
 
 accomService.createAccomTx = (accom, nearByPlaceId) =>
     prisma.$transaction(async (tx) => {
-        const response = await accomService.createAccom({
-            ...accom,
-        })
-        const accomNearby = nearByPlaceId.map((item) => {
-            item.accomId = response.id
-            return item
-        })
-        const result = await accomNearbyService.createMany(accomNearby)
-        return { result, response }
+        try {
+            const response = await accomService.createAccom({
+                ...accom,
+            })
+            const accomNearby = nearByPlaceId.map((item) => {
+                item.accomId = response.id
+                return item
+            })
+            const result = await accomNearbyService.createMany(accomNearby)
+            return { result, response }
+        } catch (err) {
+            next(err)
+        }
     })
 
 accomService.createAccom = (data) =>
