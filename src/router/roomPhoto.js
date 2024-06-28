@@ -20,4 +20,6 @@ roomPhotoRouter.patch(
     roomPhotoController.editRoomPhoto,
 )
 
+roomPhotoRouter.delete("/delete/:room_id/:image_id", authenticate, roomPhotoController.verifyUserAndRoom, roomPhotoController.deleteRoomPhoto)
+
 module.exports = roomPhotoRouter

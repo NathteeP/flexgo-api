@@ -71,4 +71,14 @@ roomPhotoController.editRoomPhoto = async (req, res, next) => {
     }
 }
 
+roomPhotoController.deleteRoomPhoto = async (req, res, next) => {
+    const photo = await roomPhotoService.findRoomPhotoById(+req.params.image_id)
+    if (photo.roomId !== +req.params.room_id) return next(new CustomError("Invalid Info", "invalidInfo", 400))
+
+    const path = photo.imagePath.split("/").pop().split(".")[0]
+    const deletedResponse = await cloudinary.api.delete_resources(`${cloudinaryFolder.Room}/${path}`)
+    if (deletedResponse.result === "not found") return next(new CustomError("There is an error edit the old file", "UploadError", 400))
+    await roomPhotoService.deleteOnePhotoById(+req.params.image_id)
+    res.status(204).json({ message: "Delete success!" })
+}
 module.exports = roomPhotoController
