@@ -6,11 +6,27 @@ roomPhotoService.createManyPhoto = (data) =>
         data,
     })
 
-roomPhotoService.updateMany = (data, id) =>
-    prisma.roomPhoto.updateMany({
+roomPhotoService.findRoomPhotoById = (id) =>
+    prisma.roomPhoto.findUnique({
+        where: {
+            id,
+        },
+    })
+
+roomPhotoService.update = (data, id) =>
+    prisma.roomPhoto.update({
         data,
         where: {
             id,
+        },
+    })
+
+roomPhotoService.findManyPhoto = (id) =>
+    prisma.roomPhoto.findMany({
+        where: {
+            id: {
+                in: id,
+            },
         },
     })
 module.exports = roomPhotoService
