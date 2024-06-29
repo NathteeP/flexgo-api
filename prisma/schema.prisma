@@ -255,12 +255,11 @@ model AccomNearbyPlaces {
 }
 
 model Amenities {
+  id            Int         @id @default(autoincrement())
   amenityType   AmenityType @relation(fields: [amenityTypeId], references: [id])
   amenityTypeId Int
   room          Room        @relation(fields: [roomId], references: [id])
   roomId        Int
-
-  @@id([amenityTypeId, roomId])
 }
 
 model AmenityType {

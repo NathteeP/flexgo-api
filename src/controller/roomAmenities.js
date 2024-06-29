@@ -1,7 +1,34 @@
+const { CustomError } = require("../config/error")
+const amenityTypeService = require("../service/amenities/amenityTypeService")
+const roomAmenitiesService = require("../service/amenities/roomAmenitiesService")
+const roomService = require("../service/room-and-bed/roomService")
+const asyncWrapper = require("../utils/asyncWrapper")
+
 const roomAmenitiesController = {}
 
-roomAmenitiesController.verifyUserAndRoomBeforeCreate = (req, res, next) => {}
+roomAmenitiesController.verifyUserAndRoomBeforeCreate = asyncWrapper(async (req, res, next) => {
+    if (!req.body.roomId || !req.body.amenityTypeId || req.body.amenityTypeId.length < 1)
+        return next(new CustomError("Please provide required information", "MissingInfo", 400))
+    const user = await roomService.getUserIdByRoomId(req.body.roomId)
+    if (!user) return next(new CustomError("Could not find room with this ID", "NonExist", 400))
+    if (user.accom.userId !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
 
-roomAmenitiesController.createAmenitiesForRoom = (req, res, next) => {}
+    const isAmenityIdCorrect = await amenityTypeService.findAminityTypeById(req.body.amenityTypeId)
+    if (!isAmenityIdCorrect || isAmenityIdCorrect.length !== req.body.amenityTypeId.length)
+        return next(new CustomError("Aminity type is invalid", "InvalidInfo", 400))
+    next()
+})
+
+roomAmenitiesController.createAmenitiesForRoom = asyncWrapper(async (req, res, next) => {
+    const data = req.body.amenityTypeId.reduce((acc, curr) => {
+        const objToPush = {}
+        objToPush.roomId = req.body.roomId
+        objToPush.amenityTypeId = curr
+        acc.push(objToPush)
+        return acc
+    }, [])
+    const response = await roomAmenitiesService.createAmenitiesForRoom(data)
+    res.status(201).json({ message: `The room ID ${req.body.roomId} has update ${response.count} amenities to their room successful!` })
+})
 
 module.exports = roomAmenitiesController
