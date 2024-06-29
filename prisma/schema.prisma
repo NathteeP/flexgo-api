@@ -193,6 +193,7 @@ model Reservation {
   status          ReservationStatus @default(PENDING)
   customerAmount  Int               @map("customer_amount")
   bookingDate     DateTime          @default(now()) @map("booking_date")
+  updatedAt       DateTime?
   optionalRequest String?           @db.Text
   customerName    String?
   customerEmail   String?

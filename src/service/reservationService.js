@@ -14,15 +14,14 @@ reservationService.generateId = async ()=> {
     let counter
 
     try {
-            const dateCounter = await prisma.dateCounter.upsert({
+        const dateCounter = await prisma.dateCounter.upsert({
                 where:{date:curDateStr},
                 update:{counter:{increment:1}},
                 create:{date:curDateStr, counter:1}
             })
-            counter = dateCounter.counter
+        counter = dateCounter.counter
         
-        // generate Id = ปี เดือน วัน (6หลัก) + เลขนับจำนวนการจองใน database (4หลัก) + เลข random 1-99 (2หลัก)
-
+        // generate Id = ปี เดือน วัน (6หลัก) + เลขนับจำนวนใน database (4หลัก) + เลข random 1-99 (2หลัก)
         const generatedId = curDateStr + counter.toString().padStart(4,'0') + 
         Math.floor(Math.random()*100).toString().padStart(2,'0')
         return generatedId
@@ -31,13 +30,17 @@ reservationService.generateId = async ()=> {
     } 
 }
 
+reservationService.checkIfDuplicate = (userId, checkInDate) => 
+    prisma.reservation.findFirst({where:{userId,checkInDate}})
+
 reservationService.create = data => prisma.reservation.create({data})
 
+reservationService.findReservationById = (reservationId) => 
+    prisma.reservation.findUnique({where:{id:reservationId}})
 
-reservationService.checkIfDuplicate = (userId, checkInDate) => {
-    console.log(checkInDate)
-    return prisma.reservation.findFirst({where:{userId,checkInDate}})
-}
+reservationService.updateReservationById = (reservationId, data) => 
+    prisma.reservation.update({where:{id:reservationId},data})
 
-
+reservationService.deleteReservationById = (reservationId) => 
+    prisma.reservation.delete({where:{id:reservationId}})
 module.exports = reservationService
