@@ -16,6 +16,7 @@ roomAmenitiesController.verifyUserAndRoomBeforeCreate = asyncWrapper(async (req,
     const isAmenityIdCorrect = await amenityTypeService.findAminityTypeById(req.body.amenityTypeId)
     if (!isAmenityIdCorrect || isAmenityIdCorrect.length !== req.body.amenityTypeId.length)
         return next(new CustomError("Aminity type is invalid", "InvalidInfo", 400))
+    req.amenity = isAmenityIdCorrect.map((item) => item.id)
     next()
 })
 
@@ -29,6 +30,11 @@ roomAmenitiesController.createAmenitiesForRoom = asyncWrapper(async (req, res, n
     }, [])
     const response = await roomAmenitiesService.createAmenitiesForRoom(data)
     res.status(201).json({ message: `The room ID ${req.body.roomId} has update ${response.count} amenities to their room successful!` })
+})
+
+roomAmenitiesController.deleteAmenitiesWithRoomId = asyncWrapper(async (req, res, next) => {
+    const response = await roomAmenitiesService.deleteAmenitiesForRoom(req.amenity)
+    res.status(201).json({ message: `The room ID ${req.body.roomId} has removed ${response.count} amenities from their room successful!` })
 })
 
 module.exports = roomAmenitiesController

@@ -10,4 +10,11 @@ roomAmenitiesRouter.post(
     roomAmenitiesController.createAmenitiesForRoom,
 )
 
+roomAmenitiesRouter.post(
+    "/delete",
+    authenticate,
+    roomAmenitiesController.verifyUserAndRoomBeforeCreate,
+    roomAmenitiesController.deleteAmenitiesWithRoomId,
+)
+
 module.exports = roomAmenitiesRouter
