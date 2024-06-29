@@ -15,3 +15,9 @@ module.exports.reservationStatus = {
     CANCELED: "CANCELED",
     CHECKIN: "CHECKIN"
 }
+
+module.exports.transactionStatus = {
+    PENDING: "PENDING",
+    SUCCESS: "SUCCESS",
+    CANCEL: "CANCEL"
+}

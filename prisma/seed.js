@@ -212,7 +212,8 @@ const roomBedSeeding = [
 ]
 
 const reservationSeeding = [
-    {
+    {   
+        id: "240620000147",
         checkInDate: new Date('Fri Jun 22 2024 14:54:43 GMT+0700 (Indochina Time)'),
         checkOutDate: new Date('Fri Jun 24 2024 14:54:43 GMT+0700 (Indochina Time)'),
         roomId : 1,
@@ -222,7 +223,8 @@ const reservationSeeding = [
         customerName: "John Doe",
         customerEmail: "John@mail.com",
         customerPhone: "0112345671",
-        customerCountry: "Malaysia"
+        customerCountry: "Malaysia",
+        userId: 1
     }
 ]
 
@@ -248,7 +250,9 @@ const feeSeeding = [
 const transactionSeeding = [
     {
         feeId: 1,
-        status: 'SUCCESS'
+        status: 'SUCCESS',
+        reservationId: "240620000147",
+        netPrice: 500.00
     }
 ]
 
