@@ -17,6 +17,7 @@ const houseRulesRouter = require("../router/houseRules")
 const roomRouter = require("../router/room")
 const roomPhotoRouter = require("../router/roomPhoto")
 const reservationRouter = require("../router/reservation")
+const roomAmenitiesRouter = require("../router/roomAmenities")
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -44,6 +45,7 @@ module.exports = function restApiServer(app) {
     app.use("/room", roomRouter)
     app.use("/roomPhoto", roomPhotoRouter)
     app.use("/userPhoto", userPhotoRouter)
+    app.use("/amenities", roomAmenitiesRouter)
     //=====================================================Throwing Zone
     app.use(notFound)
     app.use(errorMiddlewares)

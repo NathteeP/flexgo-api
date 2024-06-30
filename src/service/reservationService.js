@@ -1,7 +1,15 @@
-const { CustomError } = require("../config/error")
 const prisma = require("../models/prisma")
-
 const reservationService = {}
+
+reservationService.findAllReserveByRoomId = (roomId) =>
+    prisma.reservation.findMany({
+        where: {
+            roomId: {
+                in: roomId,
+            },
+        },
+    })
+
 
 reservationService.generateId = async ()=> {
     const curDate = new Date()
@@ -43,4 +51,5 @@ reservationService.updateReservationById = (reservationId, data) =>
 
 reservationService.deleteReservationById = (reservationId) => 
     prisma.reservation.delete({where:{id:reservationId}})
+
 module.exports = reservationService

@@ -53,4 +53,21 @@ accomService.findAccomByAddress = (address) =>
         where: { address },
     })
 
+accomService.findAllAccomByUserId = (userId) =>
+    prisma.accom.findMany({
+        where: {
+            userId,
+        },
+    })
+
+accomService.findStartedYearOfUser = (userId) =>
+    prisma.accom.findFirst({
+        where: {
+            userId,
+        },
+        select: {
+            createdAt: true,
+        },
+    })
+
 module.exports = accomService
