@@ -1,16 +1,22 @@
 const { CustomError } = require("../config/error")
 const findPlacesService = require("../google-client/findPlacesService")
-const geocodeService = require("../google-client/geocodeService")
-const prisma = require("../models/prisma")
 const accomNearbyService = require("../service/accomNearbyService")
 const accomService = require("../service/accomService")
+const amenityTypeService = require("../service/amenities/amenityTypeService")
+const roomAmenitiesService = require("../service/amenities/roomAmenitiesService")
 const nearbyPlaceService = require("../service/nearbyPlaceService")
+const accomPhotoService = require("../service/photo-service/accomPhotoService")
+const roomPhotoService = require("../service/photo-service/roomPhotoService")
+const roomAndBedService = require("../service/room-and-bed/roomAndBedService")
+const roomService = require("../service/room-and-bed/roomService")
 const asyncWrapper = require("../utils/asyncWrapper")
+const { findAllReviewByAccomIdService } = require("../utils/controller-service/findAllReviewByAccomId")
+const { findUserHostingTime } = require("../utils/controller-service/findUserHostingTime")
 const harvesineService = require("../utils/harvesineService")
 
 const accomController = {}
 
-accomController.verifyInfo = asyncWrapper(async (req, res, next) => {
+accomController.verifyInfoAndFindNearbyPlaceCreate = asyncWrapper(async (req, res, next) => {
     if (!req.body.address || !req.body.name || !req.body.description) {
         return next(new CustomError("Please provide information about your accomodation", "InvalidInfo", 400))
     }
@@ -58,6 +64,95 @@ accomController.createAccom = asyncWrapper(async (req, res, next) => {
     console.log("response", response)
     console.log("result", result)
     res.status(201).json(response)
+})
+
+accomController.getAllRoomByAccomId = asyncWrapper(async (req, res, next) => {
+    const isAccomExists = await accomService.findAccomByAccomId(+req.params.accom_id)
+    if (!isAccomExists) return next(new CustomError("This accom does not exist", "NonExist", 400))
+
+    const allRoom = await roomService.findAllRoomByAccomId(+req.params.accom_id)
+    if (allRoom.length < 1) return res.status(200).json(allRoom)
+
+    // Get Bed of all room
+    const bed = await roomAndBedService.findAllBedByRoomId(allRoom.map((item) => item.id))
+    const bedArr = bed.map((item) => {
+        item.bedType = item.bedType.name
+        return item
+    })
+    const bedTable = bedArr.reduce((acc, curr) => {
+        if (acc[curr.roomId]) {
+            acc[curr.roomId].push({ type: curr.bedType, amount: curr.amount })
+            return acc
+        }
+        acc[curr.roomId] = []
+        acc[curr.roomId].push({
+            type: curr.bedType,
+            amount: curr.amount,
+        })
+
+        return acc
+    }, {})
+    const roomAndBed = allRoom.map((item) => {
+        if (bedTable[item.id]) {
+            item.bed = bedTable[item.id]
+        }
+        return item
+    })
+
+    // Get Photo of all room
+    const allRoomPhoto = await roomPhotoService.findManyPhotoByManyRoomId(allRoom.map((item) => item.id))
+    const room = roomAndBed.map((item) => {
+        item.photo = []
+        for (let ele of allRoomPhoto) {
+            if (item.id === ele.roomId) {
+                item.photo.push(ele.imagePath)
+                return item
+            }
+        }
+        return item
+    })
+
+    // Get accom amenities
+    const roomAmenities = await roomAmenitiesService.findManyAmenitiesByManyRoomId(allRoom.map((item) => item.id))
+    const amenitiesId = roomAmenities.reduce((acc, curr) => {
+        if (acc.includes(curr.amenityTypeId)) return acc
+        acc.push(curr.amenityTypeId)
+        return acc
+    }, [])
+    const amenities = await amenityTypeService.findAminityTypeById(amenitiesId)
+    res.status(200).json({ room, amenities })
+})
+
+accomController.getAccomDetailByAccomId = asyncWrapper(async (req, res, next) => {
+    const isAccomExists = await accomService.findAccomByAccomId(+req.params.accom_id)
+    if (!isAccomExists) return next(new CustomError("This accom ID does not exist", "NonExist", 400))
+
+    // Get all accom photo
+    const accomPhoto = await accomPhotoService.getPhotoByAccomId(+req.params.accom_id)
+
+    // Get user hosting duration
+    const userHostDuration = await findUserHostingTime(isAccomExists.userId)
+
+    const getAllReviews = await findAllReviewByAccomIdService(+req.params.accom_id)
+    const allNearbyPlace = await accomNearbyService.findNearplaceByAccomId(+req.params.accom_id)
+    const nearbyPlace = allNearbyPlace.reduce((acc, curr) => {
+        const objToPush = {}
+        objToPush.id = curr.nearbyPlace.id
+        objToPush.distance = curr.distance
+        objToPush.name = curr.nearbyPlace.name
+        objToPush.icon = curr.nearbyPlace.icon
+        objToPush.iconBgClr = curr.nearbyPlace.iconBgClr
+        acc.push(objToPush)
+        return acc
+    }, [])
+    const accom = {
+        accom: isAccomExists,
+        photo: accomPhoto,
+        hostDuration: userHostDuration,
+        reviews: getAllReviews,
+        nearbyPlace,
+    }
+    res.status(200).json(accom)
 })
 
 module.exports = accomController

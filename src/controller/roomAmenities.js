@@ -34,7 +34,7 @@ roomAmenitiesController.createAmenitiesForRoom = asyncWrapper(async (req, res, n
 
 roomAmenitiesController.deleteAmenitiesWithRoomId = asyncWrapper(async (req, res, next) => {
     const response = await roomAmenitiesService.deleteAmenitiesForRoom(req.amenity)
-    res.status(201).json({ message: `The room ID ${req.body.roomId} has removed ${response.count} amenities from their room successful!` })
+    res.status(204).json({ message: `The room ID ${req.body.roomId} has removed ${response.count} amenities from their room successful!` })
 })
 
 module.exports = roomAmenitiesController

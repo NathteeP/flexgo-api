@@ -36,4 +36,13 @@ roomPhotoService.deleteOnePhotoById = (id) =>
             id,
         },
     })
+
+roomPhotoService.findManyPhotoByManyRoomId = (roomId) =>
+    prisma.roomPhoto.findMany({
+        where: {
+            roomId: {
+                in: roomId,
+            },
+        },
+    })
 module.exports = roomPhotoService

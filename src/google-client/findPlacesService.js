@@ -1,9 +1,9 @@
 const { Client } = require("@googlemaps/google-maps-services-js")
 const client = new Client()
+const types = ["bar", "cafe", "bakery", "night_club", "park", "restaurant", "shopping_mall", "supermarket", "tourist_attraction"]
 
 const findPlacesService = async (address) => {
     try {
-        const types = ["bar", "cafe", "bakery", "night_club", "park", "restaurant", "shopping_mall", "supermarket", "tourist_attraction"]
         const place = []
         for (let type of types) {
             const args = {
@@ -20,6 +20,7 @@ const findPlacesService = async (address) => {
                 const { results } = data
                 const filteredArr = results.reduce((acc, curr) => {
                     const filterById = place.filter((el) => el.place_id === curr.place_id)
+                    console.log("filterById", filterById)
                     if (filterById.length >= 1) {
                         return acc
                     }
