@@ -1,4 +1,5 @@
-const prisma = require("../config/prisma")
+const prisma = require("../models/prisma")
+
 
 const userService = {}
 

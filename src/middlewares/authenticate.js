@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken")
 const { CustomError } = require("../config/error")
-const userService = require("../service/user")
-const { role } = require("../constant/enum")
+const userService = require("../service/userService")
 
 module.exports = async function authenticate(req, res, next) {
     try {

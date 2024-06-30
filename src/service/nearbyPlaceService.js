@@ -10,9 +10,6 @@ nearbyPlaceService.findPlaceIdByPlaceId = (id) =>
                 in: id,
             },
         },
-        select: {
-            id: true,
-        },
     })
 
 module.exports = nearbyPlaceService

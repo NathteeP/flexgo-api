@@ -3,7 +3,11 @@ const accomController = require("../controller/accom")
 const authenticate = require("../middlewares/authenticate")
 const accomRouter = express.Router()
 
-accomRouter.post("/create", authenticate, accomController.verifyInfo, accomController.createAccom)
+accomRouter.get("/allrooms/:accom_id", accomController.getAllRoomByAccomId)
+
+accomRouter.get("/detail/:accom_id", accomController.getAccomDetailByAccomId)
+
+accomRouter.post("/create", authenticate, accomController.verifyInfoAndFindNearbyPlaceCreate, accomController.createAccom)
 // accomRouter.post("/create/photos", upload.fields([{ name: "accommodation", maxCount: 5 }]))
 // GET All accom based on user locationrr
 // post user lat lng ====> [{accom}] -->
