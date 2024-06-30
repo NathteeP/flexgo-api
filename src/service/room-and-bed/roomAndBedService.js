@@ -6,4 +6,16 @@ roomAndBedService.createMany = (data) =>
         data,
     })
 
+roomAndBedService.findAllBedByRoomId = (roomId) =>
+    prisma.roomBed.findMany({
+        where: {
+            roomId: {
+                in: roomId,
+            },
+        },
+        include: {
+            bedType: true,
+        },
+    })
+
 module.exports = roomAndBedService

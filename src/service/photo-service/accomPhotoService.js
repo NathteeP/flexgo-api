@@ -6,4 +6,11 @@ accomPhotoService.uploadPhoto = (data) =>
         data,
     })
 
+accomPhotoService.getPhotoByAccomId = (id) =>
+    prisma.accomPhoto.findMany({
+        where: {
+            id,
+        },
+    })
+
 module.exports = accomPhotoService

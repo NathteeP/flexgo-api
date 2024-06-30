@@ -19,21 +19,21 @@ enum Gender {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  username    String?  @unique @db.VarChar(90)
-  password    String?  @db.VarChar(90)
-  email       String   @unique @db.VarChar(100)
-  fullName    String?  @map("full_name")
-  phoneNumber String?  @unique @map("phone_number") @db.VarChar(10)
-  birthDate   String?  @map("birth_date") @db.VarChar(10)
+  id          Int       @id @default(autoincrement())
+  username    String?   @unique @db.VarChar(90)
+  password    String?   @db.VarChar(90)
+  email       String    @unique @db.VarChar(100)
+  fullName    String?   @map("full_name")
+  phoneNumber String?   @unique @map("phone_number") @db.VarChar(10)
+  birthDate   DateTime? @map("birth_date") @db.Timestamp(0)
   gender      Gender?
-  nationality String?  @db.VarChar(50)
-  role        Role     @default(CLIENT)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-  isActive    Boolean  @default(true) @map("is_active")
+  nationality String?   @db.VarChar(50)
+  role        Role      @default(CLIENT)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  isActive    Boolean   @default(true) @map("is_active")
   address     String?
-  description String?  @db.Text
+  description String?   @db.Text
 
   wishList    WishList[]
   userPhoto   UserPhoto[]
@@ -255,12 +255,11 @@ model AccomNearbyPlaces {
 }
 
 model Amenities {
+  id            Int         @id @default(autoincrement())
   amenityType   AmenityType @relation(fields: [amenityTypeId], references: [id])
   amenityTypeId Int
   room          Room        @relation(fields: [roomId], references: [id])
   roomId        Int
-
-  @@id([amenityTypeId, roomId])
 }
 
 model AmenityType {

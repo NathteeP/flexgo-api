@@ -12,4 +12,14 @@ roomPhotoRouter.post(
     roomPhotoController.uploadRoomPhoto,
 )
 
+roomPhotoRouter.patch(
+    "/edit/:room_id",
+    authenticate,
+    roomPhotoController.verifyUserAndRoom,
+    upload.single("room_image"),
+    roomPhotoController.editRoomPhoto,
+)
+
+roomPhotoRouter.delete("/delete/:room_id/:image_id", authenticate, roomPhotoController.verifyUserAndRoom, roomPhotoController.deleteRoomPhoto)
+
 module.exports = roomPhotoRouter

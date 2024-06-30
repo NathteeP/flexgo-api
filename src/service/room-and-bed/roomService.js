@@ -47,4 +47,12 @@ roomService.getUserIdByRoomId = (id) =>
         },
     })
 
+roomService.findAllRoomByAccomId = (accomId) =>
+    prisma.room.findMany({
+        where: {
+            accomId,
+            status: "ACTIVE",
+        },
+    })
+
 module.exports = roomService
