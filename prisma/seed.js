@@ -275,7 +275,8 @@ const roomBedSeeding = [
 ]
 
 const reservationSeeding = [
-    {
+    {   
+        id: "240614000147",
         checkInDate: new Date("Fri Jun 15 2024 14:54:43 GMT+0700 (Indochina Time)"),
         checkOutDate: new Date("Fri Jun 17 2024 14:54:43 GMT+0700 (Indochina Time)"),
         roomId: 1,
@@ -286,8 +287,10 @@ const reservationSeeding = [
         customerEmail: "John@mail.com",
         customerPhone: "0112345671",
         customerCountry: "Malaysia",
+        userId: 1
     },
-    {
+    {   
+        id: "240617000107",
         checkInDate: new Date("Fri Jun 18 2024 14:54:43 GMT+0700 (Indochina Time)"),
         checkOutDate: new Date("Fri Jun 19 2024 14:54:43 GMT+0700 (Indochina Time)"),
         roomId: 1,
@@ -299,7 +302,8 @@ const reservationSeeding = [
         customerPhone: "0112345821",
         customerCountry: "Norway",
     },
-    {
+    {   
+        id: "240620000194",
         checkInDate: new Date("Fri Jun 22 2024 14:54:43 GMT+0700 (Indochina Time)"),
         checkOutDate: new Date("Fri Jun 24 2024 14:54:43 GMT+0700 (Indochina Time)"),
         roomId: 1,
@@ -312,6 +316,7 @@ const reservationSeeding = [
         customerCountry: "Finland",
     },
     {
+        id: "240618000122",
         checkInDate: new Date("Fri Jun 25 2024 14:54:43 GMT+0700 (Indochina Time)"),
         checkOutDate: new Date("Fri Jun 26 2024 14:54:43 GMT+0700 (Indochina Time)"),
         roomId: 1,
@@ -324,7 +329,7 @@ const reservationSeeding = [
 
 const reviewsSeeding = [
     {
-        reservationId: 1,
+        reservationId: "240617000107",
         comment: "Hello World",
         ratingType1: 5,
         ratingType2: 4,
@@ -333,7 +338,7 @@ const reviewsSeeding = [
         reviewDate: new Date("Fri Jun 26 2024 14:54:43 GMT+0700 (Indochina Time)"),
     },
     {
-        reservationId: 2,
+        reservationId: "240620000194",
         comment: "ห้องน้ำอร่อย เตียงเยอะ ลานจอดนุ่มสบาย ",
         ratingType1: 5,
         ratingType2: 5,
@@ -342,7 +347,7 @@ const reviewsSeeding = [
         reviewDate: new Date("Fri Jun 26 2024 14:54:43 GMT+0700 (Indochina Time)"),
     },
     {
-        reservationId: 3,
+        reservationId: "240618000122",
         comment: "ABCDEFG HIJKMLNOP",
         ratingType1: 5,
         ratingType2: 3,
@@ -351,7 +356,7 @@ const reviewsSeeding = [
         reviewDate: new Date("Fri Jun 26 2024 14:54:43 GMT+0700 (Indochina Time)"),
     },
     {
-        reservationId: 4,
+        reservationId: "240614000147",
         comment: "Tottaly love this place! Won't come back again",
         ratingType1: 5,
         ratingType2: 5,
@@ -372,6 +377,8 @@ const transactionSeeding = [
     {
         feeId: 1,
         status: "SUCCESS",
+        reservationId: "240620000147",
+        netPrice: 500.00
     },
 ]
 

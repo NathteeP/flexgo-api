@@ -1,6 +1,5 @@
 const { CustomError } = require("../config/error")
-const { role } = require("../constant/enum")
-const userService = require("../service/user")
+const userService = require("../service/userService")
 const { hashed, compare } = require("../utils/bcrypt")
 const { sign } = require("../utils/jwt")
 
@@ -71,8 +70,8 @@ userController.editUser = async (req, res, next) => {
         const data = req.body
         //already validated -- req.user is exist in db
         //only need to check if data.id === req.user.id
-        if (req.user.id !== data.id) throw new CustomError("UserId does not match", "ValidationError", 400)
-        const response = await userService.updateUser(data.id, data)
+        if (req.user.id !== data.id || +req.params.user_id !== data.id) throw new CustomError('UserId does not match', "ValidationError", 400)
+        const response = await userService.updateUser(data.id,data)
         delete response.password
         res.status(200).json(response)
     } catch (err) {
