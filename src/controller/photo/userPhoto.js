@@ -8,7 +8,7 @@ const { cloudinaryFolder } = require("../../constant/cloundinaryFolder")
 
 const userPhotoController = {}
 
-// ## Verify user before making change to thier photo
+// ----- ## Verify user before making change to thier photo ## -----
 userPhotoController.verify = asyncWrapper(async (req, res, next) => {
     const hasUploadedBefore = await userPhotoService.findPhotoByUserId(req.user.id)
     if (!hasUploadedBefore)
@@ -23,7 +23,7 @@ userPhotoController.verify = asyncWrapper(async (req, res, next) => {
     next()
 })
 
-// ## Uploading photo for the first time
+// ----- ## Uploading photo for the first time ## -----
 userPhotoController.uploadPhoto = async (req, res, next) => {
     try {
         if (!req.file || req.file.length < 1) return next(new CustomError("No information sent", "MissingInfo", 400))
@@ -55,11 +55,14 @@ userPhotoController.uploadPhoto = async (req, res, next) => {
     }
 }
 
-// userPhotoController.getUserPhoto = async(req,res,next) => {
-//   const user =
-// }
+// ----- ## Get user photo ## -----
+userPhotoController.getUserPhoto = async (req, res, next) => {
+    const user = await userPhotoService.findPhotoByUserId(+req.params.user_id)
+    if (!user) return next(new CustomError("This user ID does not exists", "NonExist", 400))
+    res.status(200).json([user])
+}
 
-// ## Edit userPhoto by delete old and patch the new one
+// ------ ## Edit userPhoto by delete old and patch the new one ## -----
 userPhotoController.editUserPhoto = async (req, res, next) => {
     try {
         if (!req.file || req.file.length < 1) return next(new CustomError("No information sent", "MissingInfo", 400))
@@ -77,6 +80,7 @@ userPhotoController.editUserPhoto = async (req, res, next) => {
     }
 }
 
+// ----- ## Hard Delere userPhoto ## -----
 userPhotoController.deleteUserPhoto = async (req, res, next) => {
     try {
         const deletedResponse = await cloudinary.uploader.destroy(`${cloudinaryFolder.Users}/${req.image.imagePath}`)
