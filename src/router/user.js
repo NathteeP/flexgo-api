@@ -8,6 +8,7 @@ const passport = require("passport")
 
 const userRouter = express.Router()
 
+userRouter.get("/me", authenticate, userController.getAuthUser)
 userRouter.get("/:user_id", userController.getUser)
 userRouter.post("/register", validatorFn(registerSchema), userController.register)
 userRouter.post("/login", validatorFn(loginSchema), userController.login)
@@ -17,7 +18,6 @@ userRouter.delete("/:user_id", authenticate, adminAuthenticate, userController.d
 // ส่วนของ google login
 userRouter.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }))
 userRouter.get("/google/callback", passport.authenticate("google", { failureRedirect: "/", session: false }), userController.googleCallback)
-userRouter.get("/me", userController.getUser)
 userRouter.post("/logout", userController.logout)
 
 module.exports = userRouter

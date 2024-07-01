@@ -9,6 +9,9 @@ userController.getUser = async (req, res, next) => {
     try {
         const response = await userService.findUserById(+req.params.user_id)
         if (!response) throw new CustomError("userId does not exist", "UserNotFound", 404)
+
+        delete response.password
+
         res.status(200).json(response)
     } catch (err) {
         next(err)
@@ -100,17 +103,12 @@ userController.googleCallback = (req, res) => {
 
 // อันนี้ต้องคุยกับอิฐ เพราะว่า ตัวนี้เป็น getAuthUser ไม่รู้ว่าเอาไปรวมกับ getUser ด้านบนได้ไหม? ด้านบนน่าจะดู user จาก param
 userController.getAuthUser = async (req, res, next) => {
-    const accessToken = req.cookies.jwt
-    if (!accessToken) {
-        return res.status(401).json({ message: "Unauthorized" })
-    }
 
     try {
-        const authUser = await userService.getUserFromToken(accessToken) // note ไว้ก่อนต้องไปเพิ่มใน Service
-        if (!authUser) {
-            return res.status(404).json({ message: "User not found" })
-        }
-        res.json(authUser)
+        const authUser = await userService.findUserById(req.user.id)
+
+        delete authUser.password
+        res.status(200).json(authUser)
     } catch (err) {
         next(err)
     }

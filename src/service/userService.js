@@ -51,12 +51,5 @@ userService.findOrCreateUser = async (profile) => {
     return { user, token }
 }
 
-userService.getUserFromToken = async (token) => {
-    const payload = jwt.verify(token, process.env.JWT_SECRET_KEY)
-    const authUser = await prisma.user.findUnique({
-        where: { id: payload.id },
-    })
-    return authUser
-}
 
 module.exports = userService
