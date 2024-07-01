@@ -47,7 +47,6 @@ accomController.verifyInfoAndFindNearbyPlaceCreate = asyncWrapper(async (req, re
         acc.push(objToPush)
         return acc
     }, [])
-    console.log("nearbyplace", nearByPlaceIDAndDistanceArr)
     const nearByPlace = nearByPlaceArr.map((item) => {
         item.lat += ""
         item.lng += ""
@@ -58,11 +57,20 @@ accomController.verifyInfoAndFindNearbyPlaceCreate = asyncWrapper(async (req, re
     next()
 })
 
+accomController.verifyUserAndAccom = asyncWrapper(async (req, res, next) => {
+    if (Object.keys(req.body).length < 1 && req.route.methods.patch)
+        return next(new CustomError("Please provide information for edit", "InvalidInfo", 400))
+    if (!req.params.accom_id || isNaN(req.params.accom_id)) return next(new CustomError("Please provide accommodation ID", "MissingInfo", 400))
+    const user = await accomService.findUserIdByAccomId(+req.params.accom_id)
+    if (!user || user.userId !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
+    const isAccomExits = await accomService.findAccomByAccomId(+req.params.accom_id)
+    if (!isAccomExits) return next(new CustomError(`The accom ID :${req.params.accom_id} is not exist.`, "NonExist", 400))
+    next()
+})
+
 accomController.createAccom = asyncWrapper(async (req, res, next) => {
     await nearbyPlaceService.createMany(req.nearbyPlace)
     const { response, result } = await accomService.createAccomTx(req.accom, req.nearByPlaceIDAndDistanceArr)
-    console.log("response", response)
-    console.log("result", result)
     res.status(201).json(response)
 })
 
@@ -153,6 +161,16 @@ accomController.getAccomDetailByAccomId = asyncWrapper(async (req, res, next) =>
         nearbyPlace,
     }
     res.status(200).json(accom)
+})
+
+accomController.editAccomDetails = asyncWrapper(async (req, res, next) => {
+    const response = await accomService.editAccomDetailsByAccomId(req.body, +req.params.accom_id)
+    res.status(200).json(response)
+})
+
+accomController.deleteAccom = asyncWrapper(async (req, res, next) => {
+    await accomService.changeAccomStatusToInactive(+req.params.accom_id)
+    res.status(204).json({ message: "Deleted successfully!" })
 })
 
 module.exports = accomController

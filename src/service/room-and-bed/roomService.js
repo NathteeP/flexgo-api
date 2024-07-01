@@ -55,4 +55,22 @@ roomService.findAllRoomByAccomId = (accomId) =>
         },
     })
 
+roomService.editRoomDetailsByRoomId = (data, id) =>
+    prisma.room.update({
+        data,
+        where: {
+            id,
+        },
+    })
+
+roomService.changeRoomStatusToInAcvie = (id) =>
+    prisma.room.update({
+        where: {
+            id,
+        },
+        data: {
+            status: "INACTIVE",
+        },
+    })
+
 module.exports = roomService

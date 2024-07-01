@@ -70,4 +70,22 @@ accomService.findStartedYearOfUser = (userId) =>
         },
     })
 
+accomService.editAccomDetailsByAccomId = (data, id) =>
+    prisma.accom.update({
+        where: {
+            id,
+        },
+        data,
+    })
+
+accomService.changeAccomStatusToInactive = (id) =>
+    prisma.accom.update({
+        where: {
+            id,
+        },
+        data: {
+            status: "INACTIVE",
+        },
+    })
+
 module.exports = accomService

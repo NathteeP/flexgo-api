@@ -46,6 +46,17 @@ roomController.verifyBeforeCreate = asyncWrapper(async (req, res, next) => {
     // req.body.bedTypeId = bedTypeId
 })
 
+roomController.verifyUserAndRoom = asyncWrapper(async (req, res, next) => {
+    if (Object.keys(req.body).length < 1 && req.route.methods.patch)
+        return next(new CustomError("Please provide information for edit", "InvalidInfo", 400))
+    if (isNaN(req.params.room_id)) return next(new CustomError("Please provide roomID", "MissingInfo", 400))
+    const room = await roomService.getRoomAndBedByRooomId(+req.params.room_id)
+    if (!room) return next(new CustomError(`The room ID ${req.params.room_id} is not exist`, "NonExist", 400))
+    const user = await roomService.getUserIdByRoomId(+req.params.room_id)
+    if (!user || user.accom.userId !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
+    next()
+})
+
 roomController.createRoom = asyncWrapper(async (req, res, next) => {
     const { room, bedOfRoom } = await roomService.transactionForCreateRoomAndBed(req.body.room, req.body.bedType)
     if (!room || !bedOfRoom) return next(new CustomError("Create room unsuccess", "UnsuccessTx", 400))
@@ -64,6 +75,16 @@ roomController.getActiveRoom = asyncWrapper(async (req, res, next) => {
     }, [])
     response.roomBed = newRoomBed
     res.status(200).json(response)
+})
+
+roomController.editRoomDetail = asyncWrapper(async (req, res, next) => {
+    const response = await roomService.editRoomDetailsByRoomId(req.body, +req.params.room_id)
+    res.status(200).json(response)
+})
+
+roomController.deleteRoom = asyncWrapper(async (req, res, next) => {
+    await roomService.changeRoomStatusToInAcvie(+req.params.room_id)
+    res.status(204).json({ message: `The room ID ${req.params.room_id} has changed to INACTIVE` })
 })
 
 module.exports = roomController

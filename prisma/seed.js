@@ -65,6 +65,32 @@ const accomSeeding = [
         description:
             "In addition to the standard of SHA, all guests get free Wi-Fi in all rooms and free parking if arriving by car. Conveniently situated in the Don Mueang International Airport part of Bangkok, this property puts you close to attractions and interesting dining options. Don't leave before paying a visit to the famous Wat Phra Chetuphon. Rated with 4 stars, this high-quality property provides guests with access to restaurant and fitness center on-site.",
     },
+    {
+        userId: 1,
+        name: "Shambhala Hotel Pattaya",
+        lat: "12.936385946325817",
+        lng: "100.89252255333206",
+        address: "245 187 หมู่ที่ 9 ถนน พัทยา สาย 3 ตำบล หนองปรือ อำเภอบางละมุง ชลบุรี 20150",
+        province: "Chonburi",
+        district: "Pattaya",
+        type: "HOTEL",
+        status: "ACTIVE",
+        description:
+            "In addition to the standard of SHA, all guests get free Wi-Fi in all rooms and free parking if arriving by car. Conveniently situated in the Don Mueang International Airport part of Bangkok, this property puts you close to attractions and interesting dining options. Don't leave before paying a visit to the famous Wat Phra Chetuphon. Rated with 4 stars, this high-quality property provides guests with access to restaurant and fitness center on-site.",
+    },
+    {
+        userId: 1,
+        name: "VIC 3 Bangkok Hotel",
+        lat: "13.774561280663432",
+        lng: "100.54223406868991",
+        address: "89 Phahon Yothin Soi 3, Phaya Thai, , Phaya Thai, Bangkok",
+        province: "Bangkok",
+        district: "Phaya Thai",
+        type: "HOTEL",
+        status: "ACTIVE",
+        description:
+            "In addition to the standard of SHA, all guests get free Wi-Fi in all rooms and free parking if arriving by car. Conveniently situated in the Don Mueang International Airport part of Bangkok, this property puts you close to attractions and interesting dining options. Don't leave before paying a visit to the famous Wat Phra Chetuphon. Rated with 4 stars, this high-quality property provides guests with access to restaurant and fitness center on-site.",
+    },
 ]
 
 const accomPhotoSeeding = [
@@ -159,6 +185,22 @@ const houseRulesSeeding = [
         cancelPolicy: "STRICT",
         accomId: 1,
     },
+    {
+        checkIn: "After 14.00 of the reservation date.",
+        checkOut: "Before 16.00 PM.",
+        petsRule: "Every kind of pets are allowed. Only dragon and whale are restricted.",
+        ageRule: "There is no age requirement for check-in",
+        cancelPolicy: "FLEXIBLE",
+        accomId: 2,
+    },
+    {
+        checkIn: "From 15.00 to 00.00",
+        checkOut: "Before 12.00 PM.",
+        petsRule: "Our hotel are allowed only guest'aligator. Cats and dogs are restricted.",
+        ageRule: "There is no age requirement for check-in",
+        cancelPolicy: "MODERATE",
+        accomId: 3,
+    },
 ]
 
 const bedTypeSeeding = [
@@ -194,6 +236,7 @@ const roomSeeding = [
         size: 20,
         capacity: 3,
         accomId: 1,
+        price: 199,
     },
     {
         name: "A202",
@@ -203,6 +246,7 @@ const roomSeeding = [
         size: 50,
         capacity: 7,
         accomId: 1,
+        price: 250,
     },
     {
         name: "A203",
@@ -212,6 +256,7 @@ const roomSeeding = [
         size: 10,
         capacity: 2,
         accomId: 1,
+        price: 450,
     },
     {
         name: "A204",
@@ -221,6 +266,37 @@ const roomSeeding = [
         size: 30,
         capacity: 4,
         accomId: 1,
+        price: 2000,
+    },
+    {
+        name: "801",
+        roomType: "Deluxe pool",
+        bedRoom: 1,
+        bathRoom: 1,
+        size: 80,
+        capacity: 4,
+        accomId: 2,
+        price: 4000,
+    },
+    {
+        name: "DE 101",
+        roomType: "Standard Twin Room",
+        bedRoom: 1,
+        bathRoom: 1,
+        size: 30,
+        capacity: 4,
+        accomId: 3,
+        price: 2000,
+    },
+    {
+        name: "DE 102",
+        roomType: "Standard Twin Room",
+        bedRoom: 1,
+        bathRoom: 1,
+        size: 30,
+        capacity: 4,
+        accomId: 3,
+        price: 1500,
     },
 ]
 
@@ -269,6 +345,26 @@ const roomBedSeeding = [
     },
     {
         roomId: 4,
+        bedTypeId: 1,
+        amount: 2,
+    },
+    {
+        roomId: 5,
+        bedTypeId: 5,
+        amount: 2,
+    },
+    {
+        roomId: 5,
+        bedTypeId: 6,
+        amount: 2,
+    },
+    {
+        roomId: 6,
+        bedTypeId: 1,
+        amount: 2,
+    },
+    {
+        roomId: 7,
         bedTypeId: 1,
         amount: 2,
     },

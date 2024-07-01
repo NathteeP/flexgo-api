@@ -47,7 +47,7 @@ roomPhotoController.editRoomPhoto = async (req, res, next) => {
     try {
         if (!req.file || req.file.length < 1) return next(new CustomError("Can not find any files sent.", "MissingData", 400))
         // Check image for edit
-        if (!req.body.image_id || typeof req.body.image_id !== "string")
+        if (!req.body.image_id || typeof +req.body.image_id !== "number")
             return next(new CustomError("Please provide room ID to edit", "MissingInfo", 400))
 
         // Find Image path

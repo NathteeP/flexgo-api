@@ -8,6 +8,10 @@ accomRouter.get("/allrooms/:accom_id", accomController.getAllRoomByAccomId)
 accomRouter.get("/detail/:accom_id", accomController.getAccomDetailByAccomId)
 
 accomRouter.post("/create", authenticate, accomController.verifyInfoAndFindNearbyPlaceCreate, accomController.createAccom)
+
+accomRouter.patch("/edit/:accom_id", authenticate, accomController.verifyUserAndAccom, accomController.editAccomDetails)
+
+accomRouter.delete("/delete/:accom_id", authenticate, accomController.verifyUserAndAccom, accomController.deleteAccom)
 // accomRouter.post("/create/photos", upload.fields([{ name: "accommodation", maxCount: 5 }]))
 // GET All accom based on user locationrr
 // post user lat lng ====> [{accom}] -->
