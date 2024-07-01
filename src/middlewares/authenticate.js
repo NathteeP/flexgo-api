@@ -12,8 +12,8 @@ module.exports = async function authenticate(req, res, next) {
 
         const authUser = await userService.findUserById(payload.id)
         if (!authUser) next(new CustomError("User was not found", "NotFoundData", 400))
-        if (user.isActive === false) next(new CustomError("User is inactive", "UserInactive", 401))
-        req.user = user
+        if (authUser.isActive === false) next(new CustomError("User is inactive", "UserInactive", 401))
+        req.user = authUser
         next()
     } catch (err) {
         next(err)
