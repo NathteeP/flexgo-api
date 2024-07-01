@@ -70,8 +70,8 @@ userController.editUser = async (req, res, next) => {
         const data = req.body
         //already validated -- req.user is exist in db
         //only need to check if data.id === req.user.id
-        if (req.user.id !== data.id || +req.params.user_id !== data.id) throw new CustomError('UserId does not match', "ValidationError", 400)
-        const response = await userService.updateUser(data.id,data)
+        if (req.user.id !== data.id || +req.params.user_id !== data.id) throw new CustomError("UserId does not match", "ValidationError", 400)
+        const response = await userService.updateUser(data.id, data)
         delete response.password
         res.status(200).json(response)
     } catch (err) {
@@ -87,4 +87,42 @@ userController.deleteUser = async (req, res, next) => {
         next(err)
     }
 }
+
+// ส่วนของ Google Login
+userController.googleCallback = (req, res) => {
+    res.cookie("jwt", req.user.token, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
+    res.redirect("http://localhost:5173") // ไว้ค่อยใส่ใน env
+}
+
+// อันนี้ต้องคุยกับอิฐ เพราะว่า ตัวนี้เป็น getAuthUser ไม่รู้ว่าเอาไปรวมกับ getUser ด้านบนได้ไหม? ด้านบนน่าจะดู user จาก param
+userController.getAuthUser = async (req, res, next) => {
+    const accessToken = req.cookies.jwt
+    if (!accessToken) {
+        return res.status(401).json({ message: "Unauthorized" })
+    }
+
+    try {
+        const authUser = await userService.getUserFromToken(accessToken) // note ไว้ก่อนต้องไปเพิ่มใน Service
+        if (!authUser) {
+            return res.status(404).json({ message: "User not found" })
+        }
+        res.json(authUser)
+    } catch (err) {
+        next(err)
+    }
+}
+
+userController.logout = (req, res) => {
+    res.cookie("jwt", "", {
+        httpOnly: true,
+        secure: false,
+        maxAge: 0,
+    })
+    res.json({ message: "Logout successful" })
+}
+
 module.exports = userController
