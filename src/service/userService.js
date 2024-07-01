@@ -33,15 +33,15 @@ userService.findOrCreateUser = async (profile) => {
         user = await prisma.user.create({
             data: {
                 email: profile.emails[0].value,
-                name: profile.displayName,
+                fullName: profile.displayName,
                 googleId: profile.id,
-                picture: profile.photos[0].value,
+                // picture: profile.photos[0].value,
             },
         })
     } else {
         user = await prisma.user.update({
             where: { googleId: profile.id },
-            data: { picture: profile.photos[0].value },
+            // data: { picture: profile.photos[0].value },
         })
     }
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
@@ -50,6 +50,5 @@ userService.findOrCreateUser = async (profile) => {
 
     return { user, token }
 }
-
 
 module.exports = userService
