@@ -38,11 +38,6 @@ userService.findOrCreateUser = async (profile) => {
                 // picture: profile.photos[0].value,
             },
         })
-    } else {
-        user = await prisma.user.update({
-            where: { googleId: profile.id },
-            // data: { picture: profile.photos[0].value },
-        })
     }
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY, {
         expiresIn: process.env.JWT_EXPIRES,

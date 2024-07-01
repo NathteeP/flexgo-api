@@ -103,7 +103,6 @@ userController.googleCallback = (req, res) => {
 
 // อันนี้ต้องคุยกับอิฐ เพราะว่า ตัวนี้เป็น getAuthUser ไม่รู้ว่าเอาไปรวมกับ getUser ด้านบนได้ไหม? ด้านบนน่าจะดู user จาก param
 userController.getAuthUser = async (req, res, next) => {
-
     try {
         const authUser = await userService.findUserById(req.user.id)
 
