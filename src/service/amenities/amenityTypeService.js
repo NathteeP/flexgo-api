@@ -10,4 +10,6 @@ amenityTypeService.findAminityTypeById = (id) =>
         },
     })
 
+amenityTypeService.findAllAmenityType = () => prisma.amenityType.findMany()
+
 module.exports = amenityTypeService

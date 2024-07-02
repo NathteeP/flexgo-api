@@ -17,4 +17,6 @@ roomAmenitiesRouter.post(
     roomAmenitiesController.deleteAmenitiesWithRoomId,
 )
 
+roomAmenitiesRouter.get("/:room_id", authenticate, roomAmenitiesController.getAllAmenityByRoomId)
+
 module.exports = roomAmenitiesRouter

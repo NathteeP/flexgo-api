@@ -135,6 +135,7 @@ model Room {
   size     Int
   capacity Int
   status   RoomStatus @default(ACTIVE)
+  price    Decimal    @db.Decimal(10, 2)
   accom    Accom?     @relation(fields: [accomId], references: [id])
   accomId  Int?
 

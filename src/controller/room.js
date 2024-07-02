@@ -10,7 +10,7 @@ const roomController = {}
 roomController.verifyBeforeCreate = asyncWrapper(async (req, res, next) => {
     if (!req.body.name || !req.body.roomType) return next(new CustomError("Required information is missing", "IncompleteInfo", 400))
 
-    if (!req.body.bedRoom || !req.body.bathRoom || !req.body.size || !req.body.capacity || !req.body.bedType)
+    if (!req.body.bedRoom || !req.body.bathRoom || !req.body.size || !req.body.capacity || !req.body.bedType || !req.body.price)
         return next(new CustomError("Room information is missing", "IncompleteInfo", 400))
 
     if (isNaN(req.body.accomId)) return next(new CustomError("Invalid ID provided", "InvalidInfo", 400))
@@ -43,7 +43,17 @@ roomController.verifyBeforeCreate = asyncWrapper(async (req, res, next) => {
     req.body.room = { ...req.body }
     req.body.bedType = bedTypeIdAndAmount
     next()
-    // req.body.bedTypeId = bedTypeId
+})
+
+roomController.verifyUserAndRoom = asyncWrapper(async (req, res, next) => {
+    if (Object.keys(req.body).length < 1 && req.route.methods.patch)
+        return next(new CustomError("Please provide information for edit", "InvalidInfo", 400))
+    if (isNaN(req.params.room_id)) return next(new CustomError("Please provide roomID", "MissingInfo", 400))
+    const room = await roomService.getRoomAndBedByRooomId(+req.params.room_id)
+    if (!room) return next(new CustomError(`The room ID ${req.params.room_id} is not exist`, "NonExist", 400))
+    const user = await roomService.getUserIdByRoomId(+req.params.room_id)
+    if (!user || user.accom.userId !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
+    next()
 })
 
 roomController.createRoom = asyncWrapper(async (req, res, next) => {
@@ -64,6 +74,16 @@ roomController.getActiveRoom = asyncWrapper(async (req, res, next) => {
     }, [])
     response.roomBed = newRoomBed
     res.status(200).json(response)
+})
+
+roomController.editRoomDetail = asyncWrapper(async (req, res, next) => {
+    const response = await roomService.editRoomDetailsByRoomId(req.body, +req.params.room_id)
+    res.status(200).json(response)
+})
+
+roomController.deleteRoom = asyncWrapper(async (req, res, next) => {
+    await roomService.changeRoomStatusToInAcvie(+req.params.room_id)
+    res.status(204).json({ message: `The room ID ${req.params.room_id} has changed to INACTIVE` })
 })
 
 module.exports = roomController

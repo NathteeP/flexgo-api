@@ -55,4 +55,50 @@ roomService.findAllRoomByAccomId = (accomId) =>
         },
     })
 
+roomService.editRoomDetailsByRoomId = (data, id) =>
+    prisma.room.update({
+        data,
+        where: {
+            id,
+        },
+    })
+
+roomService.changeRoomStatusToInAcvie = (id) =>
+    prisma.room.update({
+        where: {
+            id,
+        },
+        data: {
+            status: "INACTIVE",
+        },
+    })
+
+roomService.findManyRoomWithManyAccomId = (accomId) =>
+    prisma.room.findMany({
+        where: {
+            accomId: {
+                in: accomId,
+            },
+        },
+    })
+
+roomService.findAccomByManyRoomId = (id) =>
+    prisma.room.findMany({
+        where: {
+            id: {
+                in: id,
+            },
+        },
+        include: {
+            accom: {
+                include: {
+                    accomPhoto: true,
+                },
+            },
+        },
+        orderBy: {
+            price: "asc",
+        },
+    })
+
 module.exports = roomService

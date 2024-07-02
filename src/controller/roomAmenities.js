@@ -37,4 +37,19 @@ roomAmenitiesController.deleteAmenitiesWithRoomId = asyncWrapper(async (req, res
     res.status(204).json({ message: `The room ID ${req.body.roomId} has removed ${response.count} amenities from their room successful!` })
 })
 
+roomAmenitiesController.getAllAmenityByRoomId = asyncWrapper(async (req, res, next) => {
+    if (isNaN(+req.params.room_id)) return next(new CustomError("Invalid room ID", "InvalidInfo", 400))
+
+    const allAmenities = await roomAmenitiesService.getAllRoomAmenitiesByRoomId(+req.params.room_id)
+    const amenities = allAmenities.reduce((acc, curr) => {
+        const objToPush = {}
+        objToPush.amenityTypeId = curr.amenityTypeId
+        objToPush.name = curr.amenityType.name
+        objToPush.icon = curr.amenityType.icon
+        acc.push(objToPush)
+        return acc
+    }, [])
+    res.status(200).json(amenities)
+})
+
 module.exports = roomAmenitiesController
