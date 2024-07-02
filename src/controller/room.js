@@ -10,7 +10,7 @@ const roomController = {}
 roomController.verifyBeforeCreate = asyncWrapper(async (req, res, next) => {
     if (!req.body.name || !req.body.roomType) return next(new CustomError("Required information is missing", "IncompleteInfo", 400))
 
-    if (!req.body.bedRoom || !req.body.bathRoom || !req.body.size || !req.body.capacity || !req.body.bedType)
+    if (!req.body.bedRoom || !req.body.bathRoom || !req.body.size || !req.body.capacity || !req.body.bedType || !req.body.price)
         return next(new CustomError("Room information is missing", "IncompleteInfo", 400))
 
     if (isNaN(req.body.accomId)) return next(new CustomError("Invalid ID provided", "InvalidInfo", 400))
@@ -43,7 +43,6 @@ roomController.verifyBeforeCreate = asyncWrapper(async (req, res, next) => {
     req.body.room = { ...req.body }
     req.body.bedType = bedTypeIdAndAmount
     next()
-    // req.body.bedTypeId = bedTypeId
 })
 
 roomController.verifyUserAndRoom = asyncWrapper(async (req, res, next) => {
