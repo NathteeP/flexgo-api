@@ -8,6 +8,9 @@ roomAmenitiesService.getAllRoomAmenitiesByRoomId = (id) =>
         where: {
             roomId: id,
         },
+        include: {
+            amenityType: true,
+        },
     })
 
 roomAmenitiesService.deleteAmenitiesForRoom = (id) =>

@@ -17,7 +17,8 @@ const houseRulesRouter = require("../router/houseRules")
 const roomRouter = require("../router/room")
 const roomPhotoRouter = require("../router/roomPhoto")
 const roomAmenitiesRouter = require("../router/roomAmenities")
-
+const amenitiesRouter = require("../router/amenities")
+const reviewRouter = require("../router/reviews")
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
     //=====================================================Encoding Zone
@@ -43,7 +44,9 @@ module.exports = function restApiServer(app) {
     app.use("/room", roomRouter)
     app.use("/roomPhoto", roomPhotoRouter)
     app.use("/userPhoto", userPhotoRouter)
-    app.use("/amenities", roomAmenitiesRouter)
+    app.use("/amenities/room", roomAmenitiesRouter)
+    app.use("/amenities", amenitiesRouter)
+    app.use("/reviews", reviewRouter)
     //=====================================================Throwing Zone
     app.use(notFound)
     app.use(errorMiddlewares)

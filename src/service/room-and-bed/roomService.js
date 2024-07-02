@@ -73,4 +73,32 @@ roomService.changeRoomStatusToInAcvie = (id) =>
         },
     })
 
+roomService.findManyRoomWithManyAccomId = (accomId) =>
+    prisma.room.findMany({
+        where: {
+            accomId: {
+                in: accomId,
+            },
+        },
+    })
+
+roomService.findAccomByManyRoomId = (id) =>
+    prisma.room.findMany({
+        where: {
+            id: {
+                in: id,
+            },
+        },
+        include: {
+            accom: {
+                include: {
+                    accomPhoto: true,
+                },
+            },
+        },
+        orderBy: {
+            price: "asc",
+        },
+    })
+
 module.exports = roomService

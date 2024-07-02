@@ -88,4 +88,19 @@ accomService.changeAccomStatusToInactive = (id) =>
         },
     })
 
+accomService.findAccomWithInBoundingBox = (latMax, latMin, lngMax, lngMin) =>
+    prisma.accom.findMany({
+        where: {
+            lat: {
+                gte: latMin,
+                lte: latMax,
+            },
+            lng: {
+                gte: lngMin,
+                lte: lngMax,
+            },
+            status: "ACTIVE",
+        },
+    })
+
 module.exports = accomService

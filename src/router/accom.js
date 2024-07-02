@@ -5,7 +5,13 @@ const accomRouter = express.Router()
 
 accomRouter.get("/allrooms/:accom_id", accomController.getAllRoomByAccomId)
 
+accomRouter.post("/availrooms/:accom_id", accomController.getAvailRoomByAccomId)
+
 accomRouter.get("/detail/:accom_id", accomController.getAccomDetailByAccomId)
+
+accomRouter.post("/avail", accomController.findAvailAccomByLatLng)
+
+accomRouter.post("/feature", accomController.findFeatureAccomByLatLng)
 
 accomRouter.post("/create", authenticate, accomController.verifyInfoAndFindNearbyPlaceCreate, accomController.createAccom)
 

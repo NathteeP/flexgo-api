@@ -10,4 +10,31 @@ reservationService.findAllReserveByRoomId = (roomId) =>
         },
     })
 
+reservationService.findAllRoomIdByDate = (date) =>
+    prisma.reservation.findMany({
+        where: {
+            checkInDate: {
+                lte: date,
+            },
+            checkOutDate: {
+                gte: date,
+            },
+        },
+    })
+
+reservationService.findReservedRoomIdByDateAndRoomId = (date, roomId) =>
+    prisma.reservation.findMany({
+        where: {
+            checkInDate: {
+                lte: date,
+            },
+            checkOutDate: {
+                gte: date,
+            },
+            roomId: {
+                in: roomId,
+            },
+        },
+    })
+
 module.exports = reservationService
