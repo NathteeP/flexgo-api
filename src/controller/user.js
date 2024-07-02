@@ -1,5 +1,9 @@
 const { CustomError } = require("../config/error")
+const prisma = require("../models/prisma")
+const userPhotoService = require("../service/photo-service/userPhotoService")
+const reservationService = require("../service/reservationService")
 const userService = require("../service/userService")
+const wishListService = require("../service/wishListService")
 const { hashed, compare } = require("../utils/bcrypt")
 const { sign } = require("../utils/jwt")
 
@@ -104,10 +108,17 @@ userController.googleCallback = (req, res) => {
 // อันนี้ต้องคุยกับอิฐ เพราะว่า ตัวนี้เป็น getAuthUser ไม่รู้ว่าเอาไปรวมกับ getUser ด้านบนได้ไหม? ด้านบนน่าจะดู user จาก param
 userController.getAuthUser = async (req, res, next) => {
     try {
-        const authUser = await userService.findUserById(req.user.id)
+        await prisma.$transaction(async(tx) => {
+            const authUser = await userService.findUserById(req.user.id)
+            authUser.profileImage = await userPhotoService.findPhotoByUserId(req.user.id)
+            authUser.wishlist = await wishListService.findAllWishListByUserId(req.user.id)
+            authUser.propertyMessage = {}
+            authUser.bookingHistory = await reservationService.findAllReservationByUserId(req.user.id)
+            delete authUser.password
+    
+            res.status(200).json(authUser)
 
-        delete authUser.password
-        res.status(200).json(authUser)
+        })
     } catch (err) {
         next(err)
     }
