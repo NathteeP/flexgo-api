@@ -467,7 +467,8 @@ const roomBedSeeding = [
 ]
 
 const reservationSeeding = [
-    {
+    {   
+        id: "240614000147",
         checkInDate: new Date("Fri Jun 15 2024 14:54:43 GMT+0700 (Indochina Time)"),
         checkOutDate: new Date("Fri Jun 17 2024 14:54:43 GMT+0700 (Indochina Time)"),
         roomId: 1,
@@ -478,8 +479,10 @@ const reservationSeeding = [
         customerEmail: "John@mail.com",
         customerPhone: "0112345671",
         customerCountry: "Malaysia",
+        userId: 1
     },
-    {
+    {   
+        id: "240617000107",
         checkInDate: new Date("Fri Jun 18 2024 14:54:43 GMT+0700 (Indochina Time)"),
         checkOutDate: new Date("Fri Jun 19 2024 14:54:43 GMT+0700 (Indochina Time)"),
         roomId: 1,
@@ -491,7 +494,8 @@ const reservationSeeding = [
         customerPhone: "0112345821",
         customerCountry: "Norway",
     },
-    {
+    {   
+        id: "240620000194",
         checkInDate: new Date("Fri Jun 22 2024 14:54:43 GMT+0700 (Indochina Time)"),
         checkOutDate: new Date("Fri Jun 24 2024 14:54:43 GMT+0700 (Indochina Time)"),
         roomId: 1,
@@ -504,6 +508,7 @@ const reservationSeeding = [
         customerCountry: "Finland",
     },
     {
+        id: "240618000122",
         checkInDate: new Date("Fri Jun 25 2024 14:54:43 GMT+0700 (Indochina Time)"),
         checkOutDate: new Date("Fri Jun 26 2024 14:54:43 GMT+0700 (Indochina Time)"),
         roomId: 1,
@@ -600,7 +605,7 @@ const reservationSeeding = [
 
 const reviewsSeeding = [
     {
-        reservationId: 1,
+        reservationId: "240617000107",
         comment: "Hello World",
         ratingType1: 5,
         ratingType2: 4,
@@ -609,7 +614,7 @@ const reviewsSeeding = [
         reviewDate: new Date("Fri Jun 26 2024 14:54:43 GMT+0700 (Indochina Time)"),
     },
     {
-        reservationId: 2,
+        reservationId: "240620000194",
         comment: "ห้องน้ำอร่อย เตียงเยอะ ลานจอดนุ่มสบาย ",
         ratingType1: 5,
         ratingType2: 5,
@@ -618,7 +623,7 @@ const reviewsSeeding = [
         reviewDate: new Date("Fri Jun 26 2024 14:54:43 GMT+0700 (Indochina Time)"),
     },
     {
-        reservationId: 3,
+        reservationId: "240618000122",
         comment: "ABCDEFG HIJKMLNOP",
         ratingType1: 5,
         ratingType2: 3,
@@ -627,7 +632,7 @@ const reviewsSeeding = [
         reviewDate: new Date("Fri Jun 26 2024 14:54:43 GMT+0700 (Indochina Time)"),
     },
     {
-        reservationId: 4,
+        reservationId: "240614000147",
         comment: "Tottaly love this place! Won't come back again",
         ratingType1: 5,
         ratingType2: 5,
@@ -711,300 +716,301 @@ const transactionSeeding = [
     {
         feeId: 1,
         status: "SUCCESS",
+        reservationId: "240614000147",
+        netPrice: 500.00
     },
 ]
 
 const amenityTypeSeeding = [
     {
         name: "Free Wi-Fi",
-        icon: "CiWifiOn",
+        icon: "FaWifiIcon",
     },
     {
         name: "Complimentary breakfast",
-        icon: "CiWifiOn",
+        icon: "PiBowlFoodIcon",
     },
     {
         name: "Room service",
-        icon: "CiWifiOn",
+        icon: "MdOutlineRoomServiceIcon",
     },
     {
         name: "24-hour front desk",
-        icon: "CiWifiOn",
+        icon: "RiCustomerService2FillIcon",
     },
     {
         name: "Fitness center",
-        icon: "CiWifiOn",
+        icon: "IoIosFitnessIcon",
     },
     {
         name: "Swimming pool",
-        icon: "CiWifiOn",
+        icon: "FaSwimmingPoolIcon",
     },
     {
         name: "Spa and wellness center",
-        icon: "CiWifiOn",
+        icon: "GiSleepingBagIcon",
     },
     {
         name: "Business center",
-        icon: "CiWifiOn",
+        icon: "MdBusinessCenterIcon",
     },
     {
         name: "Conference/meeting rooms",
-        icon: "CiWifiOn",
+        icon: "MdMeetingRoomIcon",
     },
     {
         name: "On-site restaurant",
-        icon: "CiWifiOn",
+        icon: "MdRestaurantMenuIcon",
     },
     {
         name: "Bar/lounge",
-        icon: "CiWifiOn",
+        icon: "GrLoungeIcon",
     },
     {
         name: "Concierge service",
-        icon: "CiWifiOn",
+        icon: "FaConciergeBellIcon",
     },
     {
         name: "Laundry service",
-        icon: "CiWifiOn",
+        icon: "MdOutlineLocalLaundryServiceIcon",
     },
     {
         name: "Dry cleaning service",
-        icon: "CiWifiOn",
+        icon: "MdOutlineDryCleaningIcon",
     },
     {
         name: "Shuttle service",
-        icon: "CiWifiOn",
+        icon: "MdOutlineAirportShuttleIcon",
     },
     {
         name: "Airport transfer",
-        icon: "CiWifiOn",
+        icon: "MdLocalAirportIcon",
     },
     {
         name: "Valet parking",
-        icon: "CiWifiOn",
+        icon: "LuParkingCircleIcon",
     },
     {
         name: "Self-parking",
-        icon: "CiWifiOn",
+        icon: "LuParkingCircleIcon",
     },
     {
         name: "Pet-friendly rooms",
-        icon: "CiWifiOn",
+        icon: "MdOutlinePetsIcon",
     },
     {
         name: "Non-smoking rooms",
-        icon: "CiWifiOn",
+        icon: "FaSmokingBanIcon",
     },
     {
         name: "Air conditioning",
-        icon: "CiWifiOn",
+        icon: "TbAirConditioningIcon",
     },
     {
         name: "Heating",
-        icon: "CiWifiOn",
+        icon: "TbAirConditioningIcon",
     },
     {
         name: "Mini-bar",
-        icon: "CiWifiOn",
+        icon: "GrBarIcon",
     },
     {
         name: "In-room safe",
-        icon: "CiWifiOn",
+        icon: "AiOutlineSafetyIcon",
     },
     {
         name: "Flat-screen TV",
-        icon: "CiWifiOn",
+        icon: "MdTvIcon",
     },
     {
         name: "Cable/satellite TV",
-        icon: "CiWifiOn",
+        icon: "MdTvIcon",
     },
     {
         name: "Coffee/tea maker",
-        icon: "CiWifiOn",
+        icon: "MdCoffeeMakerIcon",
     },
     {
         name: "Iron and ironing board",
-        icon: "CiWifiOn",
+        icon: "MdOutlineIronIcon",
     },
     {
         name: "Hairdryer",
-        icon: "CiWifiOn",
+        icon: "PiHairDryerIcon",
     },
     {
         name: "Complimentary toiletries",
-        icon: "CiWifiOn",
+        icon: "PiToiletIcon",
     },
     {
         name: "Bathrobe and slippers",
-        icon: "CiWifiOn",
+        icon: "GiSlippersIcon",
     },
     {
         name: "In-room dining",
-        icon: "CiWifiOn",
+        icon: "MdRestaurantMenuIcon",
     },
     {
         name: "Daily housekeeping",
-        icon: "CiWifiOn",
+        icon: "MdCleaningServicesIcon",
     },
     {
         name: "Turndown service",
-        icon: "CiWifiOn",
+        icon: "MdOutlineRoomServiceIcon",
     },
     {
         name: "Express check-in/check-out",
-        icon: "CiWifiOn",
+        icon: "MdOutlineFactCheckIcon",
     },
     {
         name: "Luggage storage",
-        icon: "CiWifiOn",
+        icon: "MdOutlineLuggageIcon",
     },
     {
         name: "Babysitting/child services",
-        icon: "CiWifiOn",
+        icon: "FaBabyCarriageIcon",
     },
     {
         name: "Children's play area",
-        icon: "CiWifiOn",
+        icon: "TbPlayFootballIcon",
     },
     {
         name: "Family rooms",
-        icon: "CiWifiOn",
+        icon: "MdFamilyRestroomIcon",
     },
     {
         name: "Accessible rooms",
-        icon: "CiWifiOn",
+        icon: "MdMeetingRoomIcon",
     },
     {
         name: "Electric vehicle charging station",
-        icon: "CiWifiOn",
+        icon: "TbDeviceMobileChargingIcon",
     },
     {
         name: "Bicycle rental",
-        icon: "CiWifiOn",
+        icon: "FaBicycleIcon",
     },
     {
         name: "Car rental service",
-        icon: "CiWifiOn",
+        icon: "FaCarIcon",
     },
     {
         name: "Gift shop",
-        icon: "CiWifiOn",
+        icon: "FaGiftIcon",
     },
     {
         name: "Beauty salon",
-        icon: "CiWifiOn",
+        icon: "GrUserFemaleIcon",
     },
     {
         name: "Library",
-        icon: "CiWifiOn",
+        icon: "IoLibraryOutlineIcon",
     },
     {
         name: "Tennis court",
-        icon: "CiWifiOn",
+        icon: "MdOutlineSportsTennisIcon",
     },
     {
         name: "Golf course",
-        icon: "CiWifiOn",
+        icon: "MdOutlineGolfCourseIcon",
     },
     {
         name: "Garden",
-        icon: "CiWifiOn",
+        icon: "MdOutlineGrassIcon",
     },
     {
         name: "Terrace",
-        icon: "CiWifiOn",
+        icon: "MdMeetingRoomIcon",
     },
     {
         name: "BBQ facilities",
-        icon: "CiWifiOn",
+        icon: "GiBarbecueIcon",
     },
     {
         name: "Picnic area",
-        icon: "CiWifiOn",
+        icon: "PiPicnicTableIcon",
     },
     {
         name: "Smoking area",
-        icon: "CiWifiOn",
+        icon: "FaSmokingIcon",
     },
     {
         name: "Soundproof rooms",
-        icon: "CiWifiOn",
+        icon: "GiSoundOnIcon",
     },
     {
         name: "Blackout curtains",
-        icon: "CiWifiOn",
+        icon: "MdCurtainsClosedIcon",
     },
     {
         name: "Pillow menu",
-        icon: "CiWifiOn",
+        icon: "GiPillowIcon",
     },
     {
         name: "Hypoallergenic bedding",
-        icon: "CiWifiOn",
+        icon: "FaBedIcon",
     },
     {
         name: "High-speed internet (wired)",
-        icon: "CiWifiOn",
+        icon: "CgModemIcon",
     },
     {
         name: "Meeting and banquet facilities",
-        icon: "CiWifiOn",
+        icon: "MdHeadphonesIcon",
     },
     {
         name: "Fax/photocopying service",
-        icon: "CiWifiOn",
+        icon: "FaFaxIcon",
     },
     {
         name: "Currency exchange",
-        icon: "CiWifiOn",
+        icon: "MdCurrencyExchangeIcon",
     },
     {
         name: "Tour desk",
-        icon: "CiWifiOn",
+        icon: "MdDeskIcon",
     },
     {
         name: "Ticket service",
-        icon: "CiWifiOn",
+        icon: "IoTicketOutlineIcon",
     },
     {
         name: "Multilingual staff",
-        icon: "CiWifiOn",
+        icon: "SiStaffbaseIcon",
     },
     {
         name: "ATM on-site",
-        icon: "CiWifiOn",
+        icon: "MdLocalAtmIcon",
     },
     {
         name: "Vending machines (snacks and drinks)",
-        icon: "CiWifiOn",
+        icon: "GiVendingMachineIcon",
     },
     {
         name: "Shared lounge/TV area",
-        icon: "CiWifiOn",
+        icon: "MdTvIcon",
     },
     {
         name: "Designated smoking area",
-        icon: "CiWifiOn",
+        icon: "FaSmokingIcon",
     },
     {
         name: "Bridal suite",
-        icon: "CiWifiOn",
+        icon: "MdMeetingRoomIcon",
     },
     {
         name: "VIP room facilities",
-        icon: "CiWifiOn",
+        icon: "RiVipFillIcon",
     },
     {
         name: "Game room",
-        icon: "CiWifiOn",
+        icon: "IoGameControllerOutlineIcon",
     },
     {
         name: "Nightclub/DJ",
-        icon: "CiWifiOn",
+        icon: "PiDiscoBallDuotoneIcon",
     },
 ]
-
 const amenitiesSeeding = [
     {
         amenityTypeId: 1,
