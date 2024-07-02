@@ -3,6 +3,7 @@ const prisma = require("../models/prisma")
 const userPhotoService = require("../service/photo-service/userPhotoService")
 const reservationService = require("../service/reservationService")
 const userService = require("../service/userService")
+const wishListService = require("../service/wishListService")
 const { hashed, compare } = require("../utils/bcrypt")
 const { sign } = require("../utils/jwt")
 
@@ -110,7 +111,7 @@ userController.getAuthUser = async (req, res, next) => {
         await prisma.$transaction(async(tx) => {
             const authUser = await userService.findUserById(req.user.id)
             authUser.profileImage = await userPhotoService.findPhotoByUserId(req.user.id)
-            authUser.wishlist = {status: "ยังไม่ได้เขียน service ครับ เดี๋ยวรีบเขียนต่อ"}
+            authUser.wishlist = await wishListService.findAllWishListByUserId(req.user.id)
             authUser.propertyMessage = {}
             authUser.bookingHistory = await reservationService.findAllReservationByUserId(req.user.id)
             delete authUser.password
