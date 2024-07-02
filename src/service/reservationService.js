@@ -52,4 +52,7 @@ reservationService.updateReservationById = (reservationId, data) =>
 reservationService.deleteReservationById = (reservationId) => 
     prisma.reservation.delete({where:{id:reservationId}})
 
+reservationService.findAllReservationByUserId = (userId) => 
+    prisma.reservation.findMany({where:{userId}})
+
 module.exports = reservationService

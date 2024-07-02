@@ -20,6 +20,7 @@ const reservationRouter = require("../router/reservation")
 const roomAmenitiesRouter = require("../router/roomAmenities")
 const cookieParser = require("cookie-parser")
 const passport = require("../config/passport")
+const wishListRouter = require("../router/wishlist")
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -55,6 +56,7 @@ module.exports = function restApiServer(app) {
     app.use("/roomPhoto", roomPhotoRouter)
     app.use("/userPhoto", userPhotoRouter)
     app.use("/amenities", roomAmenitiesRouter)
+    app.use("/wishlist", wishListRouter)
     //=====================================================Throwing Zone
     app.use(notFound)
     app.use(errorMiddlewares)
