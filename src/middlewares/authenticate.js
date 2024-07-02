@@ -4,7 +4,6 @@ const userService = require("../service/userService")
 
 module.exports = async function authenticate(req, res, next) {
     try {
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         const accessToken = req.cookies.jwt
         if (!accessToken) throw new CustomError("Token not found", "InvalidToken", 401)
 
