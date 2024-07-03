@@ -22,6 +22,7 @@ userController.getUser = async (req, res, next) => {
     }
 }
 
+// มีปรับตรงนี้ ต้องคุยกับ อิฐ เพิ่ม return บรรทัดที่ 41
 userController.register = async (req, res, next) => {
     try {
         const data = req.body
@@ -37,7 +38,7 @@ userController.register = async (req, res, next) => {
             if (phoneNumberExists) existFields.push("phoneNumber")
 
             const errorMessage = `The following fields are already in use: ${existFields.join(", ")} `
-            res.status(400).json({ message: errorMessage, field: existFields })
+            return res.status(400).json({ message: errorMessage, field: existFields })
         }
 
         data.password = await hashed(data.password)
@@ -96,28 +97,65 @@ userController.deleteUser = async (req, res, next) => {
 }
 
 // ส่วนของ Google Login
-userController.googleCallback = (req, res) => {
-    res.cookie("jwt", req.user.token, {
-        httpOnly: true,
-        secure: false,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-    })
-    res.redirect("http://localhost:5173") // ไว้ค่อยใส่ใน env
+// Merge ข้อมูล user ถ้า เจอว่า profile มันซ้ำกัน
+// userController.js
+userController.googleCallback = async (req, res, next) => {
+    try {
+        const user = req.user.user // ดึงข้อมูล user จาก req.user.user
+
+        if (!user.email) {
+            throw new CustomError("Google profile does not contain emails", "InvalidProfile", 400)
+        }
+        const email = user.email
+
+        let { googleIdExists, emailExists } = await userService.findAlreadyExistedGoogleUser(user.googleId, email)
+
+        let updatedUser
+        if (emailExists && !googleIdExists) {
+            updatedUser = await userService.updateUser(emailExists.id, {
+                googleId: user.googleId,
+                fullName: user.fullName,
+                // ถ้าจะเอารูปด้วย คุยกับ BM ก่อนเพราะมีเรื่อง Cloudinary เข้ามาเกี่ยวข้อง
+                // picture: profile.photos[0].value,
+            })
+        } else if (!emailExists && !googleIdExists) {
+            updatedUser = await userService.createUser({
+                email: email,
+                googleId: user.googleId,
+                fullName: user.fullName,
+                // ถ้าจะเอารูปด้วย คุยกับ BM ก่อนเพราะมีเรื่อง Cloudinary เข้ามาเกี่ยวข้อง
+                // picture: profile.photos[0].value,
+            })
+        } else if (googleIdExists) {
+            updatedUser = googleIdExists
+        }
+
+        // สร้าง JWT
+        const token = sign({ id: updatedUser.id })
+
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            secure: false,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        })
+
+        res.redirect("http://localhost:5173")
+    } catch (error) {
+        next(error)
+    }
 }
 
-// อันนี้ต้องคุยกับอิฐ เพราะว่า ตัวนี้เป็น getAuthUser ไม่รู้ว่าเอาไปรวมกับ getUser ด้านบนได้ไหม? ด้านบนน่าจะดู user จาก param
 userController.getAuthUser = async (req, res, next) => {
     try {
-        await prisma.$transaction(async(tx) => {
+        await prisma.$transaction(async (tx) => {
             const authUser = await userService.findUserById(req.user.id)
             authUser.profileImage = await userPhotoService.findPhotoByUserId(req.user.id)
             authUser.wishlist = await wishListService.findAllWishListByUserId(req.user.id)
             authUser.propertyMessage = {}
             authUser.bookingHistory = await reservationService.findAllReservationByUserId(req.user.id)
             delete authUser.password
-    
-            res.status(200).json(authUser)
 
+            res.status(200).json(authUser)
         })
     } catch (err) {
         next(err)
