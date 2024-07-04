@@ -175,7 +175,7 @@ accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => 
         return item
     })
 
-    const filteredRoomId = availRoomId.filter((item) => item.capacity > req.body.capacity)
+    const filteredRoomId = availRoomId.filter((item) => item.capacity >= req.body.capacity)
     // Find available accom
     const roomAndAccom = await roomService.findAccomByManyRoomId(filteredRoomId.map((item) => item.id))
 

@@ -22,19 +22,27 @@ reservationService.findAllRoomIdByDate = (checkIndate, checkOutDate) =>
         },
     })
 
-reservationService.findReservedRoomIdByDateAndRoomId = (date, roomId) =>
+reservationService.findReservedRoomIdByDateAndRoomId = (checkInDate, checkOutDate, roomId) =>
     prisma.reservation.findMany({
         where: {
-            checkInDate: {
-                lte: date,
-            },
-            checkOutDate: {
-                gte: date,
-            },
             roomId: {
                 in: roomId,
             },
+            checkInDate: {
+                lte: checkInDate,
+            },
+            checkOutDate: {
+                gt: checkOutDate,
+            },
         },
+        // having: {
+        //     checkInDate: {
+        //         lte: checkInDate,
+        //     },
+        //     checkOutDate: {
+        //         gt: checkOutDate,
+        //     },
+        // },
     })
 
 reservationService.generateId = async () => {

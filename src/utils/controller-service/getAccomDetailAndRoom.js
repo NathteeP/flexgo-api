@@ -17,24 +17,25 @@ const getAccomDetailAndRoomService = asyncWrapper(async (req, res, next, findAll
     if (allRoom.length < 1) return res.status(200).json(allRoom)
 
     if (!findAllRoom) {
-        if (!req.body.date) {
-            req.body.date = new Date(Date.now())
-        }
-
         const roomReserved = await reservationService.findReservedRoomIdByDateAndRoomId(
-            req.body.date,
+            req.body.checkInDate,
+            req.body.checkOutDate,
             allRoom.map((item) => item.id),
         )
 
-        const availRoom = allRoom.filter((item) => {
-            for (let ele of roomReserved) {
-                if (item.id === ele.roomId) {
-                    return false
+        if (roomReserved.length >= 1) {
+            const availRoom = allRoom.filter((item) => {
+                for (let ele of roomReserved) {
+                    if (item.id === ele.roomId) {
+                        return false
+                    }
                 }
-            }
-            return item
-        })
-        allRoom = availRoom
+                return item
+            })
+            allRoom = [...availRoom]
+        }
+        const filteredRoom = allRoom.filter((item) => item.capacity >= req.body.capacity)
+        allRoom = [...filteredRoom]
     }
     // Get Bed of all room
     const bed = await roomAndBedService.findAllBedByRoomId(allRoom.map((item) => item.id))
