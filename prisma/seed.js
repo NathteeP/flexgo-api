@@ -51,6 +51,25 @@ const userSeeding = [
     },
 ]
 
+const userPhotoSeeding = [
+    {
+        userId: 1,
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719543270/Users/zgeczbelatsmr1p3uklt.jpg",
+    },
+    {
+        userId: 2,
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719910840/Users/ao0pr08lughx4f21zehj.jpg",
+    },
+    {
+        userId: 3,
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719910841/Users/qaqyptlgaxsimqdey512.jpg",
+    },
+    {
+        userId: 4,
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719910844/Users/qm1tfvx6wejkr6eb739v.jpg",
+    },
+]
+
 const accomSeeding = [
     {
         userId: 1,
@@ -200,6 +219,174 @@ const accomPhotoSeeding = [
         imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/cgj7lylbbgndwhtxp5fg.webp",
         accomId: 1,
     },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/avzjktrcma2giv0ysugb.jpg",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561702/accomAlbumSeed/mdzemsefo6vthfgtqcr5.jpg",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561701/accomAlbumSeed/akqcskbuwlvmt16owy2b.webp",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561701/accomAlbumSeed/lh72g0s5waw5nh9rojkq.webp",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/v7ab3n4ocjzwb0jejn5g.jpg",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/v7ab3n4ocjzwb0jejn5g.jpg",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/v7ab3n4ocjzwb0jejn5g.jpg",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/v7ab3n4ocjzwb0jejn5g.jpg",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/v7ab3n4ocjzwb0jejn5g.jpg",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/v7ab3n4ocjzwb0jejn5g.jpg",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/v7ab3n4ocjzwb0jejn5g.jpg",
+        accomId: 2,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719906098/Accom/ncehabcgksgachkoszuy.jpg",
+        accomId: 3,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719906099/Accom/fh25ttytynmxphnbwbnn.jpg",
+        accomId: 3,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719906098/Accom/ncehabcgksgachkoszuy.jpg",
+        accomId: 3,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561702/accomAlbumSeed/lan2i0i417d07vbyodk7.webp",
+        accomId: 3,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561701/accomAlbumSeed/zsd0mqpwvgzfr070fwpi.webp",
+        accomId: 3,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719906098/Accom/ncehabcgksgachkoszuy.jpg",
+        accomId: 3,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719906099/Accom/fh25ttytynmxphnbwbnn.jpg",
+        accomId: 3,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719906098/Accom/ncehabcgksgachkoszuy.jpg",
+        accomId: 3,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561702/accomAlbumSeed/lan2i0i417d07vbyodk7.webp",
+        accomId: 3,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561701/accomAlbumSeed/zsd0mqpwvgzfr070fwpi.webp",
+        accomId: 3,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/e8kd2xmrmtlfmytiuyek.webp",
+        accomId: 4,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/e8kd2xmrmtlfmytiuyek.webp",
+        accomId: 4,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/togxqji3fqllvfrs4mb9.jpg",
+        accomId: 4,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/togxqji3fqllvfrs4mb9.jpg",
+        accomId: 4,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/qzuf6jbvaognt61waw3a.webp",
+        accomId: 4,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/e8kd2xmrmtlfmytiuyek.webp",
+        accomId: 4,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/e8kd2xmrmtlfmytiuyek.webp",
+        accomId: 4,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/togxqji3fqllvfrs4mb9.jpg",
+        accomId: 4,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/togxqji3fqllvfrs4mb9.jpg",
+        accomId: 4,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/qzuf6jbvaognt61waw3a.webp",
+        accomId: 4,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/v7ab3n4ocjzwb0jejn5g.jpg",
+        accomId: 5,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/qzuf6jbvaognt61waw3a.webp",
+        accomId: 5,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/togxqji3fqllvfrs4mb9.jpg",
+        accomId: 5,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/suvx7w6kf9tjp4loaerp.jpg",
+        accomId: 5,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/v7ab3n4ocjzwb0jejn5g.jpg",
+        accomId: 5,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/qzuf6jbvaognt61waw3a.webp",
+        accomId: 5,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/togxqji3fqllvfrs4mb9.jpg",
+        accomId: 5,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/suvx7w6kf9tjp4loaerp.jpg",
+        accomId: 5,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/qzuf6jbvaognt61waw3a.webp",
+        accomId: 5,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561703/accomAlbumSeed/togxqji3fqllvfrs4mb9.jpg",
+        accomId: 5,
+    },
+    {
+        imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719561700/accomAlbumSeed/suvx7w6kf9tjp4loaerp.jpg",
+        accomId: 5,
+    },
 ]
 
 const houseRulesSeeding = [
@@ -226,6 +413,22 @@ const houseRulesSeeding = [
         ageRule: "There is no age requirement for check-in",
         cancelPolicy: "MODERATE",
         accomId: 3,
+    },
+    {
+        checkIn: "After 14.00 of the reservation date.",
+        checkOut: "Before 16.00 PM.",
+        petsRule: "Every kind of pets are allowed. Only dragon and whale are restricted.",
+        ageRule: "There is no age requirement for check-in",
+        cancelPolicy: "FLEXIBLE",
+        accomId: 4,
+    },
+    {
+        checkIn: "From 15.00 to 00.00",
+        checkOut: "Available 24 hours",
+        petsRule: "Pets are not allowed",
+        ageRule: "There is no age requirement for check-in",
+        cancelPolicy: "STRICT",
+        accomId: 5,
     },
 ]
 
@@ -467,24 +670,24 @@ const roomBedSeeding = [
 ]
 
 const reservationSeeding = [
-    {   
+    {
         id: "240614000147",
-        checkInDate: new Date("Fri Jun 15 2024 14:54:43 GMT+0700 (Indochina Time)"),
-        checkOutDate: new Date("Fri Jun 17 2024 14:54:43 GMT+0700 (Indochina Time)"),
+        checkInDate: new Date("Fri Jun 15 2024 00:00:00 GMT+0700 (Indochina Time)"),
+        checkOutDate: new Date("Fri Jun 17 2024 00:00:00 GMT+0700 (Indochina Time)"),
         roomId: 1,
         status: "CHECKIN",
         customerAmount: 2,
-        bookingDate: new Date("Fri Jun 14 2024 14:54:43 GMT+0700 (Indochina Time)"),
+        bookingDate: new Date("Fri Jun 14 2024 00:54:43 GMT+0700 (Indochina Time)"),
         customerName: "John Doe",
         customerEmail: "John@mail.com",
         customerPhone: "0112345671",
         customerCountry: "Malaysia",
-        userId: 1
+        userId: 1,
     },
-    {   
+    {
         id: "240617000107",
-        checkInDate: new Date("Fri Jun 18 2024 14:54:43 GMT+0700 (Indochina Time)"),
-        checkOutDate: new Date("Fri Jun 19 2024 14:54:43 GMT+0700 (Indochina Time)"),
+        checkInDate: new Date("Fri Jun 18 2024 00:00:00 GMT+0700 (Indochina Time)"),
+        checkOutDate: new Date("Fri Jun 19 2024 00:00:00 GMT+0700 (Indochina Time)"),
         roomId: 1,
         status: "CHECKIN",
         customerAmount: 2,
@@ -494,14 +697,14 @@ const reservationSeeding = [
         customerPhone: "0112345821",
         customerCountry: "Norway",
     },
-    {   
+    {
         id: "240620000194",
-        checkInDate: new Date("Fri Jun 22 2024 14:54:43 GMT+0700 (Indochina Time)"),
-        checkOutDate: new Date("Fri Jun 24 2024 14:54:43 GMT+0700 (Indochina Time)"),
+        checkInDate: new Date("Fri Jun 22 2024 00:00:00 GMT+0700 (Indochina Time)"),
+        checkOutDate: new Date("Fri Jun 24 2024 00:00:00 GMT+0700 (Indochina Time)"),
         roomId: 1,
         status: "CHECKIN",
         customerAmount: 2,
-        bookingDate: new Date("Fri Jun 20 2024 14:54:43 GMT+0700 (Indochina Time)"),
+        bookingDate: new Date("Fri Jun 20 2024 00:00:00 GMT+0700 (Indochina Time)"),
         customerName: "Bobby Brown",
         customerEmail: "Bobby@mail.com",
         customerPhone: "0197345671",
@@ -509,17 +712,18 @@ const reservationSeeding = [
     },
     {
         id: "240618000122",
-        checkInDate: new Date("Fri Jun 25 2024 14:54:43 GMT+0700 (Indochina Time)"),
-        checkOutDate: new Date("Fri Jun 26 2024 14:54:43 GMT+0700 (Indochina Time)"),
+        checkInDate: new Date("Fri Jun 25 2024 00:00:00 GMT+0700 (Indochina Time)"),
+        checkOutDate: new Date("Fri Jun 26 2024 00:00:00 GMT+0700 (Indochina Time)"),
         roomId: 1,
         status: "CHECKIN",
         customerAmount: 2,
-        bookingDate: new Date("Fri Jun 18 2024 14:54:43 GMT+0700 (Indochina Time)"),
+        bookingDate: new Date("Fri Jun 18 2024 00:00:00 GMT+0700 (Indochina Time)"),
         userId: 4,
     },
     {
-        checkInDate: "2024-07-02T12:00:00.000Z",
-        checkOutDate: "2024-07-04T12:00:00.000Z",
+        id: "240614000148",
+        checkInDate: "2024-07-02T17:00:00.000Z",
+        checkOutDate: "2024-07-04T17:00:00.000Z",
         roomId: 2,
         status: "CHECKIN",
         customerAmount: 1,
@@ -530,8 +734,9 @@ const reservationSeeding = [
         customerCountry: "United States",
     },
     {
-        checkInDate: "2024-07-03T12:00:00.000Z",
-        checkOutDate: "2024-07-05T12:00:00.000Z",
+        id: "240614000150",
+        checkInDate: "2024-07-03T17:00:00.000Z",
+        checkOutDate: "2024-07-05T17:00:00.000Z",
         roomId: 3,
         status: "CHECKIN",
         customerAmount: 2,
@@ -542,20 +747,22 @@ const reservationSeeding = [
         customerCountry: "Canada",
     },
     {
-        checkInDate: "2024-07-04T12:00:00.000Z",
-        checkOutDate: "2024-07-06T12:00:00.000Z",
+        id: "240614000256",
+        checkInDate: "2024-07-04T17:00:00.000Z",
+        checkOutDate: "2024-07-06T17:00:00.000Z",
         roomId: 4,
         status: "CHECKIN",
         customerAmount: 1,
-        bookingDate: "2024-07-03T12:00:00.000Z",
+        bookingDate: "2024-07-03T17:00:00.000Z",
         customerName: "David Lee",
         customerEmail: "david@example.com",
         customerPhone: "0345678912",
         customerCountry: "Australia",
     },
     {
-        checkInDate: "2024-06-28T12:00:00.000Z",
-        checkOutDate: "2024-07-03T12:00:00.000Z",
+        id: "240614000188",
+        checkInDate: "2024-06-28T17:00:00.000Z",
+        checkOutDate: "2024-07-03T17:00:00.000Z",
         roomId: 5,
         status: "CHECKIN",
         customerAmount: 3,
@@ -566,8 +773,9 @@ const reservationSeeding = [
         customerCountry: "United Kingdom",
     },
     {
-        checkInDate: "2024-07-01T12:00:00.000Z",
-        checkOutDate: "2024-07-04T12:00:00.000Z",
+        id: "240614000985",
+        checkInDate: "2024-07-01T17:00:00.000Z",
+        checkOutDate: "2024-07-04T17:00:00.000Z",
         roomId: 6,
         status: "CHECKIN",
         customerAmount: 3,
@@ -578,8 +786,9 @@ const reservationSeeding = [
         customerCountry: "Italy",
     },
     {
-        checkInDate: "2024-06-29T12:00:00.000Z",
-        checkOutDate: "2024-07-02T12:00:00.000Z",
+        id: "240614000117",
+        checkInDate: "2024-06-29T17:00:00.000Z",
+        checkOutDate: "2024-07-02T17:00:00.000Z",
         roomId: 10,
         status: "CHECKIN",
         customerAmount: 2,
@@ -590,8 +799,9 @@ const reservationSeeding = [
         customerCountry: "Germany",
     },
     {
-        checkInDate: "2024-06-30T12:00:00.000Z",
-        checkOutDate: "2024-07-01T12:00:00.000Z",
+        id: "240614000858",
+        checkInDate: "2024-06-30T17:00:00.000Z",
+        checkOutDate: "2024-07-01T17:00:00.000Z",
         roomId: 11,
         status: "CHECKIN",
         customerAmount: 1,
@@ -641,7 +851,7 @@ const reviewsSeeding = [
         reviewDate: new Date("Fri Jun 26 2024 14:54:43 GMT+0700 (Indochina Time)"),
     },
     {
-        reservationId: 5,
+        reservationId: "240614000148",
         comment: "Excellent service and friendly staff.",
         ratingType1: 5,
         ratingType2: 5,
@@ -650,7 +860,7 @@ const reviewsSeeding = [
         reviewDate: "2024-06-29T07:54:43.000Z",
     },
     {
-        reservationId: 6,
+        reservationId: "240614000150",
         comment: "Good value for money.",
         ratingType1: 4,
         ratingType2: 4,
@@ -659,7 +869,7 @@ const reviewsSeeding = [
         reviewDate: "2024-06-30T07:54:43.000Z",
     },
     {
-        reservationId: 7,
+        reservationId: "240614000256",
         comment: "Room was clean and comfortable.",
         ratingType1: 5,
         ratingType2: 4,
@@ -668,7 +878,7 @@ const reviewsSeeding = [
         reviewDate: "2024-07-01T07:54:43.000Z",
     },
     {
-        reservationId: 8,
+        reservationId: "240614000188",
         comment: "Average experience, nothing special.",
         ratingType1: 3,
         ratingType2: 3,
@@ -677,7 +887,7 @@ const reviewsSeeding = [
         reviewDate: "2024-07-02T07:54:43.000Z",
     },
     {
-        reservationId: 9,
+        reservationId: "240614000985",
         comment: "Poor service, would not recommend.",
         ratingType1: 2,
         ratingType2: 2,
@@ -686,7 +896,7 @@ const reviewsSeeding = [
         reviewDate: "2024-07-03T07:54:43.000Z",
     },
     {
-        reservationId: 10,
+        reservationId: "240614000117",
         comment: "Fantastic stay, highly recommended!",
         ratingType1: 5,
         ratingType2: 5,
@@ -695,7 +905,7 @@ const reviewsSeeding = [
         reviewDate: "2024-07-04T07:54:43.000Z",
     },
     {
-        reservationId: 11,
+        reservationId: "240614000858",
         comment: "Decent place, but had some issues.",
         ratingType1: 3,
         ratingType2: 4,
@@ -717,7 +927,7 @@ const transactionSeeding = [
         feeId: 1,
         status: "SUCCESS",
         reservationId: "240614000147",
-        netPrice: 500.00
+        netPrice: 500.0,
     },
 ]
 
@@ -1206,6 +1416,113 @@ const amenitiesSeeding = [
     { amenityTypeId: 28, roomId: 3 },
     { amenityTypeId: 29, roomId: 3 },
     { amenityTypeId: 30, roomId: 3 },
+    { amenityTypeId: 1, roomId: 5 },
+    { amenityTypeId: 2, roomId: 5 },
+    { amenityTypeId: 3, roomId: 5 },
+    { amenityTypeId: 4, roomId: 5 },
+    { amenityTypeId: 5, roomId: 5 },
+    { amenityTypeId: 6, roomId: 5 },
+    { amenityTypeId: 7, roomId: 5 },
+    { amenityTypeId: 8, roomId: 5 },
+    { amenityTypeId: 9, roomId: 5 },
+    { amenityTypeId: 10, roomId: 5 },
+    { amenityTypeId: 11, roomId: 5 },
+    { amenityTypeId: 12, roomId: 5 },
+    { amenityTypeId: 13, roomId: 5 },
+    { amenityTypeId: 14, roomId: 5 },
+    { amenityTypeId: 15, roomId: 5 },
+    { amenityTypeId: 16, roomId: 5 },
+    { amenityTypeId: 17, roomId: 5 },
+    { amenityTypeId: 18, roomId: 5 },
+    { amenityTypeId: 19, roomId: 5 },
+    { amenityTypeId: 20, roomId: 5 },
+    { amenityTypeId: 21, roomId: 5 },
+    { amenityTypeId: 22, roomId: 5 },
+    { amenityTypeId: 23, roomId: 5 },
+    { amenityTypeId: 24, roomId: 5 },
+    { amenityTypeId: 25, roomId: 5 },
+    { amenityTypeId: 26, roomId: 5 },
+    { amenityTypeId: 27, roomId: 5 },
+    { amenityTypeId: 28, roomId: 5 },
+    { amenityTypeId: 29, roomId: 5 },
+    { amenityTypeId: 30, roomId: 5 },
+    { amenityTypeId: 1, roomId: 9 },
+    { amenityTypeId: 2, roomId: 9 },
+    { amenityTypeId: 3, roomId: 9 },
+    { amenityTypeId: 4, roomId: 9 },
+    { amenityTypeId: 5, roomId: 9 },
+    { amenityTypeId: 6, roomId: 9 },
+    { amenityTypeId: 7, roomId: 9 },
+    { amenityTypeId: 8, roomId: 9 },
+    { amenityTypeId: 9, roomId: 9 },
+    { amenityTypeId: 10, roomId: 9 },
+    { amenityTypeId: 11, roomId: 9 },
+    { amenityTypeId: 12, roomId: 9 },
+    { amenityTypeId: 13, roomId: 9 },
+    { amenityTypeId: 14, roomId: 9 },
+    { amenityTypeId: 15, roomId: 9 },
+    { amenityTypeId: 16, roomId: 9 },
+    { amenityTypeId: 17, roomId: 9 },
+    { amenityTypeId: 18, roomId: 9 },
+    { amenityTypeId: 19, roomId: 9 },
+    { amenityTypeId: 20, roomId: 9 },
+    { amenityTypeId: 21, roomId: 9 },
+    { amenityTypeId: 22, roomId: 9 },
+    { amenityTypeId: 23, roomId: 9 },
+    { amenityTypeId: 24, roomId: 9 },
+    { amenityTypeId: 25, roomId: 9 },
+    { amenityTypeId: 26, roomId: 9 },
+    { amenityTypeId: 27, roomId: 9 },
+    { amenityTypeId: 28, roomId: 9 },
+    { amenityTypeId: 29, roomId: 9 },
+    { amenityTypeId: 30, roomId: 9 },
+    { amenityTypeId: 31, roomId: 9 },
+    { amenityTypeId: 32, roomId: 9 },
+    { amenityTypeId: 33, roomId: 9 },
+    { amenityTypeId: 34, roomId: 9 },
+    { amenityTypeId: 35, roomId: 9 },
+    { amenityTypeId: 36, roomId: 9 },
+    { amenityTypeId: 1, roomId: 11 },
+    { amenityTypeId: 2, roomId: 11 },
+    { amenityTypeId: 3, roomId: 11 },
+    { amenityTypeId: 4, roomId: 11 },
+    { amenityTypeId: 5, roomId: 11 },
+    { amenityTypeId: 6, roomId: 11 },
+    { amenityTypeId: 7, roomId: 11 },
+    { amenityTypeId: 8, roomId: 11 },
+    { amenityTypeId: 9, roomId: 11 },
+    { amenityTypeId: 10, roomId: 11 },
+    { amenityTypeId: 11, roomId: 11 },
+    { amenityTypeId: 12, roomId: 11 },
+    { amenityTypeId: 13, roomId: 11 },
+    { amenityTypeId: 14, roomId: 11 },
+    { amenityTypeId: 15, roomId: 11 },
+    { amenityTypeId: 16, roomId: 11 },
+    { amenityTypeId: 17, roomId: 11 },
+    { amenityTypeId: 18, roomId: 11 },
+    { amenityTypeId: 19, roomId: 11 },
+    { amenityTypeId: 20, roomId: 11 },
+    { amenityTypeId: 21, roomId: 11 },
+    { amenityTypeId: 22, roomId: 11 },
+    { amenityTypeId: 23, roomId: 11 },
+    { amenityTypeId: 24, roomId: 11 },
+    { amenityTypeId: 25, roomId: 11 },
+    { amenityTypeId: 26, roomId: 11 },
+    { amenityTypeId: 27, roomId: 11 },
+    { amenityTypeId: 28, roomId: 11 },
+    { amenityTypeId: 29, roomId: 11 },
+    { amenityTypeId: 30, roomId: 11 },
+    { amenityTypeId: 31, roomId: 11 },
+    { amenityTypeId: 32, roomId: 11 },
+    { amenityTypeId: 33, roomId: 11 },
+    { amenityTypeId: 34, roomId: 11 },
+    { amenityTypeId: 35, roomId: 11 },
+    { amenityTypeId: 36, roomId: 11 },
+    { amenityTypeId: 37, roomId: 11 },
+    { amenityTypeId: 38, roomId: 11 },
+    { amenityTypeId: 39, roomId: 11 },
+    { amenityTypeId: 40, roomId: 11 },
+    { amenityTypeId: 41, roomId: 11 },
 ]
 
 const nearByPlaceSeeding = [
@@ -1548,6 +1865,7 @@ const seeding = async () => {
     const password = await hashed("abcd1234")
     userSeeding.forEach((el) => (el.password = password))
     await prisma.user.createMany({ data: userSeeding })
+    await prisma.userPhoto.createMany({ data: userPhotoSeeding })
     await prisma.accom.createMany({ data: accomSeeding })
     await prisma.accomPhoto.createMany({ data: accomPhotoSeeding })
     await prisma.houseRules.createMany({ data: houseRulesSeeding })

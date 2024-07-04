@@ -1,5 +1,4 @@
 const { CustomError } = require("../../config/error")
-const { getAccomDetailByAccomId } = require("../../controller/accom")
 const accomService = require("../../service/accomService")
 const amenityTypeService = require("../../service/amenities/amenityTypeService")
 const roomAmenitiesService = require("../../service/amenities/roomAmenitiesService")
