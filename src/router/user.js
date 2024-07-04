@@ -15,6 +15,9 @@ userRouter.post("/login", validatorFn(loginSchema), userController.login)
 userRouter.patch("/:user_id", authenticate, userController.editUser)
 userRouter.delete("/:user_id", authenticate, adminAuthenticate, userController.deleteUser)
 
+// Get Host and Accom data
+userRouter.get("/accom/:user_id", userController.getHostAndAccomDetail)
+
 // ส่วนของ google login
 userRouter.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }))
 userRouter.get("/google/callback", passport.authenticate("google", { failureRedirect: "/", session: false }), userController.googleCallback)

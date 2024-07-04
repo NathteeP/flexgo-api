@@ -101,4 +101,17 @@ roomService.findAccomByManyRoomId = (id) =>
         },
     })
 
+roomService.findMinPriceByManyAccomId = (accomId) =>
+    prisma.room.groupBy({
+        by: ["accomId"],
+        where: {
+            accomId: {
+                in: accomId,
+            },
+        },
+        _min: {
+            price: true,
+        },
+    })
+
 module.exports = roomService

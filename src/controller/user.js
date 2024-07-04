@@ -4,7 +4,9 @@ const userPhotoService = require("../service/photo-service/userPhotoService")
 const reservationService = require("../service/reservationService")
 const userService = require("../service/userService")
 const wishListService = require("../service/wishListService")
+const asyncWrapper = require("../utils/asyncWrapper")
 const { hashed, compare } = require("../utils/bcrypt")
+const getHostAndAccomByUserId = require("../utils/controller-service/getHostAndAccomByUserId")
 const { sign } = require("../utils/jwt")
 
 const userController = {}
@@ -170,5 +172,8 @@ userController.logout = (req, res) => {
     })
     res.json({ message: "Logout successful" })
 }
+
+// Get Host and Accom Data
+userController.getHostAndAccomDetail = asyncWrapper(async (req, res, next) => getHostAndAccomByUserId(req, res, next))
 
 module.exports = userController

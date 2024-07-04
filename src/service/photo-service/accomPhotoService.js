@@ -35,4 +35,13 @@ accomPhotoService.deleteOneAccomPhotoById = (id) =>
         },
     })
 
+accomPhotoService.findManyAccomPhotoByManyAccomId = (accomId) =>
+    prisma.accomPhoto.findMany({
+        where: {
+            accomId: {
+                in: accomId,
+            },
+        },
+    })
+
 module.exports = accomPhotoService

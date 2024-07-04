@@ -11,8 +11,6 @@ accomRouter.get("/detail/:accom_id", accomController.getAccomDetailByAccomId)
 
 accomRouter.post("/avail", accomController.findAvailAccomByLatLng)
 
-accomRouter.post("/feature", accomController.findFeatureAccomByLatLng)
-
 accomRouter.post("/create", authenticate, accomController.verifyInfoAndFindNearbyPlaceCreate, accomController.createAccom)
 
 accomRouter.patch("/edit/:accom_id", authenticate, accomController.verifyUserAndAccom, accomController.editAccomDetails)

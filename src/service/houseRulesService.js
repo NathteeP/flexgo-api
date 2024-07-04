@@ -28,4 +28,11 @@ houseRulesService.findHouseRulesById = (id) =>
         },
     })
 
+houseRulesService.findHouseRuleByAccomId = (accomId) =>
+    prisma.houseRules.findFirst({
+        where: {
+            accomId,
+        },
+    })
+
 module.exports = houseRulesService

@@ -43,7 +43,7 @@ module.exports.getFeaturedReviewByAccomIdService = async (accomId) => {
         const allReservation = await reservationService.findAllReserveByRoomId(allRoomId.map((item) => item.id))
         const allReviewsDetails = await reviewService.findAllReviewsByReserveId(allReservation.map((item) => item.id))
         if (allReviewsDetails.length < 1) {
-            const review = {}
+            const review = []
             return review
         }
         const allReviewsArr = allReviewsDetails.map((item) => {

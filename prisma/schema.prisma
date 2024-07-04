@@ -28,13 +28,13 @@ model User {
   phoneNumber String?  @unique @map("phone_number") @db.VarChar(10)
   birthDate   String?  @map("birth_date") @db.VarChar(10)
   gender      Gender?
-  nationality String?   @db.VarChar(50)
-  role        Role      @default(CLIENT)
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  isActive    Boolean   @default(true) @map("is_active")
+  nationality String?  @db.VarChar(50)
+  role        Role     @default(CLIENT)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  isActive    Boolean  @default(true) @map("is_active")
   address     String?
-  description String?   @db.Text
+  description String?  @db.Text
 
   wishList    WishList[]
   userPhoto   UserPhoto[]
@@ -180,7 +180,7 @@ model Reviews {
   ratingType4   Int
   reviewDate    DateTime @default(now()) @map("review_date")
 
-  reservation   Reservation @relation(fields: [reservationId], references: [id])
+  reservation Reservation @relation(fields: [reservationId], references: [id])
 }
 
 enum ReservationStatus {
@@ -204,12 +204,12 @@ model Reservation {
   customerPhone   String?
   customerCountry String?
 
-  room   Room  @relation(fields: [roomId], references: [id])
-  roomId Int
-  user   User? @relation(fields: [userId], references: [id])
-  userId Int?
-  transaction     Transaction[]
-  reviews         Reviews[]
+  room        Room          @relation(fields: [roomId], references: [id])
+  roomId      Int
+  user        User?         @relation(fields: [userId], references: [id])
+  userId      Int?
+  transaction Transaction[]
+  reviews     Reviews[]
 }
 
 enum TransactionStatus {
@@ -219,15 +219,15 @@ enum TransactionStatus {
 }
 
 model Transaction {
-  id     Int               @id @default(autoincrement())
-  status TransactionStatus @default(PENDING)
-  netPrice Decimal         @db.Decimal(10,2)
-  transactionDate DateTime @default(now()) @map("transaction_date")
+  id              Int               @id @default(autoincrement())
+  status          TransactionStatus @default(PENDING)
+  netPrice        Decimal           @db.Decimal(10, 2)
+  transactionDate DateTime          @default(now()) @map("transaction_date")
 
-  reservation Reservation  @relation(fields: [reservationId], references: [id])
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
   reservationId String
-  fee    Fee               @relation(fields: [feeId], references: [id])
-  feeId  Int
+  fee           Fee         @relation(fields: [feeId], references: [id])
+  feeId         Int
 }
 
 model Fee {

@@ -18,6 +18,13 @@ userPhotoService.findPhotoByUserId = (userId) =>
         where: {
             userId,
         },
+        include: {
+            user: {
+                select: {
+                    fullName: true,
+                },
+            },
+        },
     })
 
 userPhotoService.deleteUserPhoto = (id) =>

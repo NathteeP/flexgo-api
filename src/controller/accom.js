@@ -3,19 +3,17 @@ const { defaultCoordinate, defaultDistance } = require("../constant/defaults")
 const findPlacesService = require("../google-client/findPlacesService")
 const accomNearbyService = require("../service/accomNearbyService")
 const accomService = require("../service/accomService")
-const amenityTypeService = require("../service/amenities/amenityTypeService")
-const roomAmenitiesService = require("../service/amenities/roomAmenitiesService")
 const nearbyPlaceService = require("../service/nearbyPlaceService")
 const accomPhotoService = require("../service/photo-service/accomPhotoService")
-const roomPhotoService = require("../service/photo-service/roomPhotoService")
 const reservationService = require("../service/reservationService")
-const roomAndBedService = require("../service/room-and-bed/roomAndBedService")
 const roomService = require("../service/room-and-bed/roomService")
 const asyncWrapper = require("../utils/asyncWrapper")
 const { findAllReviewByAccomIdService, getFeaturedReviewByAccomIdService } = require("../utils/controller-service/findAllReviewByAccomId")
 const { findUserHostingTime } = require("../utils/controller-service/findUserHostingTime")
 const { harvesineService, createBoundingBox } = require("../utils/harvesineService")
 const getAccomDetailAndRoomService = require("../utils/controller-service/getAccomDetailAndRoom")
+const userPhotoService = require("../service/photo-service/userPhotoService")
+const houseRulesService = require("../service/houseRulesService")
 
 const accomController = {}
 
@@ -85,6 +83,8 @@ accomController.getAccomDetailByAccomId = asyncWrapper(async (req, res, next) =>
     const isAccomExists = await accomService.findAccomByAccomId(+req.params.accom_id)
     if (!isAccomExists) return next(new CustomError("This accom ID does not exist", "NonExist", 400))
 
+    const user = await userPhotoService.findPhotoByUserId(isAccomExists.userId)
+
     // Get all accom photo
     const accomPhoto = await accomPhotoService.getPhotoByAccomId(+req.params.accom_id)
 
@@ -96,10 +96,10 @@ accomController.getAccomDetailByAccomId = asyncWrapper(async (req, res, next) =>
 
     // Get nearby Place of this accom ID
     const allNearbyPlace = await accomNearbyService.findNearplaceByAccomId(+req.params.accom_id)
-    const nearbyPlace = allNearbyPlace.reduce((acc, curr) => {
+    const unSortNearbyPlace = allNearbyPlace.reduce((acc, curr) => {
         const objToPush = {}
         objToPush.id = curr.nearbyPlace.id
-        objToPush.distance = curr.distance
+        objToPush.distance = Number(curr.distance).toFixed(2)
         objToPush.name = curr.nearbyPlace.name
         objToPush.icon = curr.nearbyPlace.icon
         objToPush.iconBgClr = curr.nearbyPlace.iconBgClr
@@ -107,17 +107,26 @@ accomController.getAccomDetailByAccomId = asyncWrapper(async (req, res, next) =>
         return acc
     }, [])
 
+    const nearbyPlace = unSortNearbyPlace.sort((a, b) => a.distance - b.distance)
+
     // Get Featured Reviews of this Accom ID
     const featureReviews = await getFeaturedReviewByAccomIdService(isAccomExists.id)
+
+    const houseRule = await houseRulesService.findHouseRuleByAccomId(isAccomExists.id)
 
     // Set data before return response
     const accom = {
         accom: isAccomExists,
-        photo: accomPhoto,
+        user: {
+            photo: user.imagePath,
+            name: user.user.fullName,
+        },
+        accomPhoto: accomPhoto,
         hostDuration: userHostDuration,
         reviews: getAllReviews,
         featureReviews,
         nearbyPlace,
+        houseRule,
     }
     res.status(200).json(accom)
 })
@@ -132,12 +141,9 @@ accomController.deleteAccom = asyncWrapper(async (req, res, next) => {
     res.status(204).json({ message: "Deleted successfully!" })
 })
 
-accomController.findFeatureAccomByLatLng = asyncWrapper(async (req, res, next) => {})
-
 accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => {
-    if (!req.body.date) {
-        req.body.date = new Date(Date.now())
-    }
+    req.body.checkInDate = new Date(req.body.checkInDate)
+    req.body.checkOutDate = new Date(req.body.checkOutDate)
 
     if (!req.body.lat && !req.body.lng) {
         req.body.lat = defaultCoordinate.lat
@@ -148,12 +154,16 @@ accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => 
         req.body.distance = defaultDistance
     }
 
+    if (!req.body.capacity) {
+        req.body.capacity = 1
+    }
+
     const { latMax, latMin, lngMax, lngMin } = createBoundingBox(+req.body.lat, +req.body.lng, req.body.distance)
     const allAccom = await accomService.findAccomWithInBoundingBox(latMax.toString(), latMin.toString(), lngMax.toString(), lngMin.toString())
     const allRoom = await roomService.findManyRoomWithManyAccomId(allAccom.map((item) => item.id))
 
     // Find Reserved room
-    const roomReserved = await reservationService.findAllRoomIdByDate(req.body.date)
+    const roomReserved = await reservationService.findAllRoomIdByDate(req.body.checkInDate, req.body.checkOutDate)
 
     // Find available room ID
     const availRoomId = allRoom.filter((item) => {
@@ -165,8 +175,9 @@ accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => 
         return item
     })
 
-    // Find avialable accom
-    const roomAndAccom = await roomService.findAccomByManyRoomId(availRoomId.map((item) => item.id))
+    const filteredRoomId = availRoomId.filter((item) => item.capacity >= req.body.capacity)
+    // Find available accom
+    const roomAndAccom = await roomService.findAccomByManyRoomId(filteredRoomId.map((item) => item.id))
 
     const availAccom = roomAndAccom.reduce((acc, curr) => {
         if (acc.length > 0) {
@@ -189,7 +200,8 @@ accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => 
         item.reviews = reviews
     }
 
-    res.status(200).json(availAccom)
+    const accom = availAccom.sort((a, b) => b.reviews.overAllReview - a.reviews.overAllReview)
+    res.status(200).json(accom)
 })
 
 module.exports = accomController
