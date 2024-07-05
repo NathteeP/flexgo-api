@@ -8,7 +8,6 @@ module.exports = async function authenticate(req, res, next) {
         if (!accessToken) throw new CustomError("Token not found", "InvalidToken", 401)
 
         const payload = jwt.verify(accessToken, process.env.JWT_SECRET_KEY ?? "key")
-
         const authUser = await userService.findUserById(payload.id)
         if (!authUser) next(new CustomError("User was not found", "NotFoundData", 400))
         if (authUser.isActive === false) next(new CustomError("User is inactive", "UserInactive", 401))

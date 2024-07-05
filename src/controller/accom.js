@@ -75,7 +75,11 @@ accomController.createAccom = asyncWrapper(async (req, res, next) => {
     res.status(201).json(response)
 })
 
-accomController.getAllRoomByAccomId = asyncWrapper(async (req, res, next) => getAccomDetailAndRoomService(req, res, next, true))
+accomController.getAllRoomByAccomId = asyncWrapper(async (req, res, next) => {
+    // เพิ่ม key findAllRoom ลงไป เพราะ Logic เก่าผิด
+    req.findAllRoom = true
+    return getAccomDetailAndRoomService(req, res, next)
+})
 
 accomController.getAvailRoomByAccomId = asyncWrapper(async (req, res, next) => getAccomDetailAndRoomService(req, res, next, false))
 
@@ -202,6 +206,25 @@ accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => 
 
     const accom = availAccom.sort((a, b) => b.reviews.overAllReview - a.reviews.overAllReview)
     res.status(200).json(accom)
+})
+
+accomController.getAllAccomByUserId = asyncWrapper(async (req, res, next) => {
+    const accom = await accomService.findAllAccomByUserId(+req.params.user_id)
+    const hostTime = await findUserHostingTime(+req.params.user_id)
+    const review = []
+    for (let item of accom) {
+        review.push(...(await getFeaturedReviewByAccomIdService(item.id)))
+    }
+    const rating = review.reduce(
+        (acc, curr) => {
+            acc.overAllReview += curr.overAllReview
+            return acc
+        },
+        { overAllReview: 0 },
+    )
+    rating.overAllReview = (rating.overAllReview / review.length).toFixed(1)
+    rating.count = review.length
+    res.status(200).json({ accom, rating, hostTime })
 })
 
 module.exports = accomController
