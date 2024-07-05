@@ -86,7 +86,21 @@ reservationService.updateReservationById = (reservationId, data) => prisma.reser
 
 reservationService.deleteReservationById = (reservationId) => prisma.reservation.delete({ where: { id: reservationId } })
 
-reservationService.findAllReservationByUserId = (userId) => 
-    prisma.reservation.findMany({where:{userId}})
+reservationService.findAllReservationByUserId = (userId) => prisma.reservation.findMany({ where: { userId } })
+
+reservationService.findTodayReservedRoomByRoomId = (roomId) =>
+    prisma.reservation.findMany({
+        where: {
+            roomId: {
+                in: roomId,
+            },
+            checkInDate: {
+                lte: new Date(Date.now()),
+            },
+            checkOutDate: {
+                gte: new Date(Date.now()),
+            },
+        },
+    })
 
 module.exports = reservationService

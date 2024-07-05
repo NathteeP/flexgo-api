@@ -69,6 +69,11 @@ userController.login = async (req, res, next) => {
         const { id, email, fullName, phoneNumber } = existUser
         const responseBody = { id, email, fullName, phoneNumber, accessToken }
 
+        res.cookie("jwt", accessToken, {
+            httpOnly: true,
+            secure: false,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        })
         res.status(200).json(responseBody)
     } catch (err) {
         next(err)

@@ -8,15 +8,15 @@ const roomAndBedService = require("../../service/room-and-bed/roomAndBedService"
 const roomService = require("../../service/room-and-bed/roomService")
 const asyncWrapper = require("../asyncWrapper")
 
-const getAccomDetailAndRoomService = asyncWrapper(async (req, res, next, findAllRoom) => {
+const getAccomDetailAndRoomService = asyncWrapper(async (req, res, next) => {
     if (isNaN(req.params.accom_id)) return next(new CustomError("Please provide accommodation ID", "InvalidInfo", 400))
     const isAccomExists = await accomService.findAccomByAccomId(+req.params.accom_id)
     if (!isAccomExists) return next(new CustomError("This accom does not exist", "NonExist", 400))
-
     let allRoom = await roomService.findAllRoomByAccomId(+req.params.accom_id)
     if (allRoom.length < 1) return res.status(200).json(allRoom)
 
-    if (!findAllRoom) {
+    // แก้ไข findAllRoom เดี่ยวๆ เป็นเพิ่ม key findAllRoom ไปใน req
+    if (!req.findAllRoom) {
         const roomReserved = await reservationService.findReservedRoomIdByDateAndRoomId(
             req.body.checkInDate,
             req.body.checkOutDate,
@@ -56,6 +56,20 @@ const getAccomDetailAndRoomService = asyncWrapper(async (req, res, next, findAll
 
         return acc
     }, {})
+
+    if (req.findAllRoom) {
+        const reservedRoom = await reservationService.findTodayReservedRoomByRoomId(allRoom.map((item) => item.id))
+        const reservedTable = reservedRoom.reduce((acc, curr) => {
+            acc[curr.roomId] = `until ${curr.checkOutDate.toLocaleString()}`
+            return acc
+        }, {})
+        allRoom.forEach((item) => {
+            if (reservedTable[item.id]) {
+                item.notAvailable = reservedTable[item.id]
+            }
+        })
+    }
+
     const roomAndBed = allRoom.map((item) => {
         if (bedTable[item.id]) {
             item.bed = bedTable[item.id]
