@@ -6,7 +6,7 @@ const roomRouter = express.Router()
 
 roomRouter.post("/create", authenticate, roomController.verifyBeforeCreate, roomController.createRoom)
 roomRouter.get("/:room_id", roomController.getActiveRoom)
-
+roomRouter.get("/:room_id/accom", roomController.getRoomAndAccomByRoomId)
 roomRouter.patch("/edit/:room_id", authenticate, roomController.verifyUserAndRoom, roomController.editRoomDetail)
 
 roomRouter.delete("/delete/:room_id", authenticate, roomController.verifyUserAndRoom, roomController.deleteRoom)

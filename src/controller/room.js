@@ -86,4 +86,9 @@ roomController.deleteRoom = asyncWrapper(async (req, res, next) => {
     res.status(204).json({ message: `The room ID ${req.params.room_id} has changed to INACTIVE` })
 })
 
+roomController.getRoomAndAccomByRoomId = asyncWrapper(async (req, res, next) => {
+    const response = await roomService.getUserIdByRoomId(+req.params.room_id)
+    res.status(200).json(response)
+})
+
 module.exports = roomController
