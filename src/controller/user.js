@@ -172,7 +172,6 @@ userController.requestOTP = async (req, res, next) => {
         }
 
         const result = await otpService.createAndSendOTP(email)
-
         res.status(200).json(result)
     } catch (error) {
         next(error)
@@ -186,8 +185,8 @@ userController.verifyOTP = async (req, res, next) => {
             throw new CustomError("Email, OTP, and Reference Code are required", "ValidationError", 400)
         }
 
-        await otpService.verifyOTP(email, otp, refCode)
-        res.status(200).json({ message: "OTP verified successfully" })
+        const result = await otpService.verifyOTP(email, otp, refCode)
+        res.status(200).json(result.guestEmail)
     } catch (error) {
         next(error)
     }
@@ -195,12 +194,11 @@ userController.verifyOTP = async (req, res, next) => {
 
 userController.changePassword = async (req, res, next) => {
     try {
-        const { email, newPassword } = req.body
+        const { userEmail, newPassword } = req.body
 
         const hashedPassword = await hashed(newPassword)
-
-        await userService.updatePasswordByEmail(email, hashedPassword)
-        await otpService.deleteOTP(email)
+        await userService.updatePasswordByEmail(userEmail, hashedPassword)
+        await otpService.deleteOTP(userEmail)
         res.status(200).json({ message: "Password changed successfully" })
     } catch (error) {
         next(error)

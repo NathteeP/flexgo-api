@@ -70,8 +70,8 @@ otpService.verifyOTP = async (guestEmail, otpCode, refCode) => {
     if (!otpRecord) {
         throw new CustomError("Invalid or Expired OTP", "OTPError", 400)
     }
-
-    return true
+    console.log(otpRecord)
+    return otpRecord
 }
 
 otpService.deleteOTP = async (guestEmail) => {
