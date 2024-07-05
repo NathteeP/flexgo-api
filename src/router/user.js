@@ -23,4 +23,9 @@ userRouter.get("/google", passport.authenticate("google", { scope: ["profile", "
 userRouter.get("/google/callback", passport.authenticate("google", { failureRedirect: "/", session: false }), userController.googleCallback)
 userRouter.post("/logout", userController.logout)
 
+// ส่วนของ forgotPassword
+userRouter.post("/request-otp", userController.requestOTP)
+userRouter.post("/verify-otp", userController.verifyOTP)
+userRouter.post("/change-password", userController.changePassword)
+
 module.exports = userRouter
