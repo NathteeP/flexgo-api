@@ -1,5 +1,6 @@
 const { CustomError } = require("../config/error")
 const prisma = require("../models/prisma")
+const otpService = require("../service/otpService")
 const userPhotoService = require("../service/photo-service/userPhotoService")
 const reservationService = require("../service/reservationService")
 const userService = require("../service/userService")
@@ -7,7 +8,7 @@ const wishListService = require("../service/wishListService")
 const asyncWrapper = require("../utils/asyncWrapper")
 const { hashed, compare } = require("../utils/bcrypt")
 const getHostAndAccomByUserId = require("../utils/controller-service/getHostAndAccomByUserId")
-const { sign } = require("../utils/jwt")
+const jwt = require("../utils/jwt")
 
 const userController = {}
 
@@ -65,7 +66,7 @@ userController.login = async (req, res, next) => {
         if (!isMatch) throw new CustomError("Wrong username or password", "ValidationError", 400)
         if (existUser.isActive === false) throw new CustomError("User is inactive", "UserInactive", 401)
 
-        const accessToken = sign({ id: existUser.id })
+        const accessToken = jwt.sign({ id: existUser.id })
         const { id, email, fullName, phoneNumber } = existUser
         const responseBody = { id, email, fullName, phoneNumber, accessToken }
 
@@ -105,40 +106,21 @@ userController.deleteUser = async (req, res, next) => {
 
 // ส่วนของ Google Login
 // Merge ข้อมูล user ถ้า เจอว่า profile มันซ้ำกัน
-// userController.js
 userController.googleCallback = async (req, res, next) => {
     try {
-        const user = req.user.user // ดึงข้อมูล user จาก req.user.user
+        const profile = req.user.user // ดึงข้อมูล profile จาก req.user.profile
 
-        if (!user.email) {
+        if (!profile.email) {
             throw new CustomError("Google profile does not contain emails", "InvalidProfile", 400)
         }
-        const email = user.email
+        const email = profile.email
+        const googleId = profile.googleId
+        const fullName = profile.fullName
 
-        let { googleIdExists, emailExists } = await userService.findAlreadyExistedGoogleUser(user.googleId, email)
-
-        let updatedUser
-        if (emailExists && !googleIdExists) {
-            updatedUser = await userService.updateUser(emailExists.id, {
-                googleId: user.googleId,
-                fullName: user.fullName,
-                // ถ้าจะเอารูปด้วย คุยกับ BM ก่อนเพราะมีเรื่อง Cloudinary เข้ามาเกี่ยวข้อง
-                // picture: profile.photos[0].value,
-            })
-        } else if (!emailExists && !googleIdExists) {
-            updatedUser = await userService.createUser({
-                email: email,
-                googleId: user.googleId,
-                fullName: user.fullName,
-                // ถ้าจะเอารูปด้วย คุยกับ BM ก่อนเพราะมีเรื่อง Cloudinary เข้ามาเกี่ยวข้อง
-                // picture: profile.photos[0].value,
-            })
-        } else if (googleIdExists) {
-            updatedUser = googleIdExists
-        }
+        const updatedUser = await userService.findOrCreateUserWithGoogle(email, googleId, fullName)
 
         // สร้าง JWT
-        const token = sign({ id: updatedUser.id })
+        const token = jwt.sign({ id: updatedUser.id })
 
         res.cookie("jwt", token, {
             httpOnly: true,
@@ -180,5 +162,52 @@ userController.logout = (req, res) => {
 
 // Get Host and Accom Data
 userController.getHostAndAccomDetail = asyncWrapper(async (req, res, next) => getHostAndAccomByUserId(req, res, next))
+
+// ส่วนของ forgotPassword
+userController.requestOTP = async (req, res, next) => {
+    try {
+        const { email } = req.body
+        if (!email) {
+            throw new CustomError("Email is required", "ValidationError", 400)
+        }
+
+        const validUser = await userService.findUserByEmail(email)
+        if (!validUser) {
+            throw new CustomError("User not found", "NotFoundError", 404)
+        }
+
+        const result = await otpService.createAndSendOTP(email)
+        res.status(200).json(result)
+    } catch (error) {
+        next(error)
+    }
+}
+
+userController.verifyOTP = async (req, res, next) => {
+    try {
+        const { email, otp, refCode } = req.body
+        if (!email || !otp || !refCode) {
+            throw new CustomError("Email, OTP, and Reference Code are required", "ValidationError", 400)
+        }
+
+        const result = await otpService.verifyOTP(email, otp, refCode)
+        res.status(200).json(result.guestEmail)
+    } catch (error) {
+        next(error)
+    }
+}
+
+userController.changePassword = async (req, res, next) => {
+    try {
+        const { userEmail, newPassword } = req.body
+
+        const hashedPassword = await hashed(newPassword)
+        await userService.updatePasswordByEmail(userEmail, hashedPassword)
+        await otpService.deleteOTP(userEmail)
+        res.status(200).json({ message: "Password changed successfully" })
+    } catch (error) {
+        next(error)
+    }
+}
 
 module.exports = userController
