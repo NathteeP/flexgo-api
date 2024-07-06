@@ -1,3 +1,4 @@
+const fs = require("fs/promises")
 const cloudinary = require("../config/cloudinary")
 const { CustomError } = require("../config/error")
 const prisma = require("../models/prisma")
@@ -265,6 +266,8 @@ userController.editAuthUser = async (req, res, next) => {
         res.status(200).json(response)
     } catch (err) {
         next(err)
+    } finally {
+        fs.unlink(req.file.path)
     }
 }
 
