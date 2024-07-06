@@ -36,37 +36,58 @@ userService.deleteUser = (userId) => prisma.user.update({ where: { id: userId },
 // ปรับ Login เพิ่มส่วนนี้
 userService.findUserByEmail = (email) => prisma.user.findUnique({ where: { email } })
 // ส่วนของ google login ถ้าจะเพิ่ม รูปอาจจะต้องไปปรับตัว Cloudinary ด้วยต้องคุยกับ อิฐ & bm
-userService.findOrCreateUserWithGoogle = async (email, googleId, fullName) => {
-    const googleIdExists = await prisma.user.findUnique({
-        where: { googleId },
-    })
-    const emailExists = await prisma.user.findUnique({
-        where: { email },
-    })
-
+userService.findOrCreateUserWithGoogle = async (email, googleId, fullName, profilePicture) => {
     let user
-    if (emailExists && !googleIdExists) {
-        user = await prisma.user.update({
-            where: { id: emailExists.id },
-            data: {
-                googleId: googleId,
-                fullName: fullName,
-                // picture: profile.photos[0].value,
-            },
+    await prisma.$transaction(async (tx) => {
+        const googleIdExists = await tx.user.findUnique({
+            where: { googleId },
         })
-    } else if (!emailExists && !googleIdExists) {
-        user = await prisma.user.create({
-            data: {
-                email: email,
-                googleId: googleId,
-                fullName: fullName,
-                // picture: profile.photos[0].value,
-            },
+        const emailExists = await tx.user.findUnique({
+            where: { email },
         })
-    } else if (googleIdExists) {
-        user = googleIdExists
-    }
 
+        if (emailExists && !googleIdExists) {
+            user = await tx.user.update({
+                where: { id: emailExists.id },
+                data: {
+                    googleId: googleId,
+                    fullName: fullName,
+                },
+            })
+
+            await tx.userPhoto.create({
+                data: {
+                    userId: user.id,
+                    imagePath: profilePicture,
+                },
+            })
+        } else if (!emailExists && !googleIdExists) {
+            user = await tx.user.create({
+                data: {
+                    email: email,
+                    googleId: googleId,
+                    fullName: fullName,
+                },
+            })
+
+            await tx.userPhoto.create({
+                data: {
+                    userId: user.id,
+                    imagePath: profilePicture,
+                },
+            })
+        } else if (googleIdExists) {
+            user = googleIdExists
+
+            // อัปเดตรูปโปรไฟล์
+            await tx.userPhoto.updateMany({
+                where: { userId: user.id },
+                data: { imagePath: profilePicture },
+            })
+        }
+    })
+
+    console.log(user)
     return user
 }
 
