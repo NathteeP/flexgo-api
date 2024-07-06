@@ -56,6 +56,7 @@ userController.register = async (req, res, next) => {
 
 userController.login = async (req, res, next) => {
     try {
+        await prisma.$transaction(async (tx) => {
         const data = req.body
         const existUser = await userService.findUserByUsername(data.username)
 
@@ -66,9 +67,13 @@ userController.login = async (req, res, next) => {
         if (!isMatch) throw new CustomError("Wrong username or password", "ValidationError", 400)
         if (existUser.isActive === false) throw new CustomError("User is inactive", "UserInactive", 401)
 
+        const responseBody = {}
         const accessToken = jwt.sign({ id: existUser.id })
-        const { id, email, fullName, phoneNumber } = existUser
-        const responseBody = { id, email, fullName, phoneNumber, accessToken }
+        responseBody.profileImage = await userPhotoService.findPhotoByUserId(existUser.id)
+        responseBody.wishlist = await wishListService.findAllWishListByUserId(existUser.id)
+        responseBody.propertyMessage = {}
+        responseBody.bookingHistory = await reservationService.findAllReservationByUserId(existUser.id)
+        delete responseBody.password
 
         res.cookie("jwt", accessToken, {
             httpOnly: true,
@@ -76,6 +81,7 @@ userController.login = async (req, res, next) => {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         })
         res.status(200).json(responseBody)
+    })
     } catch (err) {
         next(err)
     }
