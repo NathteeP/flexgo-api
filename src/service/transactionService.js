@@ -1,3 +1,4 @@
+const { transactionStatus } = require("../constant/enum")
 const prisma = require("../models/prisma")
 
 const transactionService = {}
@@ -15,5 +16,22 @@ transactionService.createPaymentIntent = async (req, res) => {
 }
 
 transactionService.createTable = (data) => prisma.transaction.create({ data })
+
+transactionService.confirmPayment = async (req,res,next) => {
+    try {
+        const transactionId = req.body.transactionId
+        await prisma.transaction.update({
+            where:{
+                id:transactionId
+            },
+        data:{
+            status: transactionStatus.SUCCESS
+        }})
+
+        res.status(200).json({"message": "payment status updated to SUCCESS"})
+    } catch (err) {
+        next(err)
+    }
+}
 
 module.exports = transactionService

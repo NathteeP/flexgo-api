@@ -4,6 +4,9 @@ const bedTypeService = require("../service/room-and-bed/bedTypeService")
 const roomAndBedService = require("../service/room-and-bed/roomAndBedService")
 const roomService = require("../service/room-and-bed/roomService")
 const asyncWrapper = require("../utils/asyncWrapper")
+const { findAllReviewByAccomIdService } = require("../utils/controller-service/findAllReviewByAccomId")
+const roomPhotoService = require("../service/photo-service/roomPhotoService")
+const accomPhotoService = require("../service/photo-service/accomPhotoService")
 
 const roomController = {}
 
@@ -84,6 +87,21 @@ roomController.editRoomDetail = asyncWrapper(async (req, res, next) => {
 roomController.deleteRoom = asyncWrapper(async (req, res, next) => {
     await roomService.changeRoomStatusToInAcvie(+req.params.room_id)
     res.status(204).json({ message: `The room ID ${req.params.room_id} has changed to INACTIVE` })
+})
+
+roomController.getRoomAndAccomByRoomId = asyncWrapper(async (req, res, next) => {
+    //room + accom
+    const response = await roomService.getUserIdByRoomId(+req.params.room_id)
+    //room's first photo
+    const roomPhoto = await roomPhotoService.findManyPhotoByManyRoomId([+req.params.room_id])
+    response.roomPhoto = roomPhoto[0].imagePath
+    //accom's first photo
+    const accomPhoto = await accomPhotoService.getPhotoByAccomId(response.accomId)
+    response.accom.accomPhoto = accomPhoto[0].imagePath
+    //accom's review (points only)
+    response.accom.review = await findAllReviewByAccomIdService(response.accomId)
+
+    res.status(200).json(response)
 })
 
 module.exports = roomController

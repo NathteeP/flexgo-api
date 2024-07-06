@@ -27,9 +27,9 @@ reservationController.create = async (req,res,next) => {
         const transactionData = req.body.transaction
 
         transactionData.reservationId = generatedId
-        transactionData.status = transactionStatus.SUCCESS
-       
-        await transactionService.createTable(transactionData)
+        transactionData.status = transactionStatus.PENDING
+        //attach transaction data to response body
+        response.transaction = await transactionService.createTable(transactionData)
 
         res.status(201).json(response)
     })

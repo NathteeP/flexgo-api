@@ -10,7 +10,7 @@ exports.createReservationSchema = Joi.object({
     customerEmail: Joi.string().email({tlds: false}),
     customerCountry: Joi.string(),
     roomId: Joi.required(),
-    userId: Joi.required(),
+    userId: Joi.number(),
     transaction: Joi.object({
         netPrice: Joi.number().required(),
         feeId: Joi.required()
