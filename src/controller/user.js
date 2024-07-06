@@ -67,7 +67,7 @@ userController.login = async (req, res, next) => {
         if (!isMatch) throw new CustomError("Wrong username or password", "ValidationError", 400)
         if (existUser.isActive === false) throw new CustomError("User is inactive", "UserInactive", 401)
 
-        const responseBody = {}
+        const responseBody = {...existUser}
         const accessToken = jwt.sign({ id: existUser.id })
         responseBody.profileImage = await userPhotoService.findPhotoByUserId(existUser.id)
         responseBody.wishlist = await wishListService.findAllWishListByUserId(existUser.id)

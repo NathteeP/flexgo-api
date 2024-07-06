@@ -13,6 +13,6 @@ reservationRouter.post("/create", validatorFn(createReservationSchema), reservat
 reservationRouter.get("/:reserv_id", reservationController.getReservation)
 reservationRouter.patch("/payment-success", transactionService.confirmPayment)
 reservationRouter.patch("/:reserv_id", authenticate, reservationController.updateReservation)
-reservationRouter.delete("/:reserv_id", authenticate, adminAuthenticate, reservationController.deleteReservation)
+reservationRouter.delete("/:reserv_id", reservationController.deleteReservation)
 
 module.exports = reservationRouter

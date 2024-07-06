@@ -222,6 +222,7 @@ model Transaction {
   id              Int               @id @default(autoincrement())
   status          TransactionStatus @default(PENDING)
   netPrice        Decimal           @db.Decimal(10, 2)
+  serviceFee      Decimal           @db.Decimal(10, 2)
   transactionDate DateTime          @default(now()) @map("transaction_date")
 
   reservation   Reservation @relation(fields: [reservationId], references: [id])

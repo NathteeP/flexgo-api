@@ -13,6 +13,7 @@ exports.createReservationSchema = Joi.object({
     userId: Joi.number(),
     transaction: Joi.object({
         netPrice: Joi.number().required(),
-        feeId: Joi.required()
+        feeId: Joi.required(),
+        serviceFee: Joi.required(),
     })
 })

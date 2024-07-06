@@ -11,22 +11,25 @@ const reservationController = {}
 reservationController.create = async (req,res,next) => {
     try {
         await prisma.$transaction(async () => {
+
+        let response
             
         const reservData = {...req.body} //สำหรับส่งไป create reservation
         //เช็คว่ามีการจองโดย user เดียวกัน ในวันเช็คอินเดียวกันเหรือไม่
         const duplicatedReserv = await reservationService.checkIfDuplicate(reservData.userId, reservData.checkInDate)
         if (duplicatedReserv) {
-            throw new CustomError("Duplicated reservation", "ValidationError", 400)
+            response = duplicatedReserv
         }
-        const generatedId = await reservationService.generateId()
+        else {
+            const generatedId = await reservationService.generateId()
         reservData.id = generatedId
         delete reservData.transaction
-        const response = await reservationService.create(reservData)
-        
-        //save transaction data into DB
+        response = await reservationService.create(reservData)
+        }
         const transactionData = req.body.transaction
+        //save transaction data into DB
 
-        transactionData.reservationId = generatedId
+        transactionData.reservationId = response.id
         transactionData.status = transactionStatus.PENDING
         //attach transaction data to response body
         response.transaction = await transactionService.createTable(transactionData)
@@ -81,6 +84,7 @@ reservationController.deleteReservation = async (req,res,next) => {
 
 
         await reservationService.deleteReservationById(req.params.reserv_id)
+        
         res.status(200).json({"message": "deleted successfully"})
     } catch (err) {
         next(err)
