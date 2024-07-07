@@ -97,10 +97,10 @@ roomController.getRoomAndAccomByRoomId = asyncWrapper(async (req, res, next) => 
     response.roomBed = await roomAndBedService.findAllBedByRoomId([+req.params.room_id])
     //room's first photo
     const roomPhoto = await roomPhotoService.findManyPhotoByManyRoomId([+req.params.room_id])
-    response.roomPhoto = roomPhoto[0].imagePath
+    if(roomPhoto[0]) response.roomPhoto = roomPhoto[0].imagePath
     //accom's first photo
     const accomPhoto = await accomPhotoService.getPhotoByAccomId(response.accomId)
-    response.accom.accomPhoto = accomPhoto[0].imagePath
+    if(accomPhoto[0]) response.accom.accomPhoto = accomPhoto[0].imagePath
     //accom's review (points only)
     response.accom.review = await findAllReviewByAccomIdService(response.accomId)
     //accom's houserules

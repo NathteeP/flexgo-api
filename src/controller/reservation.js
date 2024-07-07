@@ -1,6 +1,6 @@
 const { PrismaClientKnownRequestError } = require("@prisma/client/runtime/library")
 const { CustomError } = require("../config/error")
-const { transactionStatus } = require("../constant/enum")
+const { transactionStatus, reservationStatus } = require("../constant/enum")
 const prisma = require("../models/prisma")
 const reservationService = require("../service/reservationService")
 const roomService = require("../service/room-and-bed/roomService")
@@ -90,6 +90,17 @@ reservationController.deleteReservation = async (req,res,next) => {
         await reservationService.deleteReservationById(req.params.reserv_id)
         
         res.status(200).json({"message": "deleted successfully"})
+    } catch (err) {
+        next(err)
+    }
+}
+
+reservationController.approveReservation = async (req,res,next) => {
+    try {
+        const approveBody = {status: reservationStatus.CONFIRMED}
+        const response = await reservationService.updateReservationById(req.params.reserv_id, approveBody)
+
+        res.status(200).json(response)
     } catch (err) {
         next(err)
     }

@@ -14,5 +14,6 @@ reservationRouter.get("/:reserv_id", reservationController.getReservation)
 reservationRouter.patch("/payment-success", transactionService.confirmPayment)
 reservationRouter.patch("/:reserv_id", authenticate, reservationController.updateReservation)
 reservationRouter.delete("/:reserv_id", reservationController.deleteReservation)
+reservationRouter.get("/:reserv_id/approve", reservationController.approveReservation)
 
 module.exports = reservationRouter
