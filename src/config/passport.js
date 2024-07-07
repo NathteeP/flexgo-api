@@ -11,12 +11,13 @@ passport.use(
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                const { emails, id, displayName } = profile
+                const { emails, id, displayName, photos } = profile
                 const email = emails[0].value
                 const googleId = id
                 const fullName = displayName
+                const profilePicture = photos[0].value
 
-                const user = await userService.findOrCreateUserWithGoogle(email, googleId, fullName)
+                const user = await userService.findOrCreateUserWithGoogle(email, googleId, fullName, profilePicture)
                 done(null, { user })
             } catch (error) {
                 done(error, null)

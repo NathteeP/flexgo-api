@@ -34,4 +34,14 @@ userPhotoService.deleteUserPhoto = (id) =>
         },
     })
 
+userPhotoService.updateOrCreatePhoto = async (userId, imagePath) => {
+    const existingPhoto = await prisma.userPhoto.findFirst({ where: { userId } })
+
+    if (existingPhoto) {
+        return userPhotoService.editPhoto(imagePath, existingPhoto.id)
+    } else {
+        return userPhotoService.uploadPhoto({ userId, imagePath })
+    }
+}
+
 module.exports = userPhotoService
