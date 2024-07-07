@@ -58,28 +58,28 @@ userController.register = async (req, res, next) => {
 userController.login = async (req, res, next) => {
     try {
         await prisma.$transaction(async (tx) => {
-            const data = req.body
-            const existUser = await userService.findUserByUsername(data.username)
+        const data = req.body
+        const existUser = await userService.findUserByUsername(data.username)
 
-            if (!existUser) throw new CustomError("User did not exist", "ValidationError", 400)
+        if (!existUser) throw new CustomError("User did not exist", "ValidationError", 400)
 
-            const isMatch = await compare(data.password, existUser.password)
+        const isMatch = await compare(data.password, existUser.password)
 
-            if (!isMatch) throw new CustomError("Wrong username or password", "ValidationError", 400)
-            if (existUser.isActive === false) throw new CustomError("User is inactive", "UserInactive", 401)
+        if (!isMatch) throw new CustomError("Wrong username or password", "ValidationError", 400)
+        if (existUser.isActive === false) throw new CustomError("User is inactive", "UserInactive", 401)
 
-            const responseBody = {}
-            const accessToken = jwt.sign({ id: existUser.id })
-            responseBody.profileImage = await userPhotoService.findPhotoByUserId(existUser.id)
-            responseBody.wishlist = await wishListService.findAllWishListByUserId(existUser.id)
-            responseBody.propertyMessage = {}
-            responseBody.bookingHistory = await reservationService.findAllReservationByUserId(existUser.id)
-            delete responseBody.password
+        const responseBody = {...existUser}
+        const accessToken = jwt.sign({ id: existUser.id })
+        responseBody.profileImage = await userPhotoService.findPhotoByUserId(existUser.id)
+        responseBody.wishlist = await wishListService.findAllWishListByUserId(existUser.id)
+        responseBody.propertyMessage = {}
+        responseBody.bookingHistory = await reservationService.findAllReservationByUserId(existUser.id)
+        delete responseBody.password
 
-            res.cookie("jwt", accessToken, {
-                httpOnly: true,
-                secure: false,
-                maxAge: 7 * 24 * 60 * 60 * 1000,
+        res.cookie("jwt", accessToken, {
+            httpOnly: true,
+            secure: false,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
             })
             res.status(200).json(responseBody)
         })

@@ -7,6 +7,7 @@ const asyncWrapper = require("../utils/asyncWrapper")
 const { findAllReviewByAccomIdService } = require("../utils/controller-service/findAllReviewByAccomId")
 const roomPhotoService = require("../service/photo-service/roomPhotoService")
 const accomPhotoService = require("../service/photo-service/accomPhotoService")
+const houseRulesService = require("../service/houseRulesService")
 
 const roomController = {}
 
@@ -92,14 +93,18 @@ roomController.deleteRoom = asyncWrapper(async (req, res, next) => {
 roomController.getRoomAndAccomByRoomId = asyncWrapper(async (req, res, next) => {
     //room + accom
     const response = await roomService.getUserIdByRoomId(+req.params.room_id)
+    //roombed
+    response.roomBed = await roomAndBedService.findAllBedByRoomId([+req.params.room_id])
     //room's first photo
     const roomPhoto = await roomPhotoService.findManyPhotoByManyRoomId([+req.params.room_id])
-    response.roomPhoto = roomPhoto[0].imagePath
+    if(roomPhoto[0]) response.roomPhoto = roomPhoto[0].imagePath
     //accom's first photo
     const accomPhoto = await accomPhotoService.getPhotoByAccomId(response.accomId)
-    response.accom.accomPhoto = accomPhoto[0].imagePath
+    if(accomPhoto[0]) response.accom.accomPhoto = accomPhoto[0].imagePath
     //accom's review (points only)
     response.accom.review = await findAllReviewByAccomIdService(response.accomId)
+    //accom's houserules
+    response.accom.houseRules = await houseRulesService.getHouseRulesByAccomId(response.accomId)
 
     res.status(200).json(response)
 })
