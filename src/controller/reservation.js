@@ -13,18 +13,21 @@ reservationController.create = async (req,res,next) => {
         await prisma.$transaction(async () => {
 
         let response
+        let status
             
         const reservData = {...req.body} //สำหรับส่งไป create reservation
         //เช็คว่ามีการจองโดย user เดียวกัน ในวันเช็คอินเดียวกันเหรือไม่
-        const duplicatedReserv = await reservationService.checkIfDuplicate(reservData.userId, reservData.checkInDate)
+        const duplicatedReserv = await reservationService.checkIfDuplicate(reservData.customerEmail, reservData.checkInDate)
         if (duplicatedReserv) {
             response = duplicatedReserv
+            status = 200
         }
         else {
             const generatedId = await reservationService.generateId()
         reservData.id = generatedId
         delete reservData.transaction
         response = await reservationService.create(reservData)
+        status = 201
         }
         const transactionData = req.body.transaction
         //save transaction data into DB
@@ -34,7 +37,7 @@ reservationController.create = async (req,res,next) => {
         //attach transaction data to response body
         response.transaction = await transactionService.createTable(transactionData)
 
-        res.status(201).json(response)
+        res.status(status).json(response)
     })
     } catch (err) {
         next(err)
@@ -48,6 +51,7 @@ reservationController.getReservation = async (req,res,next) => {
         if (!response) throw new CustomError('Reservation id not found','NotFoundError',404)
 
         response.room = await roomService.getRoomAndBedByRooomId(response.roomId)
+        response.transaction = await transactionService.findSuccessTransactionByReservationId(req.params.reserv_id)
             
         res.status(200).json(response)
      

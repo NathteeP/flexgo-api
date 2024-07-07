@@ -34,4 +34,7 @@ transactionService.confirmPayment = async (req,res,next) => {
     }
 }
 
+transactionService.findSuccessTransactionByReservationId = reservationId =>
+    prisma.transaction.findFirst({ where: {AND: [{reservationId}, {status: transactionStatus.SUCCESS}]}})
+
 module.exports = transactionService
