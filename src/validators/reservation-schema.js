@@ -1,7 +1,7 @@
 const Joi = require('joi')
 
 exports.createReservationSchema = Joi.object({
-    checkInDate: Joi.date().greater('now').required(),
+    checkInDate: Joi.date().required(),
     checkOutDate: Joi.date().greater(Joi.ref('checkInDate')).required(),
     customerAmount: Joi.number().integer().greater(0).required(),
     optionalRequest: Joi.string().trim(),
