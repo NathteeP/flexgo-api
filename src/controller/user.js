@@ -1,3 +1,5 @@
+const fs = require("fs/promises")
+const cloudinary = require("../config/cloudinary")
 const { CustomError } = require("../config/error")
 const prisma = require("../models/prisma")
 const otpService = require("../service/otpService")
@@ -25,7 +27,6 @@ userController.getUser = async (req, res, next) => {
     }
 }
 
-// มีปรับตรงนี้ ต้องคุยกับ อิฐ เพิ่ม return บรรทัดที่ 41
 userController.register = async (req, res, next) => {
     try {
         const data = req.body
@@ -57,31 +58,31 @@ userController.register = async (req, res, next) => {
 userController.login = async (req, res, next) => {
     try {
         await prisma.$transaction(async (tx) => {
-        const data = req.body
-        const existUser = await userService.findUserByUsername(data.username)
+            const data = req.body
+            const existUser = await userService.findUserByUsername(data.username)
 
-        if (!existUser) throw new CustomError("User did not exist", "ValidationError", 400)
+            if (!existUser) throw new CustomError("User did not exist", "ValidationError", 400)
 
-        const isMatch = await compare(data.password, existUser.password)
+            const isMatch = await compare(data.password, existUser.password)
 
-        if (!isMatch) throw new CustomError("Wrong username or password", "ValidationError", 400)
-        if (existUser.isActive === false) throw new CustomError("User is inactive", "UserInactive", 401)
+            if (!isMatch) throw new CustomError("Wrong username or password", "ValidationError", 400)
+            if (existUser.isActive === false) throw new CustomError("User is inactive", "UserInactive", 401)
 
-        const responseBody = {}
-        const accessToken = jwt.sign({ id: existUser.id })
-        responseBody.profileImage = await userPhotoService.findPhotoByUserId(existUser.id)
-        responseBody.wishlist = await wishListService.findAllWishListByUserId(existUser.id)
-        responseBody.propertyMessage = {}
-        responseBody.bookingHistory = await reservationService.findAllReservationByUserId(existUser.id)
-        delete responseBody.password
+            const responseBody = {}
+            const accessToken = jwt.sign({ id: existUser.id })
+            responseBody.profileImage = await userPhotoService.findPhotoByUserId(existUser.id)
+            responseBody.wishlist = await wishListService.findAllWishListByUserId(existUser.id)
+            responseBody.propertyMessage = {}
+            responseBody.bookingHistory = await reservationService.findAllReservationByUserId(existUser.id)
+            delete responseBody.password
 
-        res.cookie("jwt", accessToken, {
-            httpOnly: true,
-            secure: false,
-            maxAge: 7 * 24 * 60 * 60 * 1000,
+            res.cookie("jwt", accessToken, {
+                httpOnly: true,
+                secure: false,
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            })
+            res.status(200).json(responseBody)
         })
-        res.status(200).json(responseBody)
-    })
     } catch (err) {
         next(err)
     }
@@ -93,8 +94,21 @@ userController.editUser = async (req, res, next) => {
         //already validated -- req.user is exist in db
         //only need to check if data.id === req.user.id
         if (req.user.id !== data.id || +req.params.user_id !== data.id) throw new CustomError("UserId does not match", "ValidationError", 400)
+
+        //ตรวจสอบว่า user login ด้วย Google ไหม?
+        const user = await userService.findUserById(data.id)
+        if (user.googleId) {
+            throw new CustomError("Cannot change profile picture for Google account", "Forbidden", 403)
+        }
+
         const response = await userService.updateUser(data.id, data)
         delete response.password
+
+        // อัปเดตรูปโปรไฟล์
+        if (req.file) {
+            await userPhotoService.updateOrCreatePhoto(data.id, req.file.path)
+        }
+
         res.status(200).json(response)
     } catch (err) {
         next(err)
@@ -122,8 +136,9 @@ userController.googleCallback = async (req, res, next) => {
         const email = profile.email
         const googleId = profile.googleId
         const fullName = profile.fullName
+        const profilePicture = profile.profilePicture // ดึงข้อมูลรูปโปรไฟล์
 
-        const updatedUser = await userService.findOrCreateUserWithGoogle(email, googleId, fullName)
+        const updatedUser = await userService.findOrCreateUserWithGoogle(email, googleId, fullName, profilePicture)
 
         // สร้าง JWT
         const token = jwt.sign({ id: updatedUser.id })
@@ -213,6 +228,46 @@ userController.changePassword = async (req, res, next) => {
         res.status(200).json({ message: "Password changed successfully" })
     } catch (error) {
         next(error)
+    }
+}
+
+userController.editAuthUser = async (req, res, next) => {
+    try {
+        const data = req.body
+        // ตรวจสอบว่า user login ด้วย Google ไหม?
+        const user = await userService.findUserById(req.user.id)
+        if (user.googleId) {
+            throw new CustomError("Cannot change profile picture for Google account", "Forbidden", 403)
+        }
+
+        const updatedData = {
+            fullName: data.fullName,
+            email: data.email,
+            phoneNumber: data.phone, // เปลี่ยนจาก phone เป็น phoneNumber
+            birthDate: data.birthday ? new Date(data.birthday).toISOString().slice(0, 10) : null,
+            nationality: data.nationality,
+            gender: data.gender,
+            address: data.address,
+        }
+
+        const response = await userService.updateUser(req.user.id, updatedData)
+        delete response.password
+
+        // อัปเดตรูปโปรไฟล์
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: "Users",
+                use_filename: true,
+                unique_filename: false,
+            })
+            await userPhotoService.updateOrCreatePhoto(req.user.id, result.secure_url)
+        }
+
+        res.status(200).json(response)
+    } catch (err) {
+        next(err)
+    } finally {
+        fs.unlink(req.file.path)
     }
 }
 
