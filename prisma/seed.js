@@ -927,7 +927,8 @@ const transactionSeeding = [
         feeId: 1,
         status: "SUCCESS",
         reservationId: "240614000147",
-        netPrice: 500.0,
+        netPrice: 553.50,
+        serviceFee: 53.50
     },
 ]
 

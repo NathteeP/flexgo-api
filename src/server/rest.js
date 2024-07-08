@@ -23,6 +23,7 @@ const reviewRouter = require("../router/reviews")
 const cookieParser = require("cookie-parser")
 const passport = require("../config/passport")
 const wishListRouter = require("../router/wishlist")
+const feeRouter = require("../router/fee")
 
 //=====================================================Server Zone
 module.exports = function restApiServer(app) {
@@ -61,6 +62,7 @@ module.exports = function restApiServer(app) {
     app.use("/amenities", amenitiesRouter)
     app.use("/reviews", reviewRouter)
     app.use("/wishlist", wishListRouter)
+    app.use("/fee", feeRouter)
     //=====================================================Throwing Zone
     app.use(notFound)
     app.use(errorMiddlewares)

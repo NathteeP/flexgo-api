@@ -54,9 +54,9 @@ model UserPhoto {
 model WishList {
   id Int @id @default(autoincrement())
 
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
-  accom  Accom @relation(fields: [accomId], references: [id])
+  user    User  @relation(fields: [userId], references: [id])
+  userId  Int
+  accom   Accom @relation(fields: [accomId], references: [id])
   accomId Int
 }
 
@@ -92,7 +92,7 @@ model Accom {
   userId     Int?
   HouseRules HouseRules?
 
-  wishList    WishList[]
+  wishList         WishList[]
   accomNearByPlace AccomNearbyPlaces[]
   room             Room[]
   accomPhoto       AccomPhoto[]
@@ -222,6 +222,7 @@ model Transaction {
   id              Int               @id @default(autoincrement())
   status          TransactionStatus @default(PENDING)
   netPrice        Decimal           @db.Decimal(10, 2)
+  serviceFee      Decimal           @db.Decimal(10, 2)
   transactionDate DateTime          @default(now()) @map("transaction_date")
 
   reservation   Reservation @relation(fields: [reservationId], references: [id])

@@ -76,7 +76,7 @@ reservationService.generateId = async () => {
     }
 }
 
-reservationService.checkIfDuplicate = (userId, checkInDate) => prisma.reservation.findFirst({ where: { userId, checkInDate } })
+reservationService.checkIfDuplicate = (customerEmail, checkInDate) => prisma.reservation.findFirst({ where: { customerEmail, checkInDate } })
 
 reservationService.create = (data) => prisma.reservation.create({ data })
 
