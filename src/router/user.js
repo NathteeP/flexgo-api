@@ -9,6 +9,9 @@ const upload = require("../middlewares/upload")
 
 const userRouter = express.Router()
 
+// เพิ่มเส้น ดึงข้อมูล user ทั้งหมด...
+userRouter.get("/all", authenticate, adminAuthenticate, userController.getAllUsers)
+
 userRouter.get("/me", authenticate, userController.getAuthUser)
 userRouter.get("/:user_id", userController.getUser)
 userRouter.post("/register", validatorFn(registerSchema), userController.register)

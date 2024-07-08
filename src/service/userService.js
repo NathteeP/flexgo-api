@@ -28,6 +28,14 @@ userService.findAlreadyExistedGoogleUser = async (googleId, email) => {
     return { googleIdExists, emailExists }
 }
 
+userService.findAllUsers = () => {
+    return prisma.user.findMany({
+        include: {
+            userPhoto: true,
+        },
+    })
+}
+
 userService.findUserByUsername = (username) => prisma.user.findUnique({ where: { username } })
 userService.findUserById = (userId) => prisma.user.findUnique({ where: { id: userId } })
 userService.updateUser = (userId, data) => prisma.user.update({ where: { id: userId }, data })
