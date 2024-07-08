@@ -5,44 +5,79 @@ const prisma = require("../models/prisma")
 const reservationService = require("../service/reservationService")
 const roomService = require("../service/room-and-bed/roomService")
 const transactionService = require("../service/transactionService")
+const nodemailer = require("nodemailer")
+const reservationEmailTemplate = require("../utils/reservationEmailTemplate")
+const formatDate = require("../utils/formatDate")
 
 const reservationController = {}
 
-reservationController.create = async (req,res,next) => {
+reservationController.create = async (req, res, next) => {
     try {
-        await prisma.$transaction(async () => {
-
+      const { body } = req
+      const reservData = { ...body } // Copy request body to reservData
+  
+      const response = await prisma.$transaction(async (prisma) => {
         let response
         let status
-            
-        const reservData = {...req.body} //สำหรับส่งไป create reservation
-        //เช็คว่ามีการจองโดย user เดียวกัน ในวันเช็คอินเดียวกันเหรือไม่
+  
+        // Check for duplicate reservations
         const duplicatedReserv = await reservationService.checkIfDuplicate(reservData.customerEmail, reservData.checkInDate)
         if (duplicatedReserv) {
-            response = duplicatedReserv
-            status = 200
+          response = duplicatedReserv
+          status = 200
+        } else {
+          // Generate a new reservation ID
+          const generatedId = await reservationService.generateId()
+          reservData.id = generatedId
+          delete reservData.transaction
+  
+          // Create a new reservation
+          response = await reservationService.create(reservData)
+          status = 201
         }
-        else {
-            const generatedId = await reservationService.generateId()
-        reservData.id = generatedId
-        delete reservData.transaction
-        response = await reservationService.create(reservData)
-        status = 201
-        }
-        const transactionData = req.body.transaction
-        //save transaction data into DB
 
+        const roomResponse = await prisma.room.findUnique({where:{id:body.roomId}, include:{accom:{select:{name:true}}}})
+        const accom = roomResponse.accom.name
+        // Prepare transaction data
+        const transactionData = body.transaction
         transactionData.reservationId = response.id
         transactionData.status = transactionStatus.PENDING
-        //attach transaction data to response body
+  
+        // Save transaction data into the database and attach to response
         response.transaction = await transactionService.createTable(transactionData)
 
-        res.status(status).json(response)
-    })
+        //========================SENDING EMAIL========================================
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+          },
+        })
+  
+        const mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: reservData.customerEmail,
+          subject: "Your reservation is completed",
+          html: reservationEmailTemplate(
+              response.id, 
+              formatDate(reservData.checkInDate),
+              formatDate(reservData.checkOutDate),
+              accom
+          )
+        }
+        await transporter.sendMail(mailOptions)
+
+        // Return the response and status
+        return { response, status }
+      })
+
+  
+      res.status(response.status).json(response.response)
     } catch (err) {
-        next(err)
+      next(err)
     }
-}
+  }
 
 reservationController.getReservation = async (req,res,next) => {
     try{

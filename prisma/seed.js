@@ -465,7 +465,7 @@ const roomSeeding = [
         size: 20,
         capacity: 3,
         accomId: 1,
-        price: 199,
+        price: 7000, 
     },
     {
         name: "A202",
@@ -475,7 +475,7 @@ const roomSeeding = [
         size: 50,
         capacity: 7,
         accomId: 1,
-        price: 250,
+        price: 8800, 
     },
     {
         name: "A203",
@@ -485,7 +485,7 @@ const roomSeeding = [
         size: 10,
         capacity: 2,
         accomId: 1,
-        price: 450,
+        price: 16000, 
     },
     {
         name: "A204",
@@ -495,7 +495,7 @@ const roomSeeding = [
         size: 30,
         capacity: 4,
         accomId: 1,
-        price: 2000,
+        price: 72000, 
     },
     {
         name: "801",
@@ -505,7 +505,7 @@ const roomSeeding = [
         size: 80,
         capacity: 4,
         accomId: 2,
-        price: 4000,
+        price: 144000, 
     },
     {
         name: "B102",
@@ -515,7 +515,7 @@ const roomSeeding = [
         size: 40,
         capacity: 4,
         accomId: 2,
-        price: 300,
+        price: 10800, 
     },
     {
         name: "DE 101",
@@ -525,7 +525,7 @@ const roomSeeding = [
         size: 30,
         capacity: 4,
         accomId: 3,
-        price: 2000,
+        price: 72000, 
     },
     {
         name: "DE 102",
@@ -535,7 +535,7 @@ const roomSeeding = [
         size: 30,
         capacity: 4,
         accomId: 3,
-        price: 1500,
+        price: 54000, 
     },
     {
         name: "C301",
@@ -545,7 +545,7 @@ const roomSeeding = [
         size: 35,
         capacity: 5,
         accomId: 3,
-        price: 220,
+        price: 7900, 
     },
     {
         name: "D401",
@@ -555,7 +555,7 @@ const roomSeeding = [
         size: 15,
         capacity: 1,
         accomId: 4,
-        price: 120,
+        price: 4300, 
     },
     {
         name: "D402",
@@ -565,7 +565,7 @@ const roomSeeding = [
         size: 30,
         capacity: 4,
         accomId: 4,
-        price: 280,
+        price: 10000, 
     },
     {
         name: "E501",
@@ -575,7 +575,7 @@ const roomSeeding = [
         size: 60,
         capacity: 6,
         accomId: 5,
-        price: 400,
+        price: 14400, 
     },
     {
         name: "E502",
@@ -585,7 +585,7 @@ const roomSeeding = [
         size: 80,
         capacity: 8,
         accomId: 5,
-        price: 600,
+        price: 21600, 
     },
     {
         name: "E503",
@@ -595,9 +595,9 @@ const roomSeeding = [
         size: 40,
         capacity: 4,
         accomId: 5,
-        price: 350,
+        price: 12600, 
     },
-]
+];
 
 const roomPhotoSeeding = [
     { imagePath: "https://res.cloudinary.com/dtlwfpitf/image/upload/v1719731224/Room/df2urwe3fspl5iy48cdj.jpg", roomId: 1 },
