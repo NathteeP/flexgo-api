@@ -210,6 +210,7 @@ accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => 
 
 accomController.getAllAccomByUserId = asyncWrapper(async (req, res, next) => {
     const accom = await accomService.findAllAccomByUserId(+req.params.user_id)
+    if (accom.length < 1) return res.status(200).json({ accom: [], hostTime: 0, rating: { overAllReview: 0, count: 0 } })
     const hostTime = await findUserHostingTime(+req.params.user_id)
     const review = []
     for (let item of accom) {

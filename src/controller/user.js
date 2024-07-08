@@ -67,7 +67,7 @@ userController.login = async (req, res, next) => {
 
         const accessToken = sign({ id: existUser.id })
         const { id, email, fullName, phoneNumber } = existUser
-        const responseBody = { id, email, fullName, phoneNumber, accessToken }
+        const responseBody = { id, email, fullName, phoneNumber }
 
         res.cookie("jwt", accessToken, {
             httpOnly: true,

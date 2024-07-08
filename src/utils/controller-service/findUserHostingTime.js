@@ -10,6 +10,7 @@ module.exports.findUserHostingTime = async (userId) => {
 
         const dayHosting = Math.abs(dayjsObj.diff(dayjs(), "d"))
         const host = dayToMonthsOrYearService(dayHosting)
+        console.log(host)
         return host
     } catch (err) {
         return err
