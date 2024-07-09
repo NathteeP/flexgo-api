@@ -249,12 +249,6 @@ userController.changePassword = async (req, res, next) => {
 userController.editAuthUser = async (req, res, next) => {
     try {
         const data = req.body
-        // ตรวจสอบว่า user login ด้วย Google ไหม?
-        const user = await userService.findUserById(req.user.id)
-        if (user.googleId) {
-            throw new CustomError("Cannot change profile picture for Google account", "Forbidden", 403)
-        }
-
         const updatedData = {
             fullName: data.fullName,
             email: data.email,
@@ -263,6 +257,7 @@ userController.editAuthUser = async (req, res, next) => {
             nationality: data.nationality,
             gender: data.gender,
             address: data.address,
+            description: data.description,
         }
 
         const response = await userService.updateUser(req.user.id, updatedData)
@@ -275,14 +270,17 @@ userController.editAuthUser = async (req, res, next) => {
                 use_filename: true,
                 unique_filename: false,
             })
-            await userPhotoService.updateOrCreatePhoto(req.user.id, result.secure_url)
+            response.profileImage = await userPhotoService.updateOrCreatePhoto(req.user.id, result.secure_url)
         }
 
         res.status(200).json(response)
     } catch (err) {
         next(err)
     } finally {
-        fs.unlink(req.file.path)
+        // ลบไฟล์รูปที่อัปโหลดมา ถ้าไม่ใช่ผู้ใช้ Google
+        if (!req.user.googleId && req.file) {
+            await fs.unlink(req.file.path)
+        }
     }
 }
 
