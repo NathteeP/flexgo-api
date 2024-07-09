@@ -86,7 +86,7 @@ userController.login = async (req, res, next) => {
             const responseBody = { ...existUser }
             const accessToken = jwt.sign({ id: existUser.id })
             responseBody.profileImage = await userPhotoService.findPhotoByUserId(existUser.id)
-            responseBody.wishlist = await wishListService.findAllWishListByUserId(existUser.id)
+            responseBody.wishList = await wishListService.findAllWishListByUserId(existUser.id)
             responseBody.propertyMessage = {}
             responseBody.bookingHistory = await reservationService.findAllReservationByUserId(existUser.id)
             delete responseBody.password
@@ -175,7 +175,7 @@ userController.getAuthUser = async (req, res, next) => {
         await prisma.$transaction(async (tx) => {
             const authUser = await userService.findUserById(req.user.id)
             authUser.profileImage = await userPhotoService.findPhotoByUserId(req.user.id)
-            authUser.wishlist = await wishListService.findAllWishListByUserId(req.user.id)
+            authUser.wishList = await wishListService.findAllWishListByUserId(req.user.id)
             authUser.propertyMessage = {}
             authUser.bookingHistory = await reservationService.findAllReservationByUserId(req.user.id)
             delete authUser.password
