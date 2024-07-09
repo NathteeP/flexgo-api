@@ -28,10 +28,58 @@ userService.findAlreadyExistedGoogleUser = async (googleId, email) => {
     return { googleIdExists, emailExists }
 }
 
-userService.findAllUsers = () => {
+// ฟังก์ชันช่วยสร้าง search filters
+const createSearchFilters = (searchTerm) => {
+    const filters = [
+        { username: { contains: searchTerm } },
+        { email: { contains: searchTerm } },
+        { fullName: { contains: searchTerm } },
+        { phoneNumber: { contains: searchTerm } },
+    ]
+
+    // ถ้า searchTerm เป็นตัวเลข ให้เพิ่มการกรอง id เข้าไปด้วย
+    if (!isNaN(parseInt(searchTerm))) {
+        filters.push({ id: { equals: parseInt(searchTerm) } })
+    }
+
+    return filters
+}
+
+// จัดการเรื่อง Search
+userService.findAllUsers = (page, sortKey, sortOrder, searchTerm) => {
+    const skip = (page - 1) * 10
+    const take = 10
+    const searchFilters = createSearchFilters(searchTerm)
+
+    // ตรวจสอบค่า sortOrder และแปลงให้ถูกต้อง
+    const order = sortOrder === "ascending" ? "asc" : sortOrder === "descending" ? "desc" : "asc"
+
+    // ตรวจสอบว่า sortKey ถูกต้องหรือไม่
+    const validSortKeys = ["id", "username", "email", "fullName", "phoneNumber", "createdAt"]
+    const sortKeyToUse = validSortKeys.includes(sortKey) ? sortKey : "createdAt"
+
     return prisma.user.findMany({
+        where: {
+            OR: searchFilters,
+        },
+        orderBy: {
+            [sortKeyToUse]: order,
+        },
+        skip,
+        take,
         include: {
             userPhoto: true,
+        },
+    })
+}
+
+// นับ users
+userService.countUsers = (searchTerm) => {
+    const searchFilters = createSearchFilters(searchTerm)
+
+    return prisma.user.count({
+        where: {
+            OR: searchFilters,
         },
     })
 }
