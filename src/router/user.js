@@ -18,7 +18,7 @@ userRouter.post("/register", validatorFn(registerSchema), userController.registe
 userRouter.post("/login", validatorFn(loginSchema), userController.login)
 // เพิ่มเส้น Edit authUser
 userRouter.patch("/me", authenticate, upload.single("profileImage"), userController.editAuthUser)
-userRouter.patch("/:user_id", authenticate, userController.editUser)
+userRouter.patch("/:user_id/status", authenticate, adminAuthenticate, userController.updateUserStatus)
 userRouter.delete("/:user_id", authenticate, adminAuthenticate, userController.deleteUser)
 
 // Get Host and Accom data
