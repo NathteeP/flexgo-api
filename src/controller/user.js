@@ -275,14 +275,13 @@ userController.editAuthUser = async (req, res, next) => {
                 use_filename: true,
                 unique_filename: false,
             })
+            fs.unlink(req.file.path)
             await userPhotoService.updateOrCreatePhoto(req.user.id, result.secure_url)
         }
 
         res.status(200).json(response)
     } catch (err) {
         next(err)
-    } finally {
-        fs.unlink(req.file.path)
     }
 }
 
