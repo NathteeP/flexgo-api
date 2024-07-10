@@ -86,7 +86,7 @@ userController.login = async (req, res, next) => {
             const responseBody = { ...existUser }
             const accessToken = jwt.sign({ id: existUser.id })
             responseBody.profileImage = await userPhotoService.findPhotoByUserId(existUser.id)
-            responseBody.wishlist = await wishListService.findAllWishListByUserId(existUser.id)
+            responseBody.wishList = await wishListService.findAllWishListByUserId(existUser.id)
             responseBody.propertyMessage = {}
             responseBody.bookingHistory = await reservationService.findAllReservationByUserId(existUser.id)
             delete responseBody.password
@@ -110,7 +110,7 @@ userController.editUser = async (req, res, next) => {
         //only need to check if data.id === req.user.id
         if (req.user.id !== data.id || +req.params.user_id !== data.id) throw new CustomError("UserId does not match", "ValidationError", 400)
 
-        //ตรวจสอบว่า user login ด้วย Google ไหม?
+        // ตรวจสอบว่า user login ด้วย Google ไหม?
         const user = await userService.findUserById(data.id)
         if (user.googleId) {
             throw new CustomError("Cannot change profile picture for Google account", "Forbidden", 403)
@@ -140,7 +140,7 @@ userController.deleteUser = async (req, res, next) => {
 }
 
 // ส่วนของ Google Login
-// Merge ข้อมูล user ถ้า เจอว่า profile มันซ้ำกัน
+// Merge ข้อมูล user ถ้าเจอว่า profile มันซ้ำกัน
 userController.googleCallback = async (req, res, next) => {
     try {
         const profile = req.user.user // ดึงข้อมูล profile จาก req.user.profile
@@ -175,7 +175,7 @@ userController.getAuthUser = async (req, res, next) => {
         await prisma.$transaction(async (tx) => {
             const authUser = await userService.findUserById(req.user.id)
             authUser.profileImage = await userPhotoService.findPhotoByUserId(req.user.id)
-            authUser.wishlist = await wishListService.findAllWishListByUserId(req.user.id)
+            authUser.wishList = await wishListService.findAllWishListByUserId(req.user.id)
             authUser.propertyMessage = {}
             authUser.bookingHistory = await reservationService.findAllReservationByUserId(req.user.id)
             delete authUser.password
@@ -258,6 +258,7 @@ userController.editAuthUser = async (req, res, next) => {
             gender: data.gender,
             address: data.address,
             description: data.description,
+            description: data.description,
         }
 
         const response = await userService.updateUser(req.user.id, updatedData)
@@ -277,10 +278,18 @@ userController.editAuthUser = async (req, res, next) => {
     } catch (err) {
         next(err)
     } finally {
-        // ลบไฟล์รูปที่อัปโหลดมา ถ้าไม่ใช่ผู้ใช้ Google
-        if (!req.user.googleId && req.file) {
-            await fs.unlink(req.file.path)
-        }
+        if (!req.user.googleId && req.file) await fs.unlink(req.file.path)
+    }
+}
+
+userController.updateUserStatus = async (req, res, next) => {
+    try {
+        const userId = +req.params.user_id
+        const { isActive } = req.body
+        const updatedUser = await userService.updateUser(userId, { isActive })
+        res.status(200).json(updatedUser)
+    } catch (error) {
+        next(error)
     }
 }
 
