@@ -20,7 +20,6 @@ const findPlacesService = async (address) => {
                 const { results } = data
                 const filteredArr = results.reduce((acc, curr) => {
                     const filterById = place.filter((el) => el.place_id === curr.place_id)
-                    console.log("filterById", filterById)
                     if (filterById.length >= 1) {
                         return acc
                     }
