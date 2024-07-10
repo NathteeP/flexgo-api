@@ -9,13 +9,16 @@ const upload = require("../middlewares/upload")
 
 const userRouter = express.Router()
 
+// เพิ่มเส้น ดึงข้อมูล user ทั้งหมด...
+userRouter.get("/all", authenticate, adminAuthenticate, userController.getAllUsers)
+
 userRouter.get("/me", authenticate, userController.getAuthUser)
 userRouter.get("/:user_id", userController.getUser)
 userRouter.post("/register", validatorFn(registerSchema), userController.register)
 userRouter.post("/login", validatorFn(loginSchema), userController.login)
 // เพิ่มเส้น Edit authUser
 userRouter.patch("/me", authenticate, upload.single("profileImage"), userController.editAuthUser)
-userRouter.patch("/:user_id", authenticate, userController.editUser)
+userRouter.patch("/:user_id/status", authenticate, adminAuthenticate, userController.updateUserStatus)
 userRouter.delete("/:user_id", authenticate, adminAuthenticate, userController.deleteUser)
 
 // Get Host and Accom data
