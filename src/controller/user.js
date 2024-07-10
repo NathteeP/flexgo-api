@@ -258,6 +258,7 @@ userController.editAuthUser = async (req, res, next) => {
             gender: data.gender,
             address: data.address,
             description: data.description,
+            description: data.description,
         }
 
         const response = await userService.updateUser(req.user.id, updatedData)
