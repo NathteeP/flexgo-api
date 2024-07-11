@@ -103,4 +103,62 @@ accomService.findAccomWithInBoundingBox = (latMax, latMin, lngMax, lngMin) =>
         },
     })
 
+// เพิ่ม ดึง accom ทั้งหมด
+// ฟังก์ชันช่วยสร้าง search filters
+const createSearchFilters = (searchTerm) => {
+    const filters = [
+        { name: { contains: searchTerm } },
+        { address: { contains: searchTerm } },
+        { province: { contains: searchTerm } },
+        { district: { contains: searchTerm } },
+    ]
+
+    if (!isNaN(parseInt(searchTerm))) {
+        filters.push({ id: { equals: parseInt(searchTerm) } })
+    }
+
+    return filters
+}
+
+// จัดการเรื่อง Search
+accomService.findAllAccoms = (page, sortKey, sortOrder, searchTerm) => {
+    const skip = (page - 1) * 10
+    const take = 10
+    const searchFilters = createSearchFilters(searchTerm)
+
+    const order = sortOrder === "ascending" ? "asc" : sortOrder === "descending" ? "desc" : "asc"
+
+    const validSortKeys = ["id", "name", "address", "province", "district", "createdAt"]
+    const sortKeyToUse = validSortKeys.includes(sortKey) ? sortKey : "createdAt"
+
+    return prisma.accom.findMany({
+        where: {
+            OR: searchFilters,
+        },
+        orderBy: {
+            [sortKeyToUse]: order,
+        },
+        skip,
+        take,
+    })
+}
+
+// นับ accoms
+accomService.countAccoms = (searchTerm) => {
+    const searchFilters = createSearchFilters(searchTerm)
+
+    return prisma.accom.count({
+        where: {
+            OR: searchFilters,
+        },
+    })
+}
+
+accomService.updateAccomStatus = async (accomId, status) => {
+    return prisma.accom.update({
+        where: { id: accomId },
+        data: { status },
+    })
+}
+
 module.exports = accomService

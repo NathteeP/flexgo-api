@@ -67,7 +67,25 @@ userService.findAllUsers = (page, sortKey, sortOrder, searchTerm) => {
         },
         skip,
         take,
-        include: {
+        // include: {
+        //     userPhoto: true,
+        // },
+        select: {
+            id: true,
+            googleId: true,
+            username: true,
+            email: true,
+            fullName: true,
+            phoneNumber: true,
+            birthDate: true,
+            gender: true,
+            nationality: true,
+            role: true,
+            createdAt: true,
+            updatedAt: true,
+            isActive: true,
+            address: true,
+            description: true,
             userPhoto: true,
         },
     })
