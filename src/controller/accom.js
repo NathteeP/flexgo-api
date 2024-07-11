@@ -256,12 +256,11 @@ accomController.getAllAccoms = async (req, res, next) => {
     try {
         const { page = 1, sortKey = "createdAt", sortOrder = "desc", searchTerm = "" } = req.query
 
-        const accoms = await accomService.findAllAccoms(page, sortKey, sortOrder, searchTerm)
-        const totalAccoms = await accomService.countAccoms(searchTerm)
-        const totalPages = Math.ceil(totalAccoms / 10)
+        const parsedPage = parseInt(page, 10)
 
-        console.log(accoms)
-        res.status(200).json({ accoms, totalPages, currentPage: parseInt(page) })
+        const { accoms, totalPages, currentPage } = await accomService.findAllAccoms(parsedPage, sortKey, sortOrder, searchTerm)
+
+        res.status(200).json({ accoms, totalPages, currentPage })
     } catch (error) {
         next(error)
     }

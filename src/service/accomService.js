@@ -126,17 +126,16 @@ const createSearchFilters = (searchTerm) => {
 }
 
 // จัดการเรื่อง Search
-accomService.findAllAccoms = (page, sortKey, sortOrder, searchTerm) => {
-    const skip = (page - 1) * 10
-    const take = 10
+accomService.findAllAccoms = async (page, sortKey, sortOrder, searchTerm) => {
+    const take = 10 // จำนวนรายการที่จะแสดงต่อหน้า
+    const skip = (page - 1) * take
     const searchFilters = createSearchFilters(searchTerm)
 
-    const order = sortOrder === "ascending" ? "asc" : sortOrder === "descending" ? "desc" : "asc"
-
+    const order = sortOrder === "asc" ? "asc" : "desc"
     const validSortKeys = ["id", "name", "address", "province", "district", "createdAt"]
     const sortKeyToUse = validSortKeys.includes(sortKey) ? sortKey : "createdAt"
 
-    return prisma.accom.findMany({
+    const accoms = await prisma.accom.findMany({
         where: {
             OR: searchFilters,
         },
@@ -146,6 +145,19 @@ accomService.findAllAccoms = (page, sortKey, sortOrder, searchTerm) => {
         skip,
         take,
     })
+
+    const totalAccoms = await prisma.accom.count({
+        where: {
+            OR: searchFilters,
+        },
+    })
+    const totalPages = Math.ceil(totalAccoms / take)
+
+    return {
+        accoms,
+        totalPages,
+        currentPage: page,
+    }
 }
 
 // นับ accoms
