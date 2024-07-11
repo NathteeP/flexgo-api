@@ -43,12 +43,18 @@ module.exports.getFeaturedReviewByAccomIdService = async (accomId) => {
         const allReservation = await reservationService.findAllReserveByRoomId(allRoomId.map((item) => item.id))
         const allReviewsDetails = await reviewService.findAllReviewsByReserveId(allReservation.map((item) => item.id))
         if (allReviewsDetails.length < 1) {
-            const review = []
-            return review
+            return []
         }
         const allReviewsArr = allReviewsDetails.map((item) => {
             const overAllReview = (item.ratingType1 + item.ratingType2 + item.ratingType3 + item.ratingType4) / noOfReviewsType
             item.overAllReview = overAllReview
+            if (item.reservation.user) {
+                console.log(item.reservation.user)
+                const { fullName } = item.reservation.user
+                const { imagePath } = item.reservation.user.userPhoto[0]
+                item.user = { fullName: fullName, imagePath: imagePath }
+            }
+            delete item.reservation
             return item
         })
         const featureReview = allReviewsArr.sort((a, b) => b.overAllReview - a.overAllReview)

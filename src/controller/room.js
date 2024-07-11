@@ -8,7 +8,11 @@ const { findAllReviewByAccomIdService } = require("../utils/controller-service/f
 const roomPhotoService = require("../service/photo-service/roomPhotoService")
 const accomPhotoService = require("../service/photo-service/accomPhotoService")
 const houseRulesService = require("../service/houseRulesService")
-
+const fs = require("fs/promises")
+const { executeTransactionForRoomAndPhoto } = require("../service/transaction/executeTransaction")
+const { findAmenityByAccomId } = require("../utils/controller-service/findAmenityByAccomId")
+const cloudinary = require("../config/cloudinary")
+const cloudinaryFolder = require("../constant/cloundinaryFolder")
 const roomController = {}
 
 roomController.verifyBeforeCreate = asyncWrapper(async (req, res, next) => {
@@ -97,10 +101,10 @@ roomController.getRoomAndAccomByRoomId = asyncWrapper(async (req, res, next) => 
     response.roomBed = await roomAndBedService.findAllBedByRoomId([+req.params.room_id])
     //room's first photo
     const roomPhoto = await roomPhotoService.findManyPhotoByManyRoomId([+req.params.room_id])
-    if(roomPhoto[0]) response.roomPhoto = roomPhoto[0].imagePath
+    if (roomPhoto[0]) response.roomPhoto = roomPhoto[0].imagePath
     //accom's first photo
     const accomPhoto = await accomPhotoService.getPhotoByAccomId(response.accomId)
-    if(accomPhoto[0]) response.accom.accomPhoto = accomPhoto[0].imagePath
+    if (accomPhoto[0]) response.accom.accomPhoto = accomPhoto[0].imagePath
     //accom's review (points only)
     response.accom.review = await findAllReviewByAccomIdService(response.accomId)
     //accom's houserules
@@ -108,5 +112,36 @@ roomController.getRoomAndAccomByRoomId = asyncWrapper(async (req, res, next) => 
 
     res.status(200).json(response)
 })
+
+roomController.transactionForCreateRoomAndPhoto = async (req, res, next) => {
+    try {
+        const room = JSON.parse(req.body.json)
+        if (!req.file) return next(new CustomError("Missing information", "MissInfo", 400))
+        if (!room) return next(new CustomError("There is no body sent", "InvalidInfo", 400))
+        const { secure_url } = await cloudinary.uploader.upload(req.file.path, { resource_type: "image", folder: cloudinaryFolder.Room })
+        const { beds } = room
+        const amenities = await findAmenityByAccomId(room.accomId)
+        const bedTypeId = await bedTypeService.findBedTypeByBedTypeName(beds.type)
+        beds.bedTypeId = bedTypeId.id
+
+        delete beds.type
+        delete room.beds
+        delete room.amenities
+
+        beds.amount = Number(beds.amount)
+        room.price = Number(room.price)
+        room.bathRoom = Number(room.bathRoom)
+        room.bedRoom = Number(room.bedRoom)
+        room.size = Number(room.size)
+        const response = await executeTransactionForRoomAndPhoto(room, beds, amenities, secure_url)
+        res.status(201).json(response)
+    } catch (err) {
+        next(err)
+    } finally {
+        if (req.file) {
+            fs.unlink(req.file.path)
+        }
+    }
+}
 
 module.exports = roomController

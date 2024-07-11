@@ -8,8 +8,22 @@ reviewService.findAllReviewsByReserveId = (reservationId) =>
                 in: reservationId,
             },
         },
+        include: {
+            reservation: {
+                include: {
+                    user: {
+                        include: {
+                            userPhoto: {
+                                select: {
+                                    imagePath: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
     })
-
 
 // reviewService.findAllReviews = () => prisma.reviews.
 
