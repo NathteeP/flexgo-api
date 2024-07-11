@@ -154,11 +154,16 @@ accomService.countAccoms = (searchTerm) => {
     })
 }
 
-accomService.updateAccomStatus = async (accomId, status) => {
+accomService.updateAccomStatus = (accomId, status) => {
     return prisma.accom.update({
         where: { id: accomId },
         data: { status },
     })
 }
+
+accomService.deleteAccomById = (accomId) =>
+    prisma.accom.delete({
+        where: { id: accomId },
+    })
 
 module.exports = accomService

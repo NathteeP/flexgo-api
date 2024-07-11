@@ -142,8 +142,18 @@ accomController.editAccomDetails = asyncWrapper(async (req, res, next) => {
 })
 
 accomController.deleteAccom = asyncWrapper(async (req, res, next) => {
-    await accomService.changeAccomStatusToInactive(+req.params.accom_id)
-    res.status(204).json({ message: "Deleted successfully!" })
+    try {
+        const accom = await accomService.findAccomByAccomId(+req.params.accom_id)
+        if (!accom) {
+            return res.status(404).send({ error: "Accommodation not found" })
+        }
+
+        await accomService.deleteAccomById(+req.params.accom_id)
+        res.status(200).send({ message: "Accommodation deleted successfully" })
+    } catch (error) {
+        next(error)
+        res.status(500).send({ error: "Server error" })
+    }
 })
 
 accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => {
