@@ -160,15 +160,20 @@ reservationController.getAllHostReservationByHostId = async (req, res, next) => 
 
       // Fetch reservations
       const allReserv = await reservationService.findAllReserveByRoomId(roomArray);
+      const userArray = allReserv.filter(el => el.userId).map(el => el.userId);
+      const allUserPhoto = await prisma.userPhoto.findMany({where:{userId:{in:userArray}}})
       const response = allReserv.map(el => {
           const selectedRoom = allRoomWithAccomName.find(roomEl => roomEl.id === el.roomId);
           return {
               ...el,
               accomName: selectedRoom.accomName,
               roomType: selectedRoom.roomType,
-              roomName: selectedRoom.name
+              roomName: selectedRoom.name,
+              userPhoto: allUserPhoto.find(photoEl => photoEl.userId === el.userId)
           };
       });
+
+      //
 
       // Filter reservations
       const filteredRes = response.filter(el => {
@@ -194,8 +199,6 @@ reservationController.getAllHostReservationByHostId = async (req, res, next) => 
             bValue = dayjs(bValue);
           }
 
-          console.log(`Comparing: ${aValue} and ${bValue}`);
-  
           if (aValue < bValue) {
             return sortOrder === 'asc' ? -1 : 1;
           }
@@ -207,7 +210,6 @@ reservationController.getAllHostReservationByHostId = async (req, res, next) => 
       }
 
       const sortedRes = sortReservations(filteredRes, sortKey, sortOrder);
-      console.log("Sorted Reservations: ", sortedRes);
       // Pagination
       const itemsPerPage = 8;
       const totalPages = Math.ceil(sortedRes.length / itemsPerPage);
