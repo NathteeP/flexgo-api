@@ -51,7 +51,7 @@ module.exports.getFeaturedReviewByAccomIdService = async (accomId) => {
             if (item.reservation.user) {
                 console.log(item.reservation.user)
                 const { fullName } = item.reservation.user
-                const { imagePath } = item.reservation.user.userPhoto[0]
+                const imagePath = item.reservation.user.userPhoto[0]?.imagePath || null
                 item.user = { fullName: fullName, imagePath: imagePath }
             }
             delete item.reservation
