@@ -1,6 +1,4 @@
 const { CustomError } = require("../../config/error")
-const prisma = require("../../models/prisma")
-const userPhotoService = require("../../service/photo-service/userPhotoService")
 const reservationService = require("../../service/reservationService")
 const reviewService = require("../../service/reviewService")
 const roomService = require("../../service/room-and-bed/roomService")
@@ -45,50 +43,22 @@ module.exports.getFeaturedReviewByAccomIdService = async (accomId) => {
         const allReservation = await reservationService.findAllReserveByRoomId(allRoomId.map((item) => item.id))
         const allReviewsDetails = await reviewService.findAllReviewsByReserveId(allReservation.map((item) => item.id))
         if (allReviewsDetails.length < 1) {
-            const review = []
-            return review
+            return []
         }
-
-        const reservationUserMap = allReservation.reduce((acc, reservation) => {
-            acc[reservation.id] = reservation.userId;
-            return acc;
-        }, {});
-        
         const allReviewsArr = allReviewsDetails.map((item) => {
-            const overAllReview = (item.ratingType1 + item.ratingType2 + item.ratingType3 + item.ratingType4) / noOfReviewsType;
-            return {
-                ...item,
-                overAllReview,
-                userId: reservationUserMap[item.reservationId]
-            };
-        });
-        const featureReview = allReviewsArr.sort((a, b) => b.overAllReview - a.overAllReview)
-
-        //get username and review
-
-        const userArray = allReservation.map(el => el.userId).filter(el => el)
-
-        const reviewers = await prisma.userPhoto.findMany({
-            where: { userId: { in: userArray } },
-            include: {
-                user: {
-                    select: {
-                        fullName: true
-                    }
-                }
+            const overAllReview = (item.ratingType1 + item.ratingType2 + item.ratingType3 + item.ratingType4) / noOfReviewsType
+            item.overAllReview = overAllReview
+            if (item.reservation.user) {
+                console.log(item.reservation.user)
+                const { fullName } = item.reservation.user
+                const imagePath = item.reservation.user.userPhoto[0]?.imagePath || null
+                item.user = { fullName: fullName, imagePath: imagePath }
             }
-        });
-
-
-        const featureReviewWithUsers = featureReview.map(el => ({
-            ...el,
-            user: reviewers.find(photoEl => photoEl.userId === el.userId) || null
-        }));
-
-        // Sort the reviews so that reviews with a user are at the beginning
-        featureReviewWithUsers.sort((a, b) => (a.user ? -1 : 1) - (b.user ? -1 : 1));
-
-        return featureReviewWithUsers
+            delete item.reservation
+            return item
+        })
+        const featureReview = allReviewsArr.sort((a, b) => b.overAllReview - a.overAllReview)
+        return featureReview
     } catch (err) {
         console.log(err)
         return err

@@ -8,14 +8,30 @@ reviewService.findAllReviewsByReserveId = (reservationId) =>
                 in: reservationId,
             },
         },
+        include: {
+            reservation: {
+                include: {
+                    user: {
+                        include: {
+                            userPhoto: {
+                                select: {
+                                    imagePath: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
     })
 
     
-    // reviewService.findAllReviews = () => prisma.reviews.
+// reviewService.findAllReviews = () => prisma.reviews.
     
-    reviewService.findReviewByReservationId = (reservationId) => 
+reviewService.findReviewByReservationId = (reservationId) => 
         prisma.reviews.findFirst({where:{reservationId}})
 
-    reviewService.create = (data) => 
+reviewService.create = (data) => 
         prisma.reviews.create({data})
+
 module.exports = reviewService

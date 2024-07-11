@@ -15,8 +15,6 @@ const executeTransaction = async (accomInfo, otherInfo, roomInfo, beds, amenitie
 
             // Create room, bed and amenities
             const roomResult = await createRoomService(transaction, roomInfo, beds, amenities)
-            console.log(accom)
-            console.log(roomResult)
             console.log("finish create everything. Congrat!")
             return { accom, roomResult }
         })
@@ -26,4 +24,17 @@ const executeTransaction = async (accomInfo, otherInfo, roomInfo, beds, amenitie
     }
 }
 
-module.exports = executeTransaction
+const executeTransactionForRoomAndPhoto = async (roomInfo, beds, amenities, image) => {
+    try {
+        const result = await prisma.$transaction(async (tx) => {
+            const room = await createRoomService(tx, roomInfo, beds, amenities)
+            await tx.roomPhoto.create({ data: { imagePath: image, roomId: room.id } })
+            console.log(`room and photo has been created successfully!`)
+            return room
+        })
+        return result
+    } catch (err) {
+        console.log(err)
+    }
+}
+module.exports = { executeTransaction, executeTransactionForRoomAndPhoto }

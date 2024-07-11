@@ -14,9 +14,8 @@ const { harvesineService, createBoundingBox } = require("../utils/harvesineServi
 const getAccomDetailAndRoomService = require("../utils/controller-service/getAccomDetailAndRoom")
 const userPhotoService = require("../service/photo-service/userPhotoService")
 const houseRulesService = require("../service/houseRulesService")
-const { accom } = require("../models/prisma")
-const executeTransaction = require("../service/transaction/executeTransaction")
-
+const { executeTransaction } = require("../service/transaction/executeTransaction")
+const dayjs = require("dayjs")
 const accomController = {}
 
 accomController.verifyInfoAndFindNearbyPlaceCreate = asyncWrapper(async (req, res, next) => {
@@ -169,6 +168,10 @@ accomController.deleteAccom = asyncWrapper(async (req, res, next) => {
 })
 
 accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => {
+    if (!req.body.checkInDate && !req.body.checkOutDate) {
+        req.body.checkInDate = new Date(dayjs())
+        req.body.checkOutDate = new Date(dayjs().add("1", "day"))
+    }
     req.body.checkInDate = new Date(req.body.checkInDate)
     req.body.checkOutDate = new Date(req.body.checkOutDate)
 
@@ -188,7 +191,6 @@ accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => 
     const { latMax, latMin, lngMax, lngMin } = createBoundingBox(+req.body.lat, +req.body.lng, req.body.distance)
     const allAccom = await accomService.findAccomWithInBoundingBox(latMax.toString(), latMin.toString(), lngMax.toString(), lngMin.toString())
     const allRoom = await roomService.findManyRoomWithManyAccomId(allAccom.map((item) => item.id))
-
     // Find Reserved room
     const roomReserved = await reservationService.findAllRoomIdByDate(req.body.checkInDate, req.body.checkOutDate)
 
@@ -201,7 +203,7 @@ accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => 
         }
         return item
     })
-
+    // console.log(availRoomId)
     const filteredRoomId = availRoomId.filter((item) => item.capacity >= req.body.capacity)
     // Find available accom
     const roomAndAccom = await roomService.findAccomByManyRoomId(filteredRoomId.map((item) => item.id))
@@ -285,7 +287,6 @@ accomController.transactionForCreateRoomAndAccom = asyncWrapper(async (req, res,
     req.body.room.bedRoom = Number(req.body.room.bedRoom)
     req.body.room.size = Number(req.body.room.size)
     const response = await executeTransaction(req.body.accom, req.body.accomInfo, req.body.room, beds, amenities)
-    console.log(response)
     res.status(201).json(response)
 })
 
