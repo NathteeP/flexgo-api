@@ -10,6 +10,7 @@ const reservationRouter = express.Router()
 
 reservationRouter.post("/create-payment-intent", transactionService.createPaymentIntent)
 reservationRouter.post("/create", validatorFn(createReservationSchema), reservationController.create)
+reservationRouter.get("/all/:user_id", reservationController.getAllHostReservationByHostId)
 reservationRouter.get("/:reserv_id", reservationController.getReservation)
 reservationRouter.patch("/payment-success", transactionService.confirmPayment)
 reservationRouter.patch("/:reserv_id", authenticate, reservationController.updateReservation)

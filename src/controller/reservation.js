@@ -8,6 +8,8 @@ const transactionService = require("../service/transactionService")
 const nodemailer = require("nodemailer")
 const reservationEmailTemplate = require("../utils/reservationEmailTemplate")
 const formatDate = require("../utils/formatDate")
+const accomService = require("../service/accomService")
+const dayjs = require("dayjs")
 
 const reservationController = {}
 
@@ -140,5 +142,91 @@ reservationController.approveReservation = async (req,res,next) => {
         next(err)
     }
 }
+
+reservationController.getAllHostReservationByHostId = async (req, res, next) => {
+  try {
+      const { page = 1, sortKey = "checkInDate", sortOrder = "desc", searchTerm = "" } = req.query;
+
+      // Fetch accommodations
+      const allAccom = await accomService.findAllAccomByUserId(+req.params.user_id);
+      const accomArray = allAccom.map(el => el.id);
+
+      // Fetch rooms
+      const allRoom = await roomService.findManyRoomWithManyAccomId(accomArray);
+      const allRoomWithAccomName = allRoom.map(el => {
+          return { ...el, accomName: (allAccom.find(accEl => accEl.id === el.accomId)).name };
+      });
+      const roomArray = allRoom.map(el => el.id);
+
+      // Fetch reservations
+      const allReserv = await reservationService.findAllReserveByRoomId(roomArray);
+      const userArray = allReserv.filter(el => el.userId).map(el => el.userId);
+      const allUserPhoto = await prisma.userPhoto.findMany({where:{userId:{in:userArray}}})
+      const response = allReserv.map(el => {
+          const selectedRoom = allRoomWithAccomName.find(roomEl => roomEl.id === el.roomId);
+          return {
+              ...el,
+              accomName: selectedRoom.accomName,
+              roomType: selectedRoom.roomType,
+              roomName: selectedRoom.name,
+              userPhoto: allUserPhoto.find(photoEl => photoEl.userId === el.userId)
+          };
+      });
+
+      //
+
+      // Filter reservations
+      const filteredRes = response.filter(el => {
+        const customerName = el.customerName || '';
+        const reservationId = el.id || '';
+        const accomName = el.accomName || '';
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+        return customerName.toLowerCase().includes(lowerCaseSearchTerm) ||
+               reservationId.toString().toLowerCase().includes(lowerCaseSearchTerm) ||
+               accomName.toLowerCase().includes(lowerCaseSearchTerm);
+      });
+
+
+      // Sort reservations
+      function sortReservations(reservations, sortKey, sortOrder = 'desc') {
+        return reservations.sort((a, b) => {
+          let aValue = a[sortKey];
+          let bValue = b[sortKey];
+  
+          // If sorting by date, convert strings to Date objects
+          if (sortKey === 'checkInDate' || sortKey === 'checkOutDate') {
+            aValue = dayjs(aValue);
+            bValue = dayjs(bValue);
+          }
+
+          if (aValue < bValue) {
+            return sortOrder === 'asc' ? -1 : 1;
+          }
+          if (aValue > bValue) {
+            return sortOrder === 'asc' ? 1 : -1;
+          }
+          return 0;
+        });
+      }
+
+      const sortedRes = sortReservations(filteredRes, sortKey, sortOrder);
+      // Pagination
+      const itemsPerPage = 8;
+      const totalPages = Math.ceil(sortedRes.length / itemsPerPage);
+      const pagedRes = sortedRes.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+
+      // Return the paginated and sorted response
+      res.status(200).json({ 
+        reservation: pagedRes, 
+        totalPages, 
+        currentPage: parseInt(page),
+        sortKey,
+        sortOrder,
+      });
+  } catch (err) {
+      next(err);
+  }
+};
+
 
 module.exports = reservationController
