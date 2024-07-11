@@ -15,47 +15,58 @@ const getAccomDetailAndRoomService = require("../utils/controller-service/getAcc
 const userPhotoService = require("../service/photo-service/userPhotoService")
 const houseRulesService = require("../service/houseRulesService")
 const { accom } = require("../models/prisma")
+const executeTransaction = require("../service/transaction/executeTransaction")
 
 const accomController = {}
 
 accomController.verifyInfoAndFindNearbyPlaceCreate = asyncWrapper(async (req, res, next) => {
-    if (!req.body.address || !req.body.name || !req.body.description) {
+    if (!req.body.accom.address || !req.body.accom.name || !req.body.accom.description || !req.body.accom.coordinate) {
         return next(new CustomError("Please provide information about your accomodation", "InvalidInfo", 400))
     }
 
-    if (!req.body.type) {
+    if (!req.body.accom.type) {
         return next(new CustomError("Please choose your accommodation type.", "InvalidInfo", 400))
     }
 
-    const isAddressAcquired = await accomService.findAccomByAddress(req.body.address)
+    const isAddressAcquired = await accomService.findAccomByAddress(req.body.accom.address)
     if (isAddressAcquired) {
         return next(new CustomError("This address has already been registered.", "ExistsAddress", 400))
     }
-    const existsAccom = await accomService.findAccomByLatLng(req.body.lat, req.body.lng)
+
+    const { lat, lng } = req.body.accom.coordinate
+
+    const existsAccom = await accomService.findAccomByLatLng(lat + "", lng + "")
     if (existsAccom) {
         return next(new CustomError("This coordinates has already been registered.", "ExistsLatLng", 400))
     }
 
-    if (!req.body.description.trim()) {
-        return next(new CustomError("Please provide us your accommodation details.", "InvalidDescription", 400))
-    }
-    req.accom = { ...req.body, userId: req.user.id }
-    const nearByPlaceArr = await findPlacesService({ lat: +req.body.lat, lng: +req.body.lng })
+    const nearByPlaceArr = await findPlacesService({ lat: +lat, lng: +lng })
 
     const nearByPlaceIDAndDistanceArr = nearByPlaceArr.reduce((acc, curr) => {
         const objToPush = {}
         objToPush.nearbyPlaceId = curr.id
-        objToPush.distance = harvesineService(req.body.lat, req.body.lng, curr.lat, curr.lng)
+        objToPush.distance = harvesineService(+lat, +lng, curr.lat, curr.lng)
         acc.push(objToPush)
         return acc
     }, [])
+
     const nearByPlace = nearByPlaceArr.map((item) => {
         item.lat += ""
         item.lng += ""
         return item
     })
-    req.nearbyPlace = nearByPlace
-    req.nearByPlaceIDAndDistanceArr = nearByPlaceIDAndDistanceArr
+
+    req.body.accom.lat = lat + ""
+    req.body.accom.lng = lng + ""
+    req.body.accomInfo = {}
+    req.body.accomInfo.houseRule = { ...req.body.accom.houseRule }
+
+    delete req.body.accom.houseRule
+    delete req.body.accom.coordinate
+
+    req.body.accom.userId = req.user.id
+    req.body.accomInfo.nearByPlace = nearByPlace
+    req.body.accomInfo.nearByPlaceIDAndDistanceArr = nearByPlaceIDAndDistanceArr
     next()
 })
 
@@ -107,6 +118,7 @@ accomController.getAccomDetailByAccomId = asyncWrapper(async (req, res, next) =>
         objToPush.distance = Number(curr.distance).toFixed(2)
         objToPush.name = curr.nearbyPlace.name
         objToPush.icon = curr.nearbyPlace.icon
+        objToPush.coordinate = { lat: curr.nearbyPlace.lat, lng: curr.nearbyPlace.lng }
         objToPush.iconBgClr = curr.nearbyPlace.iconBgClr
         acc.push(objToPush)
         return acc
@@ -221,6 +233,7 @@ accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => 
 
 accomController.getAllAccomByUserId = asyncWrapper(async (req, res, next) => {
     const accom = await accomService.findAllAccomByUserId(+req.params.user_id)
+    if (accom.length < 1) return res.status(200).json({ accom: [], hostTime: 0, rating: { overAllReview: 0, count: 0 } })
     const hostTime = await findUserHostingTime(+req.params.user_id)
     const review = []
     for (let item of accom) {
@@ -263,5 +276,18 @@ accomController.updateAccomStatus = async (req, res, next) => {
         next(error)
     }
 }
+accomController.transactionForCreateRoomAndAccom = asyncWrapper(async (req, res, next) => {
+    const { beds, amenities } = req.body.room
+    delete req.body.room.beds
+    delete req.body.room.amenities
+    beds.amount = Number(beds.amount)
+    req.body.room.price = Number(req.body.room.price)
+    req.body.room.bathRoom = Number(req.body.room.bathRoom)
+    req.body.room.bedRoom = Number(req.body.room.bedRoom)
+    req.body.room.size = Number(req.body.room.size)
+    const response = await executeTransaction(req.body.accom, req.body.accomInfo, req.body.room, beds, amenities)
+    console.log(response)
+    res.status(201).json(response)
+})
 
 module.exports = accomController
