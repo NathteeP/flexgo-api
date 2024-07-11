@@ -1,4 +1,6 @@
 const { CustomError } = require("../../config/error")
+const prisma = require("../../models/prisma")
+const userPhotoService = require("../../service/photo-service/userPhotoService")
 const reservationService = require("../../service/reservationService")
 const reviewService = require("../../service/reviewService")
 const roomService = require("../../service/room-and-bed/roomService")
@@ -46,13 +48,47 @@ module.exports.getFeaturedReviewByAccomIdService = async (accomId) => {
             const review = []
             return review
         }
+
+        const reservationUserMap = allReservation.reduce((acc, reservation) => {
+            acc[reservation.id] = reservation.userId;
+            return acc;
+        }, {});
+        
         const allReviewsArr = allReviewsDetails.map((item) => {
-            const overAllReview = (item.ratingType1 + item.ratingType2 + item.ratingType3 + item.ratingType4) / noOfReviewsType
-            item.overAllReview = overAllReview
-            return item
-        })
+            const overAllReview = (item.ratingType1 + item.ratingType2 + item.ratingType3 + item.ratingType4) / noOfReviewsType;
+            return {
+                ...item,
+                overAllReview,
+                userId: reservationUserMap[item.reservationId]
+            };
+        });
         const featureReview = allReviewsArr.sort((a, b) => b.overAllReview - a.overAllReview)
-        return featureReview
+
+        //get username and review
+
+        const userArray = allReservation.map(el => el.userId).filter(el => el)
+
+        const reviewers = await prisma.userPhoto.findMany({
+            where: { userId: { in: userArray } },
+            include: {
+                user: {
+                    select: {
+                        fullName: true
+                    }
+                }
+            }
+        });
+
+
+        const featureReviewWithUsers = featureReview.map(el => ({
+            ...el,
+            user: reviewers.find(photoEl => photoEl.userId === el.userId) || null
+        }));
+
+        // Sort the reviews so that reviews with a user are at the beginning
+        featureReviewWithUsers.sort((a, b) => (a.user ? -1 : 1) - (b.user ? -1 : 1));
+
+        return featureReviewWithUsers
     } catch (err) {
         console.log(err)
         return err
