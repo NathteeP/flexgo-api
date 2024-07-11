@@ -10,4 +10,11 @@ bedTypeService.findManyBedTypeIdByBedType = (bedType) =>
         },
     })
 
+bedTypeService.findBedTypeByBedTypeName = (bedType) =>
+    prisma.bedType.findFirst({
+        where: {
+            name: bedType,
+        },
+    })
+
 module.exports = bedTypeService
