@@ -14,11 +14,12 @@ const { harvesineService, createBoundingBox } = require("../utils/harvesineServi
 const getAccomDetailAndRoomService = require("../utils/controller-service/getAccomDetailAndRoom")
 const userPhotoService = require("../service/photo-service/userPhotoService")
 const houseRulesService = require("../service/houseRulesService")
+const executeTransaction = require("../service/transaction/executeTransaction")
 
 const accomController = {}
 
 accomController.verifyInfoAndFindNearbyPlaceCreate = asyncWrapper(async (req, res, next) => {
-    if (!req.body.address || !req.body.name || !req.body.description) {
+    if (!req.body.accom.address || !req.body.accom.name || !req.body.accom.description || !req.body.accom.coordinate) {
         return next(new CustomError("Please provide information about your accomodation", "InvalidInfo", 400))
     }
 
@@ -30,31 +31,40 @@ accomController.verifyInfoAndFindNearbyPlaceCreate = asyncWrapper(async (req, re
     if (isAddressAcquired) {
         return next(new CustomError("This address has already been registered.", "ExistsAddress", 400))
     }
-    const existsAccom = await accomService.findAccomByLatLng(req.body.lat, req.body.lng)
+
+    const { lat, lng } = req.body.accom.coordinate
+
+    const existsAccom = await accomService.findAccomByLatLng(+lat, +lng)
     if (existsAccom) {
         return next(new CustomError("This coordinates has already been registered.", "ExistsLatLng", 400))
     }
 
-    if (!req.body.description.trim()) {
-        return next(new CustomError("Please provide us your accommodation details.", "InvalidDescription", 400))
-    }
-    req.accom = { ...req.body, userId: req.user.id }
-    const nearByPlaceArr = await findPlacesService({ lat: +req.body.lat, lng: +req.body.lng })
+    const nearByPlaceArr = await findPlacesService({ lat: +lat, lng: +lng })
 
     const nearByPlaceIDAndDistanceArr = nearByPlaceArr.reduce((acc, curr) => {
         const objToPush = {}
         objToPush.nearbyPlaceId = curr.id
-        objToPush.distance = harvesineService(req.body.lat, req.body.lng, curr.lat, curr.lng)
+        objToPush.distance = harvesineService(+lat, +lng, curr.lat, curr.lng)
         acc.push(objToPush)
         return acc
     }, [])
+
     const nearByPlace = nearByPlaceArr.map((item) => {
         item.lat += ""
         item.lng += ""
         return item
     })
-    req.nearbyPlace = nearByPlace
-    req.nearByPlaceIDAndDistanceArr = nearByPlaceIDAndDistanceArr
+
+    req.body.accom.lat = lat
+    req.body.accom.lng = lng
+    req.body.accomInfo.houseRule = { ...req.body.accom.houseRule }
+
+    delete req.body.houseRule
+    delete req.body.accom.coordinate
+
+    req.body.accom.userId = req.user.id
+    req.body.accomInfo.nearbyPlace = nearByPlace
+    req.body.accomInfo.nearByPlaceIDAndDistanceArr = nearByPlaceIDAndDistanceArr
     next()
 })
 
@@ -106,6 +116,7 @@ accomController.getAccomDetailByAccomId = asyncWrapper(async (req, res, next) =>
         objToPush.distance = Number(curr.distance).toFixed(2)
         objToPush.name = curr.nearbyPlace.name
         objToPush.icon = curr.nearbyPlace.icon
+        objToPush.coordinate = { lat: curr.nearbyPlace.lat, lng: curr.nearbyPlace.lng }
         objToPush.iconBgClr = curr.nearbyPlace.iconBgClr
         acc.push(objToPush)
         return acc
@@ -226,6 +237,14 @@ accomController.getAllAccomByUserId = asyncWrapper(async (req, res, next) => {
     rating.overAllReview = (rating.overAllReview / review.length).toFixed(1)
     rating.count = review.length
     res.status(200).json({ accom, rating, hostTime })
+})
+
+accomController.transactionForCreateRoomAndAccom = asyncWrapper(async (req, res, next) => {
+    const { beds, amenities } = req.body.room
+    delete req.body.room.beds
+    delete req.body.room.amenities
+    const result = await executeTransaction(req.body.accom, req.body.accomInfo, req.body.room, beds, amenities)
+    res.status(201).json(result)
 })
 
 module.exports = accomController

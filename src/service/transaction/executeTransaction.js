@@ -5,30 +5,20 @@ const nearbyPlaceService = require("../nearbyPlaceService")
 const { createAccomService, verifyRoomBeforeCreate, verifyAccomBeforeCreate, createRoomService } = require("./transactionFn")
 const { CustomError } = require("../../config/error")
 
-const executeTransaction = async (req, res, next) => {
+const executeTransaction = async (accomInfo, otherInfo, roomInfo, beds, amenities) => {
     try {
         await prisma.$transaction(async (transaction) => {
-            // Verify part
-            const accomInfo = await verifyAccomBeforeCreate(req, res, next, transaction)
-            const { room, beds, amenities } = await verifyRoomBeforeCreate(req, res, next, transaction)
-
             // Create Accom
-            const accom = await createAccomService(req, res, next, transaction, accomInfo)
+            const accom = await createAccomService(transaction, accomInfo, otherInfo)
             // Pass Created Accom ID to room
-            if (!accom) {
-                return next(new CustomError("Create Accommodation unsuccesful.", "InComplete", 400))
-            }
-            room.accomId = accom.id
+            roomInfo.accomId = accom.id
 
             // Create room, bed and amenities
-            const roomResult = await createRoomService(req, res, next, transaction, room, beds, amenities)
-            if (!roomResult) {
-                return next(new CustomError("Create Room unsuccesful.", "InComplete", 400))
-            }
-            res.status(201).json({ accom, roomResult })
+            const roomResult = await createRoomService(transaction, roomInfo, beds, amenities)
+            return { accom, roomResult }
         })
     } catch (err) {
-        next(err)
+        console.log(err)
     }
 }
 

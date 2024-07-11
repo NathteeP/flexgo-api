@@ -254,6 +254,7 @@ model NearbyPlace {
   lng               String              @db.VarChar(90)
   icon              String?
   iconBgClr         String?             @db.VarChar(20)
+  type              String              @db.VarChar(50)
   accomNearbyPlaces AccomNearbyPlaces[]
 }
 

@@ -1,4 +1,5 @@
 const { Client } = require("@googlemaps/google-maps-services-js")
+const { harvesineService } = require("../utils/harvesineService")
 const client = new Client()
 const types = ["bar", "cafe", "bakery", "night_club", "park", "restaurant", "shopping_mall", "supermarket", "tourist_attraction"]
 
@@ -18,6 +19,7 @@ const findPlacesService = async (address) => {
             const { data } = await client.placesNearby(args)
             if (data.results.length >= 1) {
                 const { results } = data
+                // console.log(results)
                 const filteredArr = results.reduce((acc, curr) => {
                     const filterById = place.filter((el) => el.place_id === curr.place_id)
                     if (filterById.length >= 1) {
@@ -32,6 +34,7 @@ const findPlacesService = async (address) => {
                     objToPush.lng = curr.geometry.location.lng
                     objToPush.name = curr.name
                     objToPush.icon = curr.icon
+                    objToPush.type = type
                     objToPush.iconBgClr = curr.icon_background_color
                     acc.push(objToPush)
                     return acc
