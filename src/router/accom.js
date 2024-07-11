@@ -30,5 +30,4 @@ accomRouter.post(
     accomController.transactionForCreateRoomAndAccom,
 )
 
-accomRouter.post("/places", (req, res, next) => findPlacesService(req.body))
 module.exports = accomRouter

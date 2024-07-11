@@ -4,6 +4,7 @@ const { transaction } = require("../../models/prisma")
 const asyncWrapper = require("../../utils/asyncWrapper")
 const { harvesineService } = require("../../utils/harvesineService")
 const accomService = require("../accomService")
+const bedTypeService = require("../room-and-bed/bedTypeService")
 
 const createAccomService = async (transaction, accoms, other) => {
     const { houseRule, nearByPlace, nearByPlaceIDAndDistanceArr } = other
@@ -25,11 +26,8 @@ const createAccomService = async (transaction, accoms, other) => {
 
 const createRoomService = async (transaction, room, beds, amenities) => {
     const roomResult = await transaction.room.create({ data: room })
-    const bedType = beds.map((item) => {
-        item.roomId = roomResult.id
-        return item
-    })
-    const bedOfRoom = await transaction.roomBed.createMany({ data: bedType })
+    beds.roomId = roomResult.id
+    await transaction.roomBed.createMany({ data: beds })
     const amenitiesArr = amenities.reduce((acc, curr) => {
         const objToPush = {}
         objToPush.amenityTypeId = curr.id
@@ -38,7 +36,7 @@ const createRoomService = async (transaction, room, beds, amenities) => {
         return acc
     }, [])
     await transaction.amenities.createMany({ data: amenitiesArr, skipDuplicates: true })
-    return { roomResult, bedOfRoom }
+    return roomResult
 }
 
 const verifyRoomBeforeCreate = asyncWrapper(async (req, res, next) => {
@@ -53,9 +51,9 @@ const verifyRoomBeforeCreate = asyncWrapper(async (req, res, next) => {
         !req.body.room.name
     )
         return next(new CustomError("Room information is missing", "IncompleteInfo", 400))
-    const bedTypeId = await transaction.bedType.findFirst({ where: { name: req.body.room.beds.type } })
+    const bedTypeId = await bedTypeService.findBedTypeByBedTypeName(req.body.room.beds.type)
     if (!bedTypeId) return next(new CustomError("Don't have the type of bed requested. Please select the type of bed provided", "NotFound", 400))
-    req.body.room.beds.id = bedTypeId.id
+    req.body.room.beds.bedTypeId = bedTypeId.id
     delete req.body.room.beds.type
     next()
 })

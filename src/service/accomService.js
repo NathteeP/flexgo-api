@@ -1,3 +1,4 @@
+const { equal } = require("joi")
 const prisma = require("../models/prisma")
 const accomNearbyService = require("./accomNearbyService")
 
@@ -50,7 +51,11 @@ accomService.findAccomByLatLng = (lat, lng) =>
 
 accomService.findAccomByAddress = (address) =>
     prisma.accom.findFirst({
-        where: { address },
+        where: {
+            address: {
+                equals: address,
+            },
+        },
     })
 
 accomService.findAllAccomByUserId = (userId) =>

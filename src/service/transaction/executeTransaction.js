@@ -7,7 +7,7 @@ const { CustomError } = require("../../config/error")
 
 const executeTransaction = async (accomInfo, otherInfo, roomInfo, beds, amenities) => {
     try {
-        await prisma.$transaction(async (transaction) => {
+        const result = await prisma.$transaction(async (transaction) => {
             // Create Accom
             const accom = await createAccomService(transaction, accomInfo, otherInfo)
             // Pass Created Accom ID to room
@@ -15,8 +15,12 @@ const executeTransaction = async (accomInfo, otherInfo, roomInfo, beds, amenitie
 
             // Create room, bed and amenities
             const roomResult = await createRoomService(transaction, roomInfo, beds, amenities)
+            console.log(accom)
+            console.log(roomResult)
+            console.log("finish create everything. Congrat!")
             return { accom, roomResult }
         })
+        return result
     } catch (err) {
         console.log(err)
     }

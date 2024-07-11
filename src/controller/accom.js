@@ -23,18 +23,18 @@ accomController.verifyInfoAndFindNearbyPlaceCreate = asyncWrapper(async (req, re
         return next(new CustomError("Please provide information about your accomodation", "InvalidInfo", 400))
     }
 
-    if (!req.body.type) {
+    if (!req.body.accom.type) {
         return next(new CustomError("Please choose your accommodation type.", "InvalidInfo", 400))
     }
 
-    const isAddressAcquired = await accomService.findAccomByAddress(req.body.address)
+    const isAddressAcquired = await accomService.findAccomByAddress(req.body.accom.address)
     if (isAddressAcquired) {
         return next(new CustomError("This address has already been registered.", "ExistsAddress", 400))
     }
 
     const { lat, lng } = req.body.accom.coordinate
 
-    const existsAccom = await accomService.findAccomByLatLng(+lat, +lng)
+    const existsAccom = await accomService.findAccomByLatLng(lat + "", lng + "")
     if (existsAccom) {
         return next(new CustomError("This coordinates has already been registered.", "ExistsLatLng", 400))
     }
@@ -55,15 +55,16 @@ accomController.verifyInfoAndFindNearbyPlaceCreate = asyncWrapper(async (req, re
         return item
     })
 
-    req.body.accom.lat = lat
-    req.body.accom.lng = lng
+    req.body.accom.lat = lat + ""
+    req.body.accom.lng = lng + ""
+    req.body.accomInfo = {}
     req.body.accomInfo.houseRule = { ...req.body.accom.houseRule }
 
-    delete req.body.houseRule
+    delete req.body.accom.houseRule
     delete req.body.accom.coordinate
 
     req.body.accom.userId = req.user.id
-    req.body.accomInfo.nearbyPlace = nearByPlace
+    req.body.accomInfo.nearByPlace = nearByPlace
     req.body.accomInfo.nearByPlaceIDAndDistanceArr = nearByPlaceIDAndDistanceArr
     next()
 })
@@ -243,8 +244,14 @@ accomController.transactionForCreateRoomAndAccom = asyncWrapper(async (req, res,
     const { beds, amenities } = req.body.room
     delete req.body.room.beds
     delete req.body.room.amenities
-    const result = await executeTransaction(req.body.accom, req.body.accomInfo, req.body.room, beds, amenities)
-    res.status(201).json(result)
+    beds.amount = Number(beds.amount)
+    req.body.room.price = Number(req.body.room.price)
+    req.body.room.bathRoom = Number(req.body.room.bathRoom)
+    req.body.room.bedRoom = Number(req.body.room.bedRoom)
+    req.body.room.size = Number(req.body.room.size)
+    const response = await executeTransaction(req.body.accom, req.body.accomInfo, req.body.room, beds, amenities)
+    console.log(response)
+    res.status(201).json(response)
 })
 
 module.exports = accomController
