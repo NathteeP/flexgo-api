@@ -108,4 +108,79 @@ accomService.findAccomWithInBoundingBox = (latMax, latMin, lngMax, lngMin) =>
         },
     })
 
+// เพิ่ม ดึง accom ทั้งหมด
+// ฟังก์ชันช่วยสร้าง search filters
+const createSearchFilters = (searchTerm) => {
+    const filters = [
+        { name: { contains: searchTerm } },
+        { address: { contains: searchTerm } },
+        { province: { contains: searchTerm } },
+        { district: { contains: searchTerm } },
+    ]
+
+    if (!isNaN(parseInt(searchTerm))) {
+        filters.push({ id: { equals: parseInt(searchTerm) } })
+    }
+
+    return filters
+}
+
+// จัดการเรื่อง Search
+accomService.findAllAccoms = async (page, sortKey, sortOrder, searchTerm) => {
+    const take = 10 // จำนวนรายการที่จะแสดงต่อหน้า
+    const skip = (page - 1) * take
+    const searchFilters = createSearchFilters(searchTerm)
+
+    const order = sortOrder === "asc" ? "asc" : "desc"
+    const validSortKeys = ["id", "name", "address", "province", "district", "createdAt"]
+    const sortKeyToUse = validSortKeys.includes(sortKey) ? sortKey : "createdAt"
+
+    const accoms = await prisma.accom.findMany({
+        where: {
+            OR: searchFilters,
+        },
+        orderBy: {
+            [sortKeyToUse]: order,
+        },
+        skip,
+        take,
+    })
+
+    const totalAccoms = await prisma.accom.count({
+        where: {
+            OR: searchFilters,
+        },
+    })
+    const totalPages = Math.ceil(totalAccoms / take)
+
+    return {
+        accoms,
+        totalPages,
+        currentPage: page,
+    }
+}
+
+// นับ accoms
+accomService.countAccoms = (searchTerm) => {
+    const searchFilters = createSearchFilters(searchTerm)
+
+    return prisma.accom.count({
+        where: {
+            OR: searchFilters,
+        },
+    })
+}
+
+accomService.updateAccomStatus = (accomId, status) => {
+    return prisma.accom.update({
+        where: { id: accomId },
+        data: { status },
+    })
+}
+
+accomService.deleteAccomById = (accomId) =>
+    prisma.accom.delete({
+        where: { id: accomId },
+    })
+
 module.exports = accomService

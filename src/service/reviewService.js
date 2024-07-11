@@ -25,6 +25,13 @@ reviewService.findAllReviewsByReserveId = (reservationId) =>
         },
     })
 
+    
 // reviewService.findAllReviews = () => prisma.reviews.
+    
+reviewService.findReviewByReservationId = (reservationId) => 
+        prisma.reviews.findFirst({where:{reservationId}})
+
+reviewService.create = (data) => 
+        prisma.reviews.create({data})
 
 module.exports = reviewService

@@ -17,9 +17,10 @@ const userController = {}
 // ดึงข้อมูล user ทั้งหมด
 userController.getAllUsers = async (req, res, next) => {
     try {
-        const { page = 1, sortKey = "createdAt", sortOrder = "asc", searchTerm = "" } = req.query
+        const { page = 1, sortKey = "createdAt", sortOrder = "desc", searchTerm = "" } = req.query
 
         const users = await userService.findAllUsers(page, sortKey, sortOrder, searchTerm)
+        console.log(users)
         const totalUsers = await userService.countUsers(searchTerm)
         const totalPages = Math.ceil(totalUsers / 10)
 

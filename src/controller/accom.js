@@ -74,7 +74,7 @@ accomController.verifyUserAndAccom = asyncWrapper(async (req, res, next) => {
         return next(new CustomError("Please provide information for edit", "InvalidInfo", 400))
     if (!req.params.accom_id || isNaN(req.params.accom_id)) return next(new CustomError("Please provide accommodation ID", "MissingInfo", 400))
     const user = await accomService.findUserIdByAccomId(+req.params.accom_id)
-    if (!user || user.userId !== req.user.id) return next(new CustomError("Unauthorized", "Unauthorized", 401))
+    if (!user || (user.userId !== req.user.id && req.user.role !== "ADMIN")) return next(new CustomError("Unauthorized", "Unauthorized", 401))
     const isAccomExits = await accomService.findAccomByAccomId(+req.params.accom_id)
     if (!isAccomExits) return next(new CustomError(`The accom ID :${req.params.accom_id} is not exist.`, "NonExist", 400))
     next()
@@ -153,8 +153,18 @@ accomController.editAccomDetails = asyncWrapper(async (req, res, next) => {
 })
 
 accomController.deleteAccom = asyncWrapper(async (req, res, next) => {
-    await accomService.changeAccomStatusToInactive(+req.params.accom_id)
-    res.status(204).json({ message: "Deleted successfully!" })
+    try {
+        const accom = await accomService.findAccomByAccomId(+req.params.accom_id)
+        if (!accom) {
+            return res.status(404).send({ error: "Accommodation not found" })
+        }
+
+        await accomService.deleteAccomById(+req.params.accom_id)
+        res.status(200).send({ message: "Accommodation deleted successfully" })
+    } catch (error) {
+        next(error)
+        res.status(500).send({ error: "Server error" })
+    }
 })
 
 accomController.findAvailAccomByLatLng = asyncWrapper(async (req, res, next) => {
@@ -243,6 +253,30 @@ accomController.getAllAccomByUserId = asyncWrapper(async (req, res, next) => {
     res.status(200).json({ accom, rating, hostTime })
 })
 
+// เพิ่มดึงข้อมูล accom ทั้งหมด
+accomController.getAllAccoms = async (req, res, next) => {
+    try {
+        const { page = 1, sortKey = "createdAt", sortOrder = "desc", searchTerm = "" } = req.query
+
+        const parsedPage = parseInt(page, 10)
+
+        const { accoms, totalPages, currentPage } = await accomService.findAllAccoms(parsedPage, sortKey, sortOrder, searchTerm)
+
+        res.status(200).json({ accoms, totalPages, currentPage })
+    } catch (error) {
+        next(error)
+    }
+}
+
+accomController.updateAccomStatus = async (req, res, next) => {
+    try {
+        const { accomId, status } = req.body
+        const updatedAccom = await accomService.updateAccomStatus(accomId, status)
+        res.status(200).json(updatedAccom)
+    } catch (error) {
+        next(error)
+    }
+}
 accomController.transactionForCreateRoomAndAccom = asyncWrapper(async (req, res, next) => {
     const { beds, amenities } = req.body.room
     delete req.body.room.beds
