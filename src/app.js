@@ -19,6 +19,6 @@ const server = http.createServer(app)
 restApiServer(app)
 
 //=====================================================Listening Zone
-server.listen(+port, host, () => {
+server.listen(+port, () => {
     console.log(`Server is running at http://${host}:${port}`)
 })
