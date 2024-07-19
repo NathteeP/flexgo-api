@@ -31,7 +31,7 @@ module.exports = function restApiServer(app) {
     app.use(morgan("dev"))
     app.use(
         cors({
-            origin: "http://localhost:5173",
+            origin: "mysql-23200787-priknampla.i.aivencloud.com",
             credentials: true,
         }),
     )
