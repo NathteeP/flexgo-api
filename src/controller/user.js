@@ -94,7 +94,7 @@ userController.login = async (req, res, next) => {
 
             res.cookie("jwt", accessToken, {
                 httpOnly: true,
-                secure: false,
+                secure: true,
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             })
             res.status(200).json(responseBody)
@@ -161,7 +161,7 @@ userController.googleCallback = async (req, res, next) => {
 
         res.cookie("jwt", token, {
             httpOnly: true,
-            secure: false,
+            secure: true,
             maxAge: 7 * 24 * 60 * 60 * 1000,
         })
 
@@ -191,7 +191,7 @@ userController.getAuthUser = async (req, res, next) => {
 userController.logout = (req, res) => {
     res.cookie("jwt", "", {
         httpOnly: true,
-        secure: false,
+        secure: true,
         maxAge: 0,
     })
     res.json({ message: "Logout successful" })
