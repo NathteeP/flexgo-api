@@ -22,7 +22,7 @@ const amenitiesRouter = require("../router/amenities")
 const reviewRouter = require("../router/reviews")
 const cookieParser = require("cookie-parser")
 const passport = require("../config/passport")
-const wishListRouter = require("../router/wishlist")
+const wishListRouter = require("../router/wishList")
 const feeRouter = require("../router/fee")
 
 //=====================================================Server Zone
