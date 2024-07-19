@@ -31,10 +31,14 @@ module.exports = function restApiServer(app) {
     app.use(morgan("dev"))
     app.use(
         cors({
-            origin: "https://flexgo-api.onrender.com",
+            origin: "https://flexgo.online",
             credentials: true,
         }),
     )
+
+    app.options('*', cors({ origin: "https://flexgo.online", credentials: true }))
+
+    
     app.use(json())
     app.use(urlencoded({ extended: false }))
     app.use(express.static("public"))
