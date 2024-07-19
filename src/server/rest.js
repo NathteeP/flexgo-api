@@ -31,7 +31,7 @@ module.exports = function restApiServer(app) {
     app.use(morgan("dev"))
     app.use(
         cors({
-            origin: "https://flexgo.online/",
+            origin: "https://flexgo-api.onrender.com",
             credentials: true,
         }),
     )
