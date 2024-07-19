@@ -49,7 +49,6 @@ module.exports.getFeaturedReviewByAccomIdService = async (accomId) => {
             const overAllReview = (item.ratingType1 + item.ratingType2 + item.ratingType3 + item.ratingType4) / noOfReviewsType
             item.overAllReview = overAllReview
             if (item.reservation.user) {
-                console.log(item.reservation.user)
                 const { fullName } = item.reservation.user
                 const imagePath = item.reservation.user.userPhoto[0]?.imagePath || null
                 item.user = { fullName: fullName, imagePath: imagePath }
